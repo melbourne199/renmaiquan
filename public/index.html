@@ -2,17 +2,50 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>资源夜市一条街</title>
+    <title>资源夜市一条街 - 首页</title>
     <style>
-        body { font-family: system-ui; text-align: center; padding: 50px; background: #f5f5f7; }
-        h1 { color: #1d1d1f; }
-        .status { color: #0071E3; margin: 20px; }
+        * { margin:0; padding:0; box-sizing:border-box; font-family: system-ui; }
+        body { background:#f5f5f7; padding:20px; }
+        .tabs { display:flex; gap:16px; border-bottom:1px solid #eee; margin-bottom:16px; }
+        .tab { padding:8px 0; cursor:pointer; color:#666; border-bottom:2px solid transparent; }
+        .tab.active { color:#0071E3; border-bottom-color:#0071E3; }
+        .card-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:8px; }
+        .card { background:white; border-radius:16px; padding:12px; border:1px solid #f0f0f0; }
+        .qr { width:100%; aspect-ratio:1; background:#e6e6ea; border-radius:12px; margin-bottom:8px; }
+        .tag { display:inline-block; background:#1e7e34; color:white; padding:2px 8px; border-radius:12px; font-size:0.6rem; }
+        .bottom-nav { display:flex; justify-content:space-around; background:white; border-top:1px solid #eee; padding:10px 0; position:fixed; bottom:0; width:100%; left:0; }
     </style>
 </head>
 <body>
-    <h1>资源夜市一条街</h1>
-    <div class="status">🚀 服务运行中</div>
-    <p>连接人脉，汇聚资源，价值共生</p>
-    <p><small>API 状态：<a href="/api/health">/api/health</a></small></p>
+    <div class="tabs">
+        <div class="tab active">行业群码</div>
+        <div class="tab">企业资源</div>
+        <div class="tab">政务资源</div>
+        <div class="tab">成功案例</div>
+        <div class="tab">避坑指南</div>
+    </div>
+    <div class="card-grid">
+        <div class="card">
+            <div class="qr"></div>
+            <span class="tag">供</span>
+            <div style="font-weight:600; margin:4px 0;">深圳互联网交流群</div>
+            <div style="display:flex; justify-content:space-between; font-size:0.7rem; color:#999;">
+                <span>234人</span><span>深圳</span>
+            </div>
+        </div>
+        <div class="card">
+            <div class="qr"></div>
+            <span class="tag">供</span>
+            <div style="font-weight:600; margin:4px 0;">北京项目投融资</div>
+            <div style="display:flex; justify-content:space-between; font-size:0.7rem; color:#999;">
+                <span>156人</span><span>北京</span>
+            </div>
+        </div>
+    </div>
+    <div class="bottom-nav">
+        <span>🏠 首页</span>
+        <span>📤 发布</span>
+        <span>👤 我的</span>
+    </div>
 </body>
 </html>
