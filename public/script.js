@@ -354,7 +354,15 @@ function createCityMarkers() {
 function fixLabelCollision() {
   const THRESHOLD = 28;
   const LABEL_MIN_DIST = 20; // label与自身marker的最小屏幕像素距离
-  const labels = cityLabels.filter(l => l.userData.city && !l.userData.isFlag && !l.userData.city.isBeijing && !l.userData.city.offset);
+  const cameraDistance = camera.position.length();
+  const isOverview = cameraDistance > 26;
+  const labels = cityLabels.filter(l => {
+    const city = l.userData.city;
+    if (!city || l.userData.isFlag || city.isBeijing || city.offset) return false;
+    if (isOverview && city.isIsland && !['钓鱼岛', '永兴岛', '南沙群岛'].includes(city.name)) return false;
+    if (isOverview && !city.isIsland && city.provided < 40 && city.help < 6 && !city.isTaiwan && !city.isHK && !city.isMacau) return false;
+    return true;
+  });
 
   function getMarkerScreenPos(excludeName) {
     return cityData
@@ -758,6 +766,8 @@ function animate() {
 
   // 城市标签跟随地球，不修改位置
   const isMobileView = window.innerWidth <= 768;
+  const cameraDistance = camera.position.length();
+  const isOverview = cameraDistance > (isMobileView ? 24 : 18);
   cityLabels.forEach((label) => {
     if (!label.userData.city) return;
     const city = label.userData.city;
@@ -765,7 +775,13 @@ function animate() {
     const isFront = projected.z < 1;
     let visible = isFront;
 
-    if (isMobileView) {
+    if (isOverview) {
+      if (city.isIsland) {
+        visible = isFront && ['钓鱼岛', '永兴岛', '南沙群岛'].includes(city.name);
+      } else {
+        visible = isFront && (city.isBeijing || city.isTaiwan || city.isHK || city.isMacau || city.provided >= 60 || city.help >= 10);
+      }
+    } else if (isMobileView) {
       const isPriority = city.isBeijing || city.isChinaIsland || city.isHK || city.isMacau || city.isTaiwan || city.provided >= 80 || city.help >= 12;
       visible = isFront && isPriority;
     }
