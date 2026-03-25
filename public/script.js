@@ -797,20 +797,20 @@ function addCityMarker(city) {
   fixLabelCollisionForOne(label);
 }
 
-// 对单个新标签进行碰撞检测：新城市优先，旧标签让位
+// 对所有标签进行碰撞检测：迭代处理直到无碰撞
 function fixLabelCollisionForOne(newLabel) {
-  const THRESHOLD = 15;
-  const newCity = newLabel.userData.city;
-  const newMarkerPos = latLonToVector3(newCity.lat, newCity.lon, RADIUS + 0.06);
-  const newMarkerScreen = worldToScreen(newMarkerPos);
+  const THRESHOLD = 35; // 大像素阈值确保不重叠
+  const PUSH_STEP = 0.25; // 大步长推开
 
-  const allOldLabels = cityLabels.filter(l =>
-    l !== newLabel &&
-    l.userData.city &&
-    !l.userData.isFlag &&
-    !l.userData.city.isBeijing &&
-    l.userData.city !== newCity
-  );
+  // 收集所有城市标签（不含国旗、固定偏移）
+  function getAllCityLabels() {
+    return cityLabels.filter(l =>
+      l.userData.city &&
+      !l.userData.isFlag &&
+      !l.userData.city.isBeijing &&
+      !l.userData.city.offset
+    );
+  }
 
   function distInScreen(a, b) {
     const dx = a.x - b.x;
@@ -820,6 +820,7 @@ function fixLabelCollisionForOne(newLabel) {
 
   function updateLabel(label, newPos) {
     const c = label.userData.city;
+    if (!c) return;
     const mp = latLonToVector3(c.lat, c.lon, RADIUS + 0.06);
     const ln = markerGroup.children.find(x => x instanceof THREE.Line && x.userData.city && x.userData.city.name === c.name);
     if (ln) {
@@ -829,30 +830,46 @@ function fixLabelCollisionForOne(newLabel) {
     label.position.copy(newPos);
   }
 
-  // 旧标签如果压在新城市marker上，就挤开
-  for (const oldLabel of allOldLabels) {
-    const oldLabelScreen = worldToScreen(oldLabel.position);
-    if (distInScreen(oldLabelScreen, newMarkerScreen) < THRESHOLD + 20) {
-      // 旧标签压到新marker了，推到右边
-      const newPos = oldLabel.position.clone();
-      newPos.x += 0.2;
-      updateLabel(oldLabel, newPos);
-    }
-  }
+  // 多次迭代，确保所有碰撞都被解决
+  for (let iter = 0; iter < 50; iter++) {
+    const labels = getAllCityLabels();
+    let hasCollision = false;
 
-  // 新标签如果压在旧marker上，也要挤开旧marker的标签
-  for (const oldLabel of allOldLabels) {
-    const oldCity = oldLabel.userData.city;
-    const oldMarkerPos = latLonToVector3(oldCity.lat, oldCity.lon, RADIUS + 0.06);
-    const newLabelScreen = worldToScreen(newLabel.position);
-    const oldMarkerScreen = worldToScreen(oldMarkerPos);
+    for (const label of labels) {
+      const city = label.userData.city;
+      const markerPos = latLonToVector3(city.lat, city.lon, RADIUS + 0.06);
+      const labelScreen = worldToScreen(label.position);
 
-    if (distInScreen(newLabelScreen, oldMarkerScreen) < THRESHOLD) {
-      // 新标签压在旧marker上，把旧标签挤开
-      const newPos = oldLabel.position.clone();
-      newPos.x += 0.2;
-      updateLabel(oldLabel, newPos);
+      // 检查是否压在任何marker上（排除自己的）
+      for (const c of cityData) {
+        if (c.isBeijing || c.offset || c.name === city.name) continue;
+        const mp = latLonToVector3(c.lat, c.lon, RADIUS + 0.06);
+        const mpScreen = worldToScreen(mp);
+        if (distInScreen(labelScreen, mpScreen) < THRESHOLD) {
+          const newPos = label.position.clone();
+          newPos.x += PUSH_STEP;
+          updateLabel(label, newPos);
+          hasCollision = true;
+          break;
+        }
+      }
+      if (hasCollision) continue;
+
+      // 检查是否压在其他标签上（排除自己）
+      for (const other of labels) {
+        if (other === label) continue;
+        const otherScreen = worldToScreen(other.position);
+        if (distInScreen(labelScreen, otherScreen) < THRESHOLD) {
+          const newPos = label.position.clone();
+          newPos.x += PUSH_STEP;
+          updateLabel(label, newPos);
+          hasCollision = true;
+          break;
+        }
+      }
     }
+
+    if (!hasCollision) break;
   }
 }
 
