@@ -509,6 +509,24 @@ body {
   font-weight: 700;
 }
 
+/* ==================== 备案位预留 ==================== */
+.record-placeholder {
+  position: fixed;
+  left: 50%;
+  bottom: 10px;
+  transform: translateX(-50%);
+  z-index: 40;
+  font-size: 11px;
+  color: rgba(176, 192, 210, 0.52);
+  letter-spacing: 0.6px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: rgba(3, 12, 26, 0.32);
+  border: 1px solid rgba(90, 200, 250, 0.08);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
+}
+
 /* ==================== 城市标签 ==================== */
 .city-label {
   position: fixed;
@@ -919,4 +937,11 @@ body {
   .navbar-brand { font-size: 0.8rem; }
   .search-section { top: 172px; width: calc(100% - 24px); }
   .city-card { top: 210px; right: 10px; width: min(104px, calc(44vw)); max-width: calc(100vw - 20px); }
+  .record-placeholder {
+    bottom: 8px;
+    font-size: 10px;
+    padding: 5px 10px;
+    max-width: calc(100vw - 28px);
+    text-align: center;
+  }
 }
