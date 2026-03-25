@@ -974,7 +974,7 @@ body {
   .search-section { top: 172px; width: calc(100% - 24px); }
   .city-card { top: 210px; right: 10px; width: min(104px, calc(44vw)); max-width: calc(100vw - 20px); }
   .site-disclaimer-card {
-    bottom: 28px;
+    bottom: 50px;
     max-width: calc(100vw - 34px);
     padding: 6px 10px;
     border-radius: 13px;
@@ -987,7 +987,7 @@ body {
     overflow: hidden;
   }
   .record-placeholder {
-    bottom: 6px;
+    bottom: 10px;
     font-size: 8px;
     padding: 3px 8px;
     max-width: calc(100vw - 36px);
