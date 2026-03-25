@@ -550,6 +550,15 @@ body {
   letter-spacing: 0.3px;
 }
 
+.site-copyright {
+  margin-top: 8px;
+  text-align: center;
+  font-size: 10px;
+  line-height: 1.4;
+  color: rgba(160, 178, 198, 0.46);
+  letter-spacing: 0.6px;
+}
+
 /* ==================== 城市标签 ==================== */
 .city-label {
   position: fixed;
@@ -973,6 +982,12 @@ body {
     font-size: 9px;
     line-height: 1.5;
     color: rgba(184, 198, 214, 0.44);
+  }
+  .site-copyright {
+    margin-top: 6px;
+    font-size: 8px;
+    color: rgba(160, 178, 198, 0.4);
+    letter-spacing: 0.4px;
   }
   .record-placeholder {
     bottom: 8px;
