@@ -422,7 +422,7 @@ body {
 /* ==================== 底部功能卡片 ==================== */
 .cards-container {
   position: absolute;
-  bottom: 35px;
+  bottom: 92px;
   left: 50%;
   transform: translateX(-50%);
   width: calc(100% - 60px);
@@ -633,6 +633,10 @@ body {
     width: calc(100vw - 100px);
     min-width: 0;
     max-width: 980px;
+  }
+
+  .cards-container {
+    bottom: 110px;
   }
 
   .desktop-nav-links {
