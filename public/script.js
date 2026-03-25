@@ -270,7 +270,72 @@ function createCityMarkers() {
     cityLabels.push(label);
   });
 
+  // 防碰撞：只调整label，不动marker
+  fixLabelCollision();
+
   scene.add(markerGroup);
+}
+
+// 标签防碰撞：找最近空位，不随机
+function fixLabelCollision() {
+  const THRESHOLD = 25; // 像素距离阈值
+  const labels = cityLabels.filter(l => l.userData.city && !l.userData.isFlag && !l.userData.city.isBeijing);
+
+  function isTooClose(pos, others) {
+    const sp = worldToScreen(pos);
+    for (const other of others) {
+      if (other === pos) continue;
+      const so = worldToScreen(other);
+      const dx = sp.x - so.x;
+      const dy = sp.y - so.y;
+      if (Math.sqrt(dx * dx + dy * dy) < THRESHOLD) return true;
+    }
+    return false;
+  }
+
+  // 8个方向：右、下、左、上、右下、左下、右上、左上
+  const directions = [
+    { x: 1, y: 0 }, { x: 0, y: 1 }, { x: -1, y: 0 }, { x: 0, y: -1 },
+    { x: 0.7, y: 0.7 }, { x: -0.7, y: 0.7 }, { x: 0.7, y: -0.7 }, { x: -0.7, y: -0.7 }
+  ];
+
+  for (const label of labels) {
+    const city = label.userData.city;
+    const markerPos = latLonToVector3(city.lat, city.lon, RADIUS + 0.06);
+    const allPositions = [markerPos, ...labels.map(l => l.position)];
+
+    // 从最近的地方开始找空位
+    for (let dist = 5; dist < 50; dist += 5) {
+      let found = false;
+
+      for (const dir of directions) {
+        const testPos = label.position.clone();
+        testPos.x += dir.x * dist * 0.01;
+        testPos.y += dir.y * dist * 0.01;
+
+        if (!isTooClose(testPos, allPositions)) {
+          // 找到空位了
+          const line = markerGroup.children.find(c => c instanceof THREE.Line && c.userData.city && c.userData.city.name === city.name);
+          if (line) {
+            line.geometry.setFromPoints([markerPos, testPos.clone()]);
+          }
+          label.position.copy(testPos);
+          found = true;
+          break;
+        }
+      }
+
+      if (found) break;
+    }
+  }
+}
+
+function worldToScreen(pos) {
+  const vector = pos.clone().project(camera);
+  return {
+    x: (vector.x * 0.5 + 0.5) * window.innerWidth,
+    y: (-(vector.y * 0.5) + 0.5) * window.innerHeight
+  };
 }
 
 // 显示城市数据卡片

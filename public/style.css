@@ -471,13 +471,23 @@ body {
 .island-flag {
   pointer-events: auto;
   cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  background: rgba(200, 0, 0, 0.15);
+  padding: 2px 6px;
+  border-radius: 4px;
+  border: 1px solid rgba(255, 100, 100, 0.4);
+  font-size: 11px;
+  color: #ffccaa;
+  white-space: nowrap;
 }
 
 .flag-img {
-  width: 24px;
+  width: 18px;
   height: auto;
   animation: flagWave 1.5s ease-in-out infinite;
   transform-origin: left center;
+  vertical-align: middle;
 }
 
 @keyframes flagWave {
