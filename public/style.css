@@ -531,15 +531,15 @@ body {
 .site-disclaimer-card {
   position: fixed;
   left: 50%;
-  bottom: 34px;
+  bottom: 28px;
   transform: translateX(-50%);
   z-index: 38;
   max-width: min(860px, calc(100vw - 40px));
-  padding: 8px 14px;
-  border-radius: 16px;
-  background: rgba(3, 12, 26, 0.28);
-  border: 1px solid rgba(90, 200, 250, 0.06);
-  backdrop-filter: blur(12px);
+  padding: 6px 12px;
+  border-radius: 14px;
+  background: rgba(3, 12, 26, 0.22);
+  border: 1px solid rgba(90, 200, 250, 0.04);
+  backdrop-filter: blur(10px);
 }
 
 .site-disclaimer {
@@ -887,7 +887,7 @@ body {
     position: fixed;
     left: 20px;
     right: 20px;
-    bottom: 22px;
+    bottom: 74px;
     transform: none;
     width: auto;
     max-width: none;
@@ -973,29 +973,29 @@ body {
   .search-section { top: 172px; width: calc(100% - 24px); }
   .city-card { top: 210px; right: 10px; width: min(104px, calc(44vw)); max-width: calc(100vw - 20px); }
   .site-disclaimer-card {
-    bottom: 30px;
+    bottom: 28px;
     max-width: calc(100vw - 34px);
-    padding: 7px 10px;
-    border-radius: 14px;
+    padding: 6px 10px;
+    border-radius: 13px;
   }
   .site-disclaimer {
-    font-size: 9px;
-    line-height: 1.5;
-    color: rgba(184, 198, 214, 0.44);
+    font-size: 8px;
+    line-height: 1.45;
+    color: rgba(184, 198, 214, 0.42);
   }
   .site-copyright {
-    margin-top: 6px;
-    font-size: 8px;
-    color: rgba(160, 178, 198, 0.4);
-    letter-spacing: 0.4px;
+    margin-top: 4px;
+    font-size: 7px;
+    color: rgba(160, 178, 198, 0.36);
+    letter-spacing: 0.3px;
   }
   .record-placeholder {
-    bottom: 8px;
-    font-size: 9px;
-    padding: 4px 9px;
+    bottom: 6px;
+    font-size: 8px;
+    padding: 3px 8px;
     max-width: calc(100vw - 36px);
     text-align: center;
-    color: rgba(176, 192, 210, 0.44);
-    background: rgba(3, 12, 26, 0.22);
+    color: rgba(176, 192, 210, 0.4);
+    background: rgba(3, 12, 26, 0.18);
   }
 }
