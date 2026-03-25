@@ -534,7 +534,9 @@ body {
   bottom: 28px;
   transform: translateX(-50%);
   z-index: 38;
-  max-width: min(860px, calc(100vw - 40px));
+  width: calc(100vw - 160px);
+  max-width: 1180px;
+  min-width: 780px;
   padding: 6px 12px;
   border-radius: 14px;
   background: rgba(3, 12, 26, 0.22);
@@ -544,10 +546,10 @@ body {
 
 .site-disclaimer {
   text-align: center;
-  font-size: 11px;
+  font-size: 10px;
   line-height: 1.5;
   color: rgba(184, 198, 214, 0.52);
-  letter-spacing: 0.2px;
+  letter-spacing: 0.1px;
   white-space: nowrap;
   overflow: hidden;
 }
@@ -627,6 +629,12 @@ body {
 
 /* ==================== 响应式 - 平板 ==================== */
 @media (max-width: 1100px) {
+  .site-disclaimer-card {
+    width: calc(100vw - 100px);
+    min-width: 0;
+    max-width: 980px;
+  }
+
   .desktop-nav-links {
     gap: 20px;
   }
