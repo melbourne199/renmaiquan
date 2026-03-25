@@ -254,7 +254,7 @@ function createCityMarkers() {
         }
         const flagDiv = document.createElement('div');
         flagDiv.className = 'island-flag';
-        flagDiv.innerHTML = `<img src="/images/flag.webp" class="flag-img" />${city.name}`;
+        flagDiv.textContent = city.name;
         const flagLabel = new CSS2DObject(flagDiv);
         flagLabel.position.copy(flagPos);
         flagLabel.userData.city = city;
