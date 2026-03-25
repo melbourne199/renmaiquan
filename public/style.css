@@ -550,7 +550,6 @@ body {
   letter-spacing: 0.2px;
   white-space: nowrap;
   overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 /* ==================== 城市标签 ==================== */
@@ -978,7 +977,6 @@ body {
     color: rgba(184, 198, 214, 0.42);
     white-space: nowrap;
     overflow: hidden;
-    text-overflow: ellipsis;
   }
   .record-placeholder {
     bottom: 6px;
