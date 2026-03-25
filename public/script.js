@@ -380,10 +380,27 @@ function fixLabelCollision() {
     return false;
   }
 
-  const directions = [
-    { x: 1, y: 0 }, { x: 0.7, y: 0.7 }, { x: 0, y: 1 }, { x: -0.7, y: 0.7 },
-    { x: -1, y: 0 }, { x: -0.7, y: -0.7 }, { x: 0, y: -1 }, { x: 0.7, y: -0.7 }
-  ];
+  function getPreferredDirections(city) {
+    const horizontal = city.lon >= 113 ? 1 : -1;
+    const vertical = city.lat >= 30 ? 1 : -1;
+
+    const primary = horizontal > 0
+      ? [{ x: 1, y: 0 }, { x: 0.7, y: vertical * 0.7 }, { x: 0.7, y: -vertical * 0.7 }]
+      : [{ x: -1, y: 0 }, { x: -0.7, y: vertical * 0.7 }, { x: -0.7, y: -vertical * 0.7 }];
+
+    const secondary = vertical > 0
+      ? [{ x: 0, y: 1 }, { x: horizontal * 0.7, y: 0.7 }]
+      : [{ x: 0, y: -1 }, { x: horizontal * 0.7, y: -0.7 }];
+
+    const fallback = [
+      { x: -horizontal, y: 0 },
+      { x: -horizontal * 0.7, y: vertical * 0.7 },
+      { x: 0, y: -vertical },
+      { x: -horizontal * 0.7, y: -vertical * 0.7 }
+    ];
+
+    return [...primary, ...secondary, ...fallback];
+  }
 
   for (const label of labels) {
     const city = label.userData.city;
@@ -394,7 +411,9 @@ function fixLabelCollision() {
     let finalPos = null;
     let usedLine = false;
 
-    // 搜索最近可用位置（确保与marker有足够距离）
+    const directions = getPreferredDirections(city);
+
+    // 搜索最近可用位置（确保与marker有足够距离，并优先保持原始地理方位）
     for (let step = 0; step < 20; step++) {
       const dist = 0.005 + step * 0.005;
       for (const dir of directions) {
@@ -419,7 +438,7 @@ function fixLabelCollision() {
     // 找不到空位：搜索与所有marker保持最大距离的位置
     if (!finalPos) {
       let bestPos = null;
-      let bestMinDist = 0;
+      let bestScore = -Infinity;
       for (let step = 0; step < 30; step++) {
         const dist = 0.005 + step * 0.005;
         for (const dir of directions) {
@@ -444,8 +463,12 @@ function fixLabelCollision() {
             minDistToOthers = Math.min(minDistToOthers, Math.sqrt(dmx*dmx + dmy*dmy));
           }
 
-          if (minDistToOthers > bestMinDist) {
-            bestMinDist = minDistToOthers;
+          const directionalBonus = city.lon >= 113 ? dir.x * 18 : -dir.x * 18;
+          const verticalBonus = city.lat >= 30 ? dir.y * 8 : -dir.y * 8;
+          const score = minDistToOthers + directionalBonus + verticalBonus;
+
+          if (score > bestScore) {
+            bestScore = score;
             bestPos = testPos;
           }
         }
