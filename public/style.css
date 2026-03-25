@@ -528,13 +528,21 @@ body {
 }
 
 /* ==================== 站点说明 ==================== */
-.site-disclaimer {
+.site-disclaimer-card {
   position: fixed;
   left: 50%;
   bottom: 34px;
   transform: translateX(-50%);
   z-index: 38;
-  max-width: min(820px, calc(100vw - 40px));
+  max-width: min(860px, calc(100vw - 40px));
+  padding: 8px 14px;
+  border-radius: 16px;
+  background: rgba(3, 12, 26, 0.28);
+  border: 1px solid rgba(90, 200, 250, 0.06);
+  backdrop-filter: blur(12px);
+}
+
+.site-disclaimer {
   text-align: center;
   font-size: 11px;
   line-height: 1.6;
@@ -955,9 +963,13 @@ body {
   .navbar-brand { font-size: 0.8rem; }
   .search-section { top: 172px; width: calc(100% - 24px); }
   .city-card { top: 210px; right: 10px; width: min(104px, calc(44vw)); max-width: calc(100vw - 20px); }
-  .site-disclaimer {
-    bottom: 32px;
+  .site-disclaimer-card {
+    bottom: 30px;
     max-width: calc(100vw - 34px);
+    padding: 7px 10px;
+    border-radius: 14px;
+  }
+  .site-disclaimer {
     font-size: 9px;
     line-height: 1.5;
     color: rgba(184, 198, 214, 0.44);
