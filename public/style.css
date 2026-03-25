@@ -545,18 +545,12 @@ body {
 .site-disclaimer {
   text-align: center;
   font-size: 11px;
-  line-height: 1.6;
+  line-height: 1.5;
   color: rgba(184, 198, 214, 0.52);
-  letter-spacing: 0.3px;
-}
-
-.site-copyright {
-  margin-top: 8px;
-  text-align: center;
-  font-size: 10px;
-  line-height: 1.4;
-  color: rgba(160, 178, 198, 0.46);
-  letter-spacing: 0.6px;
+  letter-spacing: 0.2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* ==================== 城市标签 ==================== */
@@ -980,14 +974,11 @@ body {
   }
   .site-disclaimer {
     font-size: 8px;
-    line-height: 1.45;
+    line-height: 1.35;
     color: rgba(184, 198, 214, 0.42);
-  }
-  .site-copyright {
-    margin-top: 4px;
-    font-size: 7px;
-    color: rgba(160, 178, 198, 0.36);
-    letter-spacing: 0.3px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   .record-placeholder {
     bottom: 6px;
