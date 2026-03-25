@@ -254,7 +254,7 @@ function createCityMarkers() {
         }
         const flagDiv = document.createElement('div');
         flagDiv.className = 'island-flag';
-        flagDiv.textContent = city.name;
+        flagDiv.innerHTML = `<span class="flag-mark">🇨🇳</span>${city.name}`;
         const flagLabel = new CSS2DObject(flagDiv);
         flagLabel.position.copy(flagPos);
         flagLabel.userData.city = city;
