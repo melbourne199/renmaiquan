@@ -1,51 +1,107 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <title>资源夜市一条街 - 首页</title>
-    <style>
-        * { margin:0; padding:0; box-sizing:border-box; font-family: system-ui; }
-        body { background:#f5f5f7; padding:20px; }
-        .tabs { display:flex; gap:16px; border-bottom:1px solid #eee; margin-bottom:16px; }
-        .tab { padding:8px 0; cursor:pointer; color:#666; border-bottom:2px solid transparent; }
-        .tab.active { color:#0071E3; border-bottom-color:#0071E3; }
-        .card-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:8px; }
-        .card { background:white; border-radius:16px; padding:12px; border:1px solid #f0f0f0; }
-        .qr { width:100%; aspect-ratio:1; background:#e6e6ea; border-radius:12px; margin-bottom:8px; }
-        .tag { display:inline-block; background:#1e7e34; color:white; padding:2px 8px; border-radius:12px; font-size:0.6rem; }
-        .bottom-nav { display:flex; justify-content:space-around; background:white; border-top:1px solid #eee; padding:10px 0; position:fixed; bottom:0; width:100%; left:0; }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <title>资源星河平台 · 商业人脉资源对接</title>
+  <link rel="stylesheet" href="./style.css" />
 </head>
 <body>
-    <div class="tabs">
-        <div class="tab active">行业群码</div>
-        <div class="tab">企业资源</div>
-        <div class="tab">政务资源</div>
-        <div class="tab">成功案例</div>
-        <div class="tab">避坑指南</div>
+  <div id="loading">🌍 正在建立连接，定位中国轮廓...</div>
+  <div id="canvas-container"></div>
+
+  <div class="ui-overlay">
+    <!-- 顶部导航 -->
+    <div class="navbar">
+      <div class="nav-item active">首页</div>
+      <div class="nav-item" onclick="navigateTo('groups')">群码聚合</div>
+      <div class="nav-item" onclick="navigateTo('energy')">能量信息</div>
+      <div class="nav-item" onclick="navigateTo('helps')">求助信息</div>
+      <div class="nav-item" onclick="navigateTo('industry')">行业动态</div>
     </div>
-    <div class="card-grid">
-        <div class="card">
-            <div class="qr"></div>
-            <span class="tag">供</span>
-            <div style="font-weight:600; margin:4px 0;">深圳互联网交流群</div>
-            <div style="display:flex; justify-content:space-between; font-size:0.7rem; color:#999;">
-                <span>234人</span><span>深圳</span>
-            </div>
+
+    <!-- 主标题区 -->
+    <div class="hero-section">
+      <h1 class="hero-title">探索宇宙资源，共筑商业星河</h1>
+      <p class="hero-subtitle">让每一份资源，都在宇宙中发光</p>
+      <p class="hero-subtitle-line2">商业星河，一触即达</p>
+      <p class="hero-desc">将企业资源、人脉、项目与需求，汇入可搜索、可匹配、可脱敏的资源宇宙，<br>让高质量对接如星链般精准发生</p>
+    </div>
+
+    <!-- 搜索区 -->
+    <div class="search-section">
+      <input id="citySearch" type="text" placeholder="搜索城市 / 项目 / 人脉 / 关键词..." />
+      <button id="searchBtn">探索</button>
+    </div>
+    <p class="search-hint">数据实时更新・信息全程脱敏・服务合法合规</p>
+
+    <!-- 城市tooltip -->
+    <div id="cityTooltip" class="city-tooltip hidden"></div>
+
+    <!-- 数据卡片（点击城市后显示） -->
+    <div id="cityCard" class="city-card hidden">
+      <div class="city-card-header">
+        <span class="city-card-name" id="cardCityName">北京</span>
+        <button class="city-card-close" onclick="closeCityCard()">×</button>
+      </div>
+      <div class="city-card-body">
+        <div class="city-card-stat">
+          <span class="stat-label">人脉提供</span>
+          <span class="stat-value" id="cardProvided">126 个</span>
         </div>
-        <div class="card">
-            <div class="qr"></div>
-            <span class="tag">供</span>
-            <div style="font-weight:600; margin:4px 0;">北京项目投融资</div>
-            <div style="display:flex; justify-content:space-between; font-size:0.7rem; color:#999;">
-                <span>156人</span><span>北京</span>
-            </div>
+        <div class="city-card-stat">
+          <span class="stat-label">需要帮助</span>
+          <span class="stat-value" id="cardHelp">18 个</span>
         </div>
+        <div class="city-card-stat">
+          <span class="stat-label">今日活跃</span>
+          <span class="stat-value" id="cardActive">+23</span>
+        </div>
+      </div>
+      <button class="city-card-btn" onclick="viewCityDetail()">查看详情</button>
     </div>
-    <div class="bottom-nav">
-        <span>🏠 首页</span>
-        <span>📤 发布</span>
-        <span>👤 我的</span>
+
+    <!-- 底部四个功能卡片 -->
+    <div class="cards-container">
+      <div class="func-card" onclick="navigateTo('publish')">
+        <h3>💰 发布能量变现</h3>
+        <p>分享资源技能，让价值在星河中流动。</p>
+      </div>
+      <div class="func-card" onclick="navigateTo('demand')">
+        <h3>📢 发布需求</h3>
+        <p>精准对接全国商业资源与核心人脉。</p>
+      </div>
+      <div class="func-card" onclick="navigateTo('wish')">
+        <h3>⭐ 发布许愿</h3>
+        <p>让创意、项目、愿景被更多人看见。</p>
+      </div>
+      <div class="func-card" onclick="navigateTo('search')">
+        <h3>🔎 资源查询</h3>
+        <p>搜索全国城市、人脉、项目与合作机会。</p>
+      </div>
     </div>
+
+    <!-- 右下角统计面板 -->
+    <div class="stats-panel">
+      <div class="stats-card">
+        <span>人脉提供</span>
+        <strong id="statProvided">936 个</strong>
+      </div>
+      <div class="stats-card">
+        <span>需要帮助</span>
+        <strong id="statHelp">127 个</strong>
+      </div>
+    </div>
+  </div>
+
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+      "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+    }
+  }
+  </script>
+  <script type="module" src="./script.js"></script>
 </body>
 </html>

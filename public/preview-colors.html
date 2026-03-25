@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>颜色方案预览 - 资源夜市</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; line-height: 1.6; }
+
+    .preview-title {
+      text-align: center;
+      padding: 40px 20px;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #333;
+    }
+
+    .schemes-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 40px;
+      padding: 20px;
+      justify-content: center;
+    }
+
+    .scheme-card {
+      width: 380px;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+    }
+
+    /* ===== 方案1：夜市暖光 ===== */
+    .scheme-1 .navbar {
+      background: #FDF8F4;
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border-bottom: 1px solid rgba(0,0,0,0.08);
+    }
+    .scheme-1 .logo {
+      width: 44px;
+      height: 44px;
+      background: linear-gradient(135deg, #E85A4F, #E8B86D);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 20px;
+    }
+    .scheme-1 .logo-text {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #2D2A26;
+    }
+    .scheme-1 .logo-sub {
+      font-size: 0.75rem;
+      color: #666;
+    }
+    .scheme-1 .slogan {
+      background: rgba(232, 90, 79, 0.1);
+      border: 1px solid rgba(232, 90, 79, 0.2);
+      padding: 8px 16px;
+      border-radius: 30px;
+      font-size: 0.8rem;
+      color: #E85A4F;
+      margin-left: auto;
+    }
+    .scheme-1 .btn-primary {
+      background: linear-gradient(135deg, #E85A4F, #E8B86D);
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 25px;
+      font-weight: 600;
+      box-shadow: 0 4px 15px rgba(232, 90, 79, 0.3);
+    }
+    .scheme-1 .card {
+      background: #FDF8F4;
+      border-radius: 16px;
+      padding: 20px;
+      margin: 16px;
+      border: 1px solid rgba(0,0,0,0.05);
+    }
+    .scheme-1 .card-title {
+      font-size: 1rem;
+      font-weight: 600;
+      color: #2D2A26;
+      margin-bottom: 8px;
+    }
+    .scheme-1 .card-tag {
+      display: inline-block;
+      background: #E85A4F;
+      color: white;
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 0.7rem;
+    }
+    .scheme-1 .card-tag.gold {
+      background: #E8B86D;
+      color: #2D2A26;
+    }
+    .scheme-1 .card-meta {
+      color: #888;
+      font-size: 0.8rem;
+      margin-top: 8px;
+    }
+    .scheme-1 .bottom-nav {
+      background: #FDF8F4;
+      padding: 12px 20px;
+      display: flex;
+      justify-content: space-around;
+      border-top: 1px solid rgba(0,0,0,0.08);
+    }
+    .scheme-1 .nav-item {
+      color: #888;
+      font-size: 0.8rem;
+    }
+    .scheme-1 .nav-item.active {
+      color: #E85A4F;
+    }
+    .scheme-1 .tab-bar {
+      background: #FDF8F4;
+      padding: 12px 16px;
+      display: flex;
+      gap: 20px;
+      overflow-x: auto;
+      border-bottom: 1px solid rgba(0,0,0,0.08);
+    }
+    .scheme-1 .tab {
+      color: #888;
+      font-weight: 500;
+      padding-bottom: 8px;
+      border-bottom: 2px solid transparent;
+      white-space: nowrap;
+    }
+    .scheme-1 .tab.active {
+      color: #E85A4F;
+      border-bottom-color: #E85A4F;
+    }
+    .scheme-1 .category {
+      background: #FBF5F0;
+      padding: 14px 8px;
+      text-align: center;
+      font-size: 0.75rem;
+      color: #666;
+      border-left: 3px solid transparent;
+    }
+    .scheme-1 .category.active {
+      background: white;
+      color: #E85A4F;
+      border-left-color: #E85A4F;
+    }
+    .scheme-1 .body-bg { background: white; }
+
+    /* ===== 方案2：活力橙 ===== */
+    .scheme-2 .navbar {
+      background: #FFF8F0;
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border-bottom: 1px solid rgba(0,0,0,0.08);
+    }
+    .scheme-2 .logo {
+      width: 44px;
+      height: 44px;
+      background: linear-gradient(135deg, #FF6B35, #00B4D8);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 20px;
+    }
+    .scheme-2 .logo-text {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #1A1A2E;
+    }
+    .scheme-2 .logo-sub {
+      font-size: 0.75rem;
+      color: #666;
+    }
+    .scheme-2 .slogan {
+      background: rgba(0, 180, 216, 0.1);
+      border: 1px solid rgba(0, 180, 216, 0.2);
+      padding: 8px 16px;
+      border-radius: 30px;
+      font-size: 0.8rem;
+      color: #00B4D8;
+      margin-left: auto;
+    }
+    .scheme-2 .btn-primary {
+      background: linear-gradient(135deg, #FF6B35, #FF8B5E);
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 25px;
+      font-weight: 600;
+      box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
+    }
+    .scheme-2 .card {
+      background: #FFF8F0;
+      border-radius: 16px;
+      padding: 20px;
+      margin: 16px;
+      border: 1px solid rgba(0,0,0,0.05);
+    }
+    .scheme-2 .card-title {
+      font-size: 1rem;
+      font-weight: 600;
+      color: #1A1A2E;
+      margin-bottom: 8px;
+    }
+    .scheme-2 .card-tag {
+      display: inline-block;
+      background: #FF6B35;
+      color: white;
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 0.7rem;
+    }
+    .scheme-2 .card-tag.blue {
+      background: #00B4D8;
+    }
+    .scheme-2 .card-meta {
+      color: #888;
+      font-size: 0.8rem;
+      margin-top: 8px;
+    }
+    .scheme-2 .bottom-nav {
+      background: #FFF8F0;
+      padding: 12px 20px;
+      display: flex;
+      justify-content: space-around;
+      border-top: 1px solid rgba(0,0,0,0.08);
+    }
+    .scheme-2 .nav-item {
+      color: #888;
+      font-size: 0.8rem;
+    }
+    .scheme-2 .nav-item.active {
+      color: #FF6B35;
+    }
+    .scheme-2 .tab-bar {
+      background: #FFF8F0;
+      padding: 12px 16px;
+      display: flex;
+      gap: 20px;
+      overflow-x: auto;
+      border-bottom: 1px solid rgba(0,0,0,0.08);
+    }
+    .scheme-2 .tab {
+      color: #888;
+      font-weight: 500;
+      padding-bottom: 8px;
+      border-bottom: 2px solid transparent;
+      white-space: nowrap;
+    }
+    .scheme-2 .tab.active {
+      color: #FF6B35;
+      border-bottom-color: #FF6B35;
+    }
+    .scheme-2 .category {
+      background: #FFF0E8;
+      padding: 14px 8px;
+      text-align: center;
+      font-size: 0.75rem;
+      color: #666;
+      border-left: 3px solid transparent;
+    }
+    .scheme-2 .category.active {
+      background: white;
+      color: #FF6B35;
+      border-left-color: #FF6B35;
+    }
+    .scheme-2 .body-bg { background: white; }
+
+    /* ===== 方案3：商务暖咖 ===== */
+    .scheme-3 .navbar {
+      background: #F5F3EF;
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border-bottom: 1px solid rgba(0,0,0,0.08);
+    }
+    .scheme-3 .logo {
+      width: 44px;
+      height: 44px;
+      background: linear-gradient(135deg, #6B5B4F, #C9A96E);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 20px;
+    }
+    .scheme-3 .logo-text {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #3D3A36;
+    }
+    .scheme-3 .logo-sub {
+      font-size: 0.75rem;
+      color: #666;
+    }
+    .scheme-3 .slogan {
+      background: rgba(201, 169, 110, 0.15);
+      border: 1px solid rgba(201, 169, 110, 0.3);
+      padding: 8px 16px;
+      border-radius: 30px;
+      font-size: 0.8rem;
+      color: #8B7355;
+      margin-left: auto;
+    }
+    .scheme-3 .btn-primary {
+      background: linear-gradient(135deg, #6B5B4F, #8B7355);
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 25px;
+      font-weight: 600;
+      box-shadow: 0 4px 15px rgba(107, 91, 79, 0.3);
+    }
+    .scheme-3 .card {
+      background: #F5F3EF;
+      border-radius: 16px;
+      padding: 20px;
+      margin: 16px;
+      border: 1px solid rgba(0,0,0,0.05);
+    }
+    .scheme-3 .card-title {
+      font-size: 1rem;
+      font-weight: 600;
+      color: #3D3A36;
+      margin-bottom: 8px;
+    }
+    .scheme-3 .card-tag {
+      display: inline-block;
+      background: #C9A96E;
+      color: white;
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 0.7rem;
+    }
+    .scheme-3 .card-tag.dark {
+      background: #6B5B4F;
+    }
+    .scheme-3 .card-meta {
+      color: #888;
+      font-size: 0.8rem;
+      margin-top: 8px;
+    }
+    .scheme-3 .bottom-nav {
+      background: #F5F3EF;
+      padding: 12px 20px;
+      display: flex;
+      justify-content: space-around;
+      border-top: 1px solid rgba(0,0,0,0.08);
+    }
+    .scheme-3 .nav-item {
+      color: #888;
+      font-size: 0.8rem;
+    }
+    .scheme-3 .nav-item.active {
+      color: #6B5B4F;
+    }
+    .scheme-3 .tab-bar {
+      background: #F5F3EF;
+      padding: 12px 16px;
+      display: flex;
+      gap: 20px;
+      overflow-x: auto;
+      border-bottom: 1px solid rgba(0,0,0,0.08);
+    }
+    .scheme-3 .tab {
+      color: #888;
+      font-weight: 500;
+      padding-bottom: 8px;
+      border-bottom: 2px solid transparent;
+      white-space: nowrap;
+    }
+    .scheme-3 .tab.active {
+      color: #6B5B4F;
+      border-bottom-color: #6B5B4F;
+    }
+    .scheme-3 .category {
+      background: #EBE8E4;
+      padding: 14px 8px;
+      text-align: center;
+      font-size: 0.75rem;
+      color: #666;
+      border-left: 3px solid transparent;
+    }
+    .scheme-3 .category.active {
+      background: white;
+      color: #6B5B4F;
+      border-left-color: #6B5B4F;
+    }
+    .scheme-3 .body-bg { background: white; }
+
+    /* ===== 方案4：国潮红金 ===== */
+    .scheme-4 .navbar {
+      background: #FBF9F7;
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border-bottom: 1px solid rgba(0,0,0,0.08);
+    }
+    .scheme-4 .logo {
+      width: 44px;
+      height: 44px;
+      background: linear-gradient(135deg, #B83A3A, #D4AF37);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 20px;
+    }
+    .scheme-4 .logo-text {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #2C2416;
+    }
+    .scheme-4 .logo-sub {
+      font-size: 0.75rem;
+      color: #666;
+    }
+    .scheme-4 .slogan {
+      background: rgba(184, 58, 58, 0.08);
+      border: 1px solid rgba(184, 58, 58, 0.15);
+      padding: 8px 16px;
+      border-radius: 30px;
+      font-size: 0.8rem;
+      color: #B83A3A;
+      margin-left: auto;
+    }
+    .scheme-4 .btn-primary {
+      background: linear-gradient(135deg, #B83A3A, #D4AF37);
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 25px;
+      font-weight: 600;
+      box-shadow: 0 4px 15px rgba(184, 58, 58, 0.3);
+    }
+    .scheme-4 .card {
+      background: #FBF9F7;
+      border-radius: 16px;
+      padding: 20px;
+      margin: 16px;
+      border: 1px solid rgba(0,0,0,0.05);
+    }
+    .scheme-4 .card-title {
+      font-size: 1rem;
+      font-weight: 600;
+      color: #2C2416;
+      margin-bottom: 8px;
+    }
+    .scheme-4 .card-tag {
+      display: inline-block;
+      background: #B83A3A;
+      color: white;
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 0.7rem;
+    }
+    .scheme-4 .card-tag.gold {
+      background: #D4AF37;
+    }
+    .scheme-4 .card-meta {
+      color: #888;
+      font-size: 0.8rem;
+      margin-top: 8px;
+    }
+    .scheme-4 .bottom-nav {
+      background: #FBF9F7;
+      padding: 12px 20px;
+      display: flex;
+      justify-content: space-around;
+      border-top: 1px solid rgba(0,0,0,0.08);
+    }
+    .scheme-4 .nav-item {
+      color: #888;
+      font-size: 0.8rem;
+    }
+    .scheme-4 .nav-item.active {
+      color: #B83A3A;
+    }
+    .scheme-4 .tab-bar {
+      background: #FBF9F7;
+      padding: 12px 16px;
+      display: flex;
+      gap: 20px;
+      overflow-x: auto;
+      border-bottom: 1px solid rgba(0,0,0,0.08);
+    }
+    .scheme-4 .tab {
+      color: #888;
+      font-weight: 500;
+      padding-bottom: 8px;
+      border-bottom: 2px solid transparent;
+      white-space: nowrap;
+    }
+    .scheme-4 .tab.active {
+      color: #B83A3A;
+      border-bottom-color: #B83A3A;
+    }
+    .scheme-4 .category {
+      background: #F5F0EB;
+      padding: 14px 8px;
+      text-align: center;
+      font-size: 0.75rem;
+      color: #666;
+      border-left: 3px solid transparent;
+    }
+    .scheme-4 .category.active {
+      background: white;
+      color: #B83A3A;
+      border-left-color: #B83A3A;
+    }
+    .scheme-4 .body-bg { background: white; }
+
+    .scheme-name {
+      text-align: center;
+      padding: 16px;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #333;
+    }
+    .scheme-desc {
+      text-align: center;
+      padding: 0 16px 16px;
+      font-size: 0.85rem;
+      color: #666;
+    }
+  </style>
+</head>
+<body>
+  <div class="preview-title">🎨 颜色方案预览 - 资源夜市一条街</div>
+
+  <div class="schemes-container">
+
+    <!-- 方案1：夜市暖光 -->
+    <div class="scheme-card scheme-1">
+      <div class="scheme-name">🌙 方案1：夜市暖光</div>
+      <div class="scheme-desc">温暖亲切 · 红灯笼氛围</div>
+      <div class="body-bg">
+        <div class="navbar">
+          <div class="logo">🏪</div>
+          <div>
+            <div class="logo-text">资源夜市一条街</div>
+            <div class="logo-sub">找群·找项目·找人脉</div>
+          </div>
+          <div class="slogan">✨ 让连接自然发生</div>
+          <button class="btn-primary">登录</button>
+        </div>
+        <div class="tab-bar">
+          <span class="tab active">🏘️ 群码</span>
+          <span class="tab">📊 项目</span>
+          <span class="tab">📋 案例</span>
+          <span class="tab">⚠️ 避坑</span>
+        </div>
+        <div style="display: flex;">
+          <div style="width: 80px;">
+            <div class="category active">全部</div>
+            <div class="category">IT互联网</div>
+            <div class="category">教育培训</div>
+            <div class="category">金融投资</div>
+          </div>
+          <div style="flex: 1; padding: 16px;">
+            <div class="card">
+              <div style="display: flex; justify-content: space-between; margin-bottom: 12px;">
+                <div style="width: 100px; height: 100px; background: linear-gradient(145deg, #e8e8ed, #d4d4d8); border-radius: 12px;"></div>
+                <span class="card-tag">普通</span>
+              </div>
+              <div class="card-title">深圳互联网交流群</div>
+              <div class="card-meta">👥 234人 · 📍 深圳</div>
+            </div>
+          </div>
+        </div>
+        <div class="bottom-nav">
+          <span class="nav-item active">🏠</span>
+          <span class="nav-item">📤</span>
+          <span class="nav-item">💬</span>
+          <span class="nav-item">👤</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 方案2：活力橙 -->
+    <div class="scheme-card scheme-2">
+      <div class="scheme-name">⚡ 方案2：活力橙</div>
+      <div class="scheme-desc">年轻有冲劲 · 活力四射</div>
+      <div class="body-bg">
+        <div class="navbar">
+          <div class="logo">🏪</div>
+          <div>
+            <div class="logo-text">资源夜市一条街</div>
+            <div class="logo-sub">找群·找项目·找人脉</div>
+          </div>
+          <div class="slogan">✨ 让连接自然发生</div>
+          <button class="btn-primary">登录</button>
+        </div>
+        <div class="tab-bar">
+          <span class="tab active">🏘️ 群码</span>
+          <span class="tab">📊 项目</span>
+          <span class="tab">📋 案例</span>
+          <span class="tab">⚠️ 避坑</span>
+        </div>
+        <div style="display: flex;">
+          <div style="width: 80px;">
+            <div class="category active">全部</div>
+            <div class="category">IT互联网</div>
+            <div class="category">教育培训</div>
+            <div class="category">金融投资</div>
+          </div>
+          <div style="flex: 1; padding: 16px;">
+            <div class="card">
+              <div style="display: flex; justify-content: space-between; margin-bottom: 12px;">
+                <div style="width: 100px; height: 100px; background: linear-gradient(145deg, #e8e8ed, #d4d4d8); border-radius: 12px;"></div>
+                <span class="card-tag">普通</span>
+              </div>
+              <div class="card-title">深圳互联网交流群</div>
+              <div class="card-meta">👥 234人 · 📍 深圳</div>
+            </div>
+          </div>
+        </div>
+        <div class="bottom-nav">
+          <span class="nav-item active">🏠</span>
+          <span class="nav-item">📤</span>
+          <span class="nav-item">💬</span>
+          <span class="nav-item">👤</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 方案3：商务暖咖 -->
+    <div class="scheme-card scheme-3">
+      <div class="scheme-name">☕ 方案3：商务暖咖</div>
+      <div class="scheme-desc">沉稳专业 · 有品位</div>
+      <div class="body-bg">
+        <div class="navbar">
+          <div class="logo">🏪</div>
+          <div>
+            <div class="logo-text">资源夜市一条街</div>
+            <div class="logo-sub">找群·找项目·找人脉</div>
+          </div>
+          <div class="slogan">✨ 让连接自然发生</div>
+          <button class="btn-primary">登录</button>
+        </div>
+        <div class="tab-bar">
+          <span class="tab active">🏘️ 群码</span>
+          <span class="tab">📊 项目</span>
+          <span class="tab">📋 案例</span>
+          <span class="tab">⚠️ 避坑</span>
+        </div>
+        <div style="display: flex;">
+          <div style="width: 80px;">
+            <div class="category active">全部</div>
+            <div class="category">IT互联网</div>
+            <div class="category">教育培训</div>
+            <div class="category">金融投资</div>
+          </div>
+          <div style="flex: 1; padding: 16px;">
+            <div class="card">
+              <div style="display: flex; justify-content: space-between; margin-bottom: 12px;">
+                <div style="width: 100px; height: 100px; background: linear-gradient(145deg, #e8e8ed, #d4d4d8); border-radius: 12px;"></div>
+                <span class="card-tag dark">普通</span>
+              </div>
+              <div class="card-title">深圳互联网交流群</div>
+              <div class="card-meta">👥 234人 · 📍 深圳</div>
+            </div>
+          </div>
+        </div>
+        <div class="bottom-nav">
+          <span class="nav-item active">🏠</span>
+          <span class="nav-item">📤</span>
+          <span class="nav-item">💬</span>
+          <span class="nav-item">👤</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 方案4：国潮红金 -->
+    <div class="scheme-card scheme-4">
+      <div class="scheme-name">🏮 方案4：国潮红金</div>
+      <div class="scheme-desc">传统底蕴 · 文化自信</div>
+      <div class="body-bg">
+        <div class="navbar">
+          <div class="logo">🏪</div>
+          <div>
+            <div class="logo-text">资源夜市一条街</div>
+            <div class="logo-sub">找群·找项目·找人脉</div>
+          </div>
+          <div class="slogan">✨ 让连接自然发生</div>
+          <button class="btn-primary">登录</button>
+        </div>
+        <div class="tab-bar">
+          <span class="tab active">🏘️ 群码</span>
+          <span class="tab">📊 项目</span>
+          <span class="tab">📋 案例</span>
+          <span class="tab">⚠️ 避坑</span>
+        </div>
+        <div style="display: flex;">
+          <div style="width: 80px;">
+            <div class="category active">全部</div>
+            <div class="category">IT互联网</div>
+            <div class="category">教育培训</div>
+            <div class="category">金融投资</div>
+          </div>
+          <div style="flex: 1; padding: 16px;">
+            <div class="card">
+              <div style="display: flex; justify-content: space-between; margin-bottom: 12px;">
+                <div style="width: 100px; height: 100px; background: linear-gradient(145deg, #e8e8ed, #d4d4d8); border-radius: 12px;"></div>
+                <span class="card-tag gold">普通</span>
+              </div>
+              <div class="card-title">深圳互联网交流群</div>
+              <div class="card-meta">👥 234人 · 📍 深圳</div>
+            </div>
+          </div>
+        </div>
+        <div class="bottom-nav">
+          <span class="nav-item active">🏠</span>
+          <span class="nav-item">📤</span>
+          <span class="nav-item">💬</span>
+          <span class="nav-item">👤</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div style="text-align: center; padding: 40px; color: #666; font-size: 0.9rem;">
+    打开 http://localhost:3002/preview-colors.html 查看完整大图
+  </div>
+</body>
+</html>

@@ -1,19 +1,287 @@
 <!DOCTYPE html>
-<html>
-<head><title>个人中心</title>
-<style>body{font-family:system-ui;padding:16px;background:#f5f5f7;}.card{background:white;border-radius:16px;padding:16px;margin-bottom:12px;display:flex;align-items:center;gap:16px;}.menu-item{display:flex;align-items:center;padding:12px;border-bottom:1px solid #eee;}</style>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>我的 - 资源夜市一条街</title>
+  <link rel="stylesheet" href="/styles/modern.css">
+  <style>
+    .profile-header {
+      text-align: center;
+      padding: 40px 20px;
+      background: var(--gradient-hero);
+      border-radius: 0 0 40px 40px;
+      margin-bottom: 30px;
+    }
+
+    .profile-avatar {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background: var(--gradient-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 40px;
+      margin: 0 auto 16px;
+      box-shadow: 0 8px 30px rgba(99, 102, 241, 0.4);
+    }
+
+    .profile-name {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .profile-level {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 16px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    .profile-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 30px;
+    }
+
+    .stat-card {
+      text-align: center;
+      padding: 20px;
+    }
+
+    .stat-value {
+      font-size: 28px;
+      font-weight: 700;
+      background: var(--gradient-primary);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .stat-label {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    .menu-section {
+      margin-bottom: 24px;
+    }
+
+    .menu-title {
+      font-size: 13px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 12px;
+      padding-left: 8px;
+    }
+
+    .menu-item {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 16px 20px;
+      background: var(--glass-bg);
+      border-radius: var(--radius-md);
+      margin-bottom: 8px;
+      cursor: pointer;
+      transition: var(--transition-fast);
+    }
+
+    .menu-item:hover {
+      background: rgba(255, 255, 255, 0.12);
+    }
+
+    .menu-item-icon {
+      font-size: 22px;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: var(--radius-sm);
+    }
+
+    .menu-item-content {
+      flex: 1;
+    }
+
+    .menu-item-title {
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+
+    .menu-item-desc {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .menu-item-arrow {
+      color: var(--text-muted);
+    }
+
+    .logout-btn {
+      width: 100%;
+      padding: 16px;
+      background: rgba(239, 68, 68, 0.15);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      border-radius: var(--radius-md);
+      color: #fca5a5;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition-fast);
+    }
+
+    .logout-btn:hover {
+      background: rgba(239, 68, 68, 0.25);
+    }
+  </style>
 </head>
 <body>
-    <h2>我的</h2>
-    <div class="card">
-        <div style="width:50px;height:50px;background:#e0e0e0;border-radius:25px;"></div>
-        <div><div style="font-weight:600;">明日之星</div><div style="color:#1e7e34;">普通会员</div></div>
+  <!-- 导航栏 -->
+  <nav class="navbar">
+    <div class="navbar-logo">资源夜市</div>
+    <button class="btn btn-secondary" onclick="window.location.href='/index.html'">首页</button>
+  </nav>
+
+  <main class="page">
+    <!-- 头像区域 -->
+    <div class="profile-header">
+      <div class="profile-avatar" id="avatar">👤</div>
+      <div class="profile-name" id="username">加载中...</div>
+      <div class="profile-level" id="level-badge">
+        <span>🌟</span>
+        <span id="level-text">普通会员</span>
+      </div>
     </div>
-    <div class="menu-item">📱 我的群码</div>
-    <div class="menu-item">🏢 我的企业人脉</div>
-    <div class="menu-item">📊 我的需求</div>
-    <div class="menu-item">🏛️ 我的政务信息</div>
-    <div class="menu-item">📈 我的引荐</div>
-    <div class="menu-item">💰 收益中心</div>
+
+    <!-- 统计 -->
+    <div class="profile-stats">
+      <div class="glass-card stat-card">
+        <div class="stat-value" id="stat-published">0</div>
+        <div class="stat-label">发布数</div>
+      </div>
+      <div class="glass-card stat-card">
+        <div class="stat-value" id="stat-income">¥0</div>
+        <div class="stat-label">累计收益</div>
+      </div>
+      <div class="glass-card stat-card">
+        <div class="stat-value" id="stat-days">0</div>
+        <div class="stat-label">加入天数</div>
+      </div>
+    </div>
+
+    <!-- 菜单 -->
+    <div class="menu-section">
+      <div class="menu-title">我的发布</div>
+      <div class="menu-item" onclick="showMyContent('groups')">
+        <div class="menu-item-icon">🏘️</div>
+        <div class="menu-item-content">
+          <div class="menu-item-title">我的群码</div>
+          <div class="menu-item-desc">查看和管理已发布的群码</div>
+        </div>
+        <span class="menu-item-arrow">›</span>
+      </div>
+      <div class="menu-item" onclick="showMyContent('enterprise')">
+        <div class="menu-item-icon">🏢</div>
+        <div class="menu-item-content">
+          <div class="menu-item-title">我的企业资源</div>
+          <div class="menu-item-desc">查看和管理已发布的企业资源</div>
+        </div>
+        <span class="menu-item-arrow">›</span>
+      </div>
+      <div class="menu-item" onclick="showMyContent('projects')">
+        <div class="menu-item-icon">📊</div>
+        <div class="menu-item-content">
+          <div class="menu-item-title">我的项目</div>
+          <div class="menu-item-desc">查看和管理已发布的项目</div>
+        </div>
+        <span class="menu-item-arrow">›</span>
+      </div>
+    </div>
+
+    <div class="menu-section">
+      <div class="menu-title">账户</div>
+      <div class="menu-item" onclick="showToast('功能开发中')">
+        <div class="menu-item-icon">⚙️</div>
+        <div class="menu-item-content">
+          <div class="menu-item-title">设置</div>
+          <div class="menu-item-desc">个人资料、修改密码</div>
+        </div>
+        <span class="menu-item-arrow">›</span>
+      </div>
+    </div>
+
+    <button class="logout-btn" onclick="handleLogout()">退出登录</button>
+  </main>
+
+  <!-- 底部导航 -->
+  <nav class="bottom-nav">
+    <div class="nav-item" onclick="window.location.href='/index.html'">
+      <span class="nav-item-icon">🏠</span>
+      <span class="nav-item-text">首页</span>
+    </div>
+    <div class="nav-item" onclick="showToast('搜索功能开发中')">
+      <span class="nav-item-icon">🔍</span>
+      <span class="nav-item-text">搜索</span>
+    </div>
+    <div class="nav-item" onclick="showToast('消息功能开发中')">
+      <span class="nav-item-icon">💬</span>
+      <span class="nav-item-text">消息</span>
+    </div>
+    <div class="nav-item active" onclick="window.location.href='/user.html'">
+      <span class="nav-item-icon">👤</span>
+      <span class="nav-item-text">我的</span>
+    </div>
+  </nav>
+
+  <script src="/scripts/app.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      if (!requireAuth()) return;
+      loadProfile();
+    });
+
+    async function loadProfile() {
+      try {
+        const user = await auth.getMe();
+        document.getElementById('username').textContent = user.username;
+        document.getElementById('level-text').textContent = getLevelName(user.member_level);
+        document.getElementById('stat-income').textContent = '¥' + (user.total_income || 0);
+        document.getElementById('stat-days').textContent = getDaysSince(user.created_at);
+      } catch (err) {
+        showToast('加载失败', 'error');
+      }
+    }
+
+    function getLevelName(level) {
+      const levels = { 0: '普通会员', 1: '🌟 黄金会员', 2: '💎 白金会员', 3: '👑 钻石会员' };
+      return levels[level] || '普通会员';
+    }
+
+    function getDaysSince(dateString) {
+      if (!dateString) return 0;
+      const diff = Date.now() - new Date(dateString).getTime();
+      return Math.floor(diff / (1000 * 60 * 60 * 24));
+    }
+
+    function showMyContent(type) {
+      showToast('我的发布功能开发中', 'info');
+    }
+
+    function handleLogout() {
+      auth.logout();
+    }
+  </script>
 </body>
 </html>

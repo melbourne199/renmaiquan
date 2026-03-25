@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>资源夜市一条街</title>
+  <style>
+    :root {
+      --primary: #D6B26E;
+      --primary-light: #E6C37A;
+      --primary-dark: #B83A3A;
+      --bg-dark: #0a0a0c;
+      --bg-card: #1a170f;
+      --glass-border: rgba(214, 178, 110, 0.2);
+      --text-primary: #f0e2c5;
+      --text-secondary: #b4a582;
+      --text-muted: #8e7d66;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'PingFang SC', 'Inter', system-ui, -apple-system, sans-serif;
+      background: var(--bg-dark);
+      color: var(--text-primary);
+      min-height: 100vh;
+    }
+
+    /* ========== ① 顶部导航栏 ========== */
+    .top-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      background: linear-gradient(180deg, #0a0a0c 0%, rgba(10,10,12,0.95) 100%);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--glass-border);
+      padding: 12px 16px;
+    }
+
+    .header-content {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo-area {
+      width: 50px;
+      height: 50px;
+      flex-shrink: 0;
+    }
+
+    .logo-area img {
+      width: 100%;
+      height: 100%;
+      border-radius: 8px;
+      object-fit: cover;
+    }
+
+    .title-area {
+      flex: 1;
+      text-align: center;
+    }
+
+    .main-title {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--primary);
+      text-shadow: 0 0 20px rgba(214, 178, 110, 0.3);
+      letter-spacing: 2px;
+    }
+
+    .sub-lines {
+      font-size: 0.7rem;
+      color: var(--text-secondary);
+      line-height: 1.4;
+    }
+
+    .header-btn {
+      background: linear-gradient(135deg, var(--primary), var(--primary-light));
+      color: #0a0a0c;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(214, 178, 110, 0.3);
+    }
+
+    /* ========== ② 滚动横幅 ========== */
+    .ad-banner {
+      position: fixed;
+      top: 75px;
+      left: 0;
+      right: 0;
+      z-index: 99;
+      height: 40px;
+      background: linear-gradient(90deg, #1f1b14, #2a2318, #1f1b14);
+      border-top: 1px solid rgba(214, 178, 110, 0.3);
+      border-bottom: 1px solid rgba(214, 178, 110, 0.3);
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+    }
+
+    .marquee-wrap {
+      display: flex;
+      white-space: nowrap;
+      animation: marquee 30s linear infinite;
+    }
+
+    .marquee-content {
+      font-size: 0.8rem;
+      color: var(--primary);
+      padding-right: 50px;
+    }
+
+    .marquee-content span {
+      margin-right: 50px;
+      color: var(--text-secondary);
+    }
+
+    .marquee-content .highlight {
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+    @keyframes marquee {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    /* ========== ③ 主内容区 ========== */
+    .main-container {
+      display: flex;
+      padding-top: 120px;
+    }
+
+    /* ========== ④ 侧边分类栏 ========== */
+    .left-category {
+      width: 80px;
+      min-width: 80px;
+      position: fixed;
+      top: 120px;
+      bottom: 60px;
+      background: rgba(18, 18, 18, 0.8);
+      border-right: 1px solid var(--glass-border);
+      overflow-y: auto;
+      padding: 8px 0;
+    }
+
+    .category-item {
+      padding: 14px 4px;
+      text-align: center;
+      font-size: 0.7rem;
+      color: var(--text-secondary);
+      border-left: 3px solid transparent;
+      cursor: pointer;
+      transition: all 0.2s;
+      line-height: 1.3;
+    }
+
+    .category-item:hover {
+      background: rgba(214, 178, 110, 0.05);
+    }
+
+    .category-item.active {
+      background: rgba(214, 178, 110, 0.1);
+      color: var(--primary);
+      border-left-color: var(--primary);
+      font-weight: 600;
+    }
+
+    /* ========== ⑤ 卡片网格 ========== */
+    .content-area {
+      flex: 1;
+      margin-left: 80px;
+      padding: 12px;
+      padding-bottom: 80px;
+    }
+
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+
+    /* ========== 卡片样式 ========== */
+    .resource-card {
+      background: var(--bg-card);
+      border: 1px solid rgba(214, 178, 110, 0.15);
+      border-radius: 16px;
+      padding: 10px;
+      position: relative;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .resource-card:hover {
+      transform: translateY(-3px);
+      border-color: var(--primary);
+      box-shadow: 0 8px 25px rgba(214, 178, 110, 0.15);
+    }
+
+    .card-tag {
+      position: absolute;
+      top: 6px;
+      right: 6px;
+      font-size: 0.65rem;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 10px;
+      z-index: 2;
+    }
+
+    .card-tag.normal {
+      background: #f39c12;
+      color: white;
+    }
+
+    .card-tag.senior {
+      background: linear-gradient(135deg, var(--primary-dark), #c0392b);
+      color: var(--primary-light);
+      animation: pulse 2s infinite;
+    }
+
+    .card-tag.recommend {
+      background: linear-gradient(135deg, var(--primary), var(--primary-light));
+      color: #0a0a0c;
+    }
+
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(184, 58, 58, 0.5); }
+      50% { box-shadow: 0 0 0 6px rgba(184, 58, 58, 0); }
+    }
+
+    .qr-wrapper {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1;
+      background: linear-gradient(145deg, #2b251b, #1a170f);
+      border-radius: 12px;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 36px;
+      overflow: hidden;
+    }
+
+    .qr-wrapper::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      border: 1px solid rgba(214, 178, 110, 0.2);
+      border-radius: 12px;
+      pointer-events: none;
+    }
+
+    .qr-overlay {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 90%;
+      height: 85%;
+      background: rgba(10, 10, 12, 0.9);
+      border: 2px solid var(--primary);
+      border-radius: 10px;
+      padding: 8px 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      font-size: 0.65rem;
+      color: var(--text-secondary);
+      line-height: 1.3;
+    }
+
+    .card-title {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 6px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .card-meta {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.65rem;
+      color: var(--text-muted);
+    }
+
+    /* 推荐位卡片 */
+    .ad-card {
+      background: linear-gradient(135deg, rgba(214, 178, 110, 0.1), rgba(214, 178, 110, 0.05));
+      border: 1px solid var(--primary);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 20px;
+    }
+
+    .ad-card:hover {
+      border-color: var(--primary-light);
+      box-shadow: 0 8px 30px rgba(214, 178, 110, 0.2);
+    }
+
+    .ad-card-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 8px;
+    }
+
+    .ad-card-text {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      margin-bottom: 12px;
+    }
+
+    .ad-card-btn {
+      background: linear-gradient(135deg, var(--primary), var(--primary-light));
+      color: #0a0a0c;
+      border: none;
+      padding: 8px 20px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    /* ========== ⑥ 底部导航 ========== */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      height: 60px;
+      background: rgba(18, 18, 18, 0.95);
+      backdrop-filter: blur(20px);
+      border-top: 1px solid var(--glass-border);
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      color: var(--text-muted);
+      font-size: 0.65rem;
+      padding: 8px 16px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .nav-item.active {
+      color: var(--primary);
+    }
+
+    .nav-icon {
+      font-size: 22px;
+    }
+
+    /* 隐藏滚动条 */
+    ::-webkit-scrollbar { display: none; }
+
+    /* 空状态 */
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--text-muted);
+    }
+
+    .empty-icon {
+      font-size: 48px;
+      margin-bottom: 16px;
+      opacity: 0.5;
+    }
+
+    /* 加载动画 */
+    .loading {
+      display: flex;
+      justify-content: center;
+      padding: 40px;
+    }
+
+    .loading::after {
+      content: '';
+      width: 24px;
+      height: 24px;
+      border: 2px solid var(--glass-border);
+      border-top-color: var(--primary);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* 响应式 */
+    @media (max-width: 400px) {
+      .left-category {
+        width: 65px;
+        min-width: 65px;
+      }
+      .content-area {
+        margin-left: 65px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- ① 顶部导航栏 -->
+  <header class="top-header">
+    <div class="header-content">
+      <div class="logo-area">
+        <img src="/images/logo.png" alt="Logo" onerror="this.style.display='none'">
+      </div>
+      <div class="title-area">
+        <div class="main-title">资源夜市一条街</div>
+        <div class="sub-lines">人人可上传 · 人人可被看见</div>
+      </div>
+      <button class="header-btn" onclick="window.location.href='/login.html'">登录</button>
+    </div>
+  </header>
+
+  <!-- ② 滚动横幅 -->
+  <div class="ad-banner">
+    <div class="marquee-wrap">
+      <div class="marquee-content">
+        <span class="highlight">🔥 资源不流通，就是死资源</span>
+        <span>让你的群被需要的人看到</span>
+        <span>上传一次，持续曝光</span>
+        <span class="highlight">✨ 今日推荐位限时开放</span>
+      </div>
+      <div class="marquee-content">
+        <span class="highlight">🔥 资源不流通，就是死资源</span>
+        <span>让你的群被需要的人看到</span>
+        <span>上传一次，持续曝光</span>
+        <span class="highlight">✨ 今日推荐位限时开放</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ③ 主内容区 -->
+  <div class="main-container">
+    <!-- ④ 侧边分类栏 -->
+    <aside class="left-category" id="leftCategory">
+      <!-- 动态生成 -->
+    </aside>
+
+    <!-- ⑤ 卡片网格 -->
+    <main class="content-area">
+      <div class="card-grid" id="cardGrid">
+        <div class="loading"></div>
+      </div>
+    </main>
+  </div>
+
+  <!-- ⑥ 底部导航 -->
+  <nav class="bottom-nav">
+    <div class="nav-item active" onclick="switchTab('groups')">
+      <span class="nav-icon">🏠</span>
+      <span>首页</span>
+    </div>
+    <div class="nav-item" onclick="showToast('发布功能开发中')">
+      <span class="nav-icon">📤</span>
+      <span>发布</span>
+    </div>
+    <div class="nav-item" onclick="showToast('消息功能开发中')">
+      <span class="nav-icon">💬</span>
+      <span>消息</span>
+    </div>
+    <div class="nav-item" onclick="window.location.href='/login.html'">
+      <span class="nav-icon">👤</span>
+      <span>我的</span>
+    </div>
+  </nav>
+
+  <script src="/scripts/app.js"></script>
+  <script>
+    // 分类数据
+    const categories = [
+      '全部', 'IT互联网', '教育培训', '金融投资', '房地产',
+      '餐饮美食', '医疗健康', '旅游出行', '制造业', '物流运输',
+      '服装纺织', '电商零售', '新媒体', '广告传媒', '其他'
+    ];
+
+    let currentTab = 'groups';
+
+    // 初始化
+    document.addEventListener('DOMContentLoaded', () => {
+      renderCategories();
+      loadData();
+    });
+
+    // 渲染分类
+    function renderCategories() {
+      const container = document.getElementById('leftCategory');
+      container.innerHTML = categories.map((cat, i) =>
+        `<div class="category-item ${i === 0 ? 'active' : ''}" onclick="selectCategory(this)">${cat}</div>`
+      ).join('');
+    }
+
+    // 选择分类
+    function selectCategory(el) {
+      document.querySelectorAll('.category-item').forEach(c => c.classList.remove('active'));
+      el.classList.add('active');
+      loadData();
+    }
+
+    // 加载数据
+    async function loadData() {
+      const grid = document.getElementById('cardGrid');
+      grid.innerHTML = '<div class="loading"></div>';
+
+      try {
+        const data = await publicApi.getGroups();
+
+        if (data.length === 0) {
+          grid.innerHTML = `
+            <div class="empty-state" style="grid-column: span 2;">
+              <div class="empty-icon">📭</div>
+              <div>暂无内容</div>
+            </div>
+          `;
+          return;
+        }
+
+        // 插入推荐位广告（每6个卡片后）
+        let html = '';
+        data.forEach((item, i) => {
+          if (i > 0 && i % 6 === 0) {
+            html += renderAdCard();
+          }
+          html += renderCard(item);
+        });
+        grid.innerHTML = html;
+      } catch (err) {
+        grid.innerHTML = `
+          <div class="empty-state" style="grid-column: span 2;">
+            <div class="empty-icon">❌</div>
+            <div>加载失败</div>
+          </div>
+        `;
+      }
+    }
+
+    // 渲染卡片
+    function renderCard(item) {
+      const tag = item.status === 1 ? '' : (item.status === 0 ? '待审核' : '普通');
+      const tagClass = tag === '高级' ? 'senior' : (tag === '普通' ? 'normal' : '');
+      const title = item.name || '未命名';
+      const members = item.member_count || 0;
+      const region = item.region || '全国';
+
+      return `
+        <div class="resource-card" onclick="showToast('详情开发中')">
+          ${tag ? `<span class="card-tag ${tagClass}">${tag}</span>` : ''}
+          <div class="qr-wrapper">
+            <span>🏘️</span>
+            <div class="qr-overlay"><span>扫码加入，获取人脉资源</span></div>
+          </div>
+          <div class="card-title">${escapeHtml(title)}</div>
+          <div class="card-meta">
+            <span>👥 ${members}</span>
+            <span>📍 ${escapeHtml(region)}</span>
+          </div>
+        </div>
+      `;
+    }
+
+    // 渲染推荐位
+    function renderAdCard() {
+      return `
+        <div class="resource-card ad-card" onclick="showToast('申请推荐位')">
+          <div class="ad-card-title">✨ 推荐位 · 限时开放</div>
+          <div class="ad-card-text">想让你的群排第一？</div>
+          <button class="ad-card-btn">申请推荐</button>
+        </div>
+      `;
+    }
+
+    // Tab 切换
+    function switchTab(tab) {
+      currentTab = tab;
+      document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+      event.currentTarget.classList.add('active');
+      loadData();
+    }
+  </script>
+</body>
+</html>
