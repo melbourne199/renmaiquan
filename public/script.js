@@ -199,7 +199,7 @@ function createCityMarkers() {
       } else {
         // 其他岛礁显示小灰点
         const dot = new THREE.Mesh(
-          new THREE.SphereGeometry(0.025, 6, 6),
+          new THREE.SphereGeometry(0.012, 6, 6),
           new THREE.MeshBasicMaterial({ color: 0x888899 })
         );
         dot.position.copy(pos);
@@ -209,7 +209,7 @@ function createCityMarkers() {
     } else if (city.isTaiwan || city.isHK || city.isMacau) {
       // 港澳台：略大蓝点
       const dot = new THREE.Mesh(
-        new THREE.SphereGeometry(0.045, 10, 10),
+        new THREE.SphereGeometry(0.022, 10, 10),
         new THREE.MeshBasicMaterial({ color: 0x00aaff })
       );
       dot.position.copy(pos);
@@ -218,7 +218,7 @@ function createCityMarkers() {
       markerGroup.add(dot);
 
       const glow = new THREE.Mesh(
-        new THREE.SphereGeometry(0.07, 10, 10),
+        new THREE.SphereGeometry(0.035, 10, 10),
         new THREE.MeshBasicMaterial({ color: 0x00aaff, transparent: true, opacity: 0.25 })
       );
       glow.position.copy(pos);
@@ -229,7 +229,7 @@ function createCityMarkers() {
     } else {
       // 普通城市：小蓝点（像句号大小）
       const dot = new THREE.Mesh(
-        new THREE.SphereGeometry(0.03, 8, 8),
+        new THREE.SphereGeometry(0.015, 8, 8),
         new THREE.MeshBasicMaterial({ color: 0x5ac8fa })
       );
       dot.position.copy(pos);
@@ -238,7 +238,7 @@ function createCityMarkers() {
 
       // 城市光晕
       const glow = new THREE.Mesh(
-        new THREE.SphereGeometry(0.05, 8, 8),
+        new THREE.SphereGeometry(0.025, 8, 8),
         new THREE.MeshBasicMaterial({ color: 0x5ac8fa, transparent: true, opacity: 0.25 })
       );
       glow.position.copy(pos);
@@ -450,28 +450,8 @@ function init() {
   const raycaster = new THREE.Raycaster();
   const mouse = new THREE.Vector2();
 
-  window.addEventListener('pointermove', (event) => {
-    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-    mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-
-    raycaster.setFromCamera(mouse, camera);
-
-    // 检测所有可点击对象
-    const clickableObjects = [];
-    scene.traverse((obj) => {
-      if (obj.userData && obj.userData.city && !obj.userData.isGlow) {
-        clickableObjects.push(obj);
-      }
-    });
-
-    const intersects = raycaster.intersectObjects(clickableObjects, true);
-    if (intersects.length > 0) {
-      const city = intersects[0].object.userData.city;
-      showTooltip(city, event.clientX, event.clientY);
-    } else {
-      hideTooltip();
-    }
-  });
+  // 鼠标移动不做tooltip显示，只有点击才显示卡片
+  // window.addEventListener('pointermove', ...); // 已禁用
 
   // 城市点击
   window.addEventListener('click', (event) => {
@@ -498,8 +478,22 @@ function init() {
 
     const intersects = raycaster.intersectObjects(clickableObjects, true);
     if (intersects.length > 0) {
-      const city = intersects[0].object.userData.city;
-      showCityCard(city);
+      // 点击位置
+      const clickPoint = intersects[0].point;
+
+      // 找距离点击位置最近的marker
+      let closestCity = intersects[0].object.userData.city;
+      let closestDist = clickPoint.distanceTo(intersects[0].object.position);
+
+      for (const obj of clickableObjects) {
+        const dist = clickPoint.distanceTo(obj.position);
+        if (dist < closestDist) {
+          closestDist = dist;
+          closestCity = obj.userData.city;
+        }
+      }
+
+      showCityCard(closestCity);
     } else {
       closeCityCard();
     }
@@ -676,6 +670,129 @@ function navigateTo(page) {
 function viewCityDetail() {
   const cityName = document.getElementById('cardCityName').textContent;
   window.location.href = `/index.html?city=${encodeURIComponent(cityName)}`;
+}
+
+// 添加单个城市标记（发布后调用）
+function addCityMarker(city) {
+  // 添加到城市数据
+  cityData.push(city);
+
+  const pos = latLonToVector3(city.lat, city.lon, RADIUS + 0.06);
+
+  // 创建marker
+  const dot = new THREE.Mesh(
+    new THREE.SphereGeometry(0.025, 8, 8),
+    new THREE.MeshBasicMaterial({ color: 0x5ac8fa })
+  );
+  dot.position.copy(pos);
+  dot.userData.city = city;
+  markerGroup.add(dot);
+
+  // 创建光晕
+  const glow = new THREE.Mesh(
+    new THREE.SphereGeometry(0.04, 8, 8),
+    new THREE.MeshBasicMaterial({ color: 0x5ac8fa, transparent: true, opacity: 0.25 })
+  );
+  glow.position.copy(pos);
+  glow.userData.city = city;
+  glow.userData.isGlow = true;
+  markerGroup.add(glow);
+
+  // 标签位置（先默认偏移）
+  let labelPos = pos.clone();
+  labelPos.x += 0.05;
+  labelPos.y += 0.02;
+
+  // 创建连线
+  const lineGeo = new THREE.BufferGeometry().setFromPoints([pos, labelPos.clone()]);
+  const line = new THREE.Line(lineGeo, new THREE.LineBasicMaterial({
+    color: 0x00aaff,
+    transparent: true,
+    opacity: 0
+  }));
+  line.userData.city = city;
+  markerGroup.add(line);
+
+  // 创建标签
+  const div = document.createElement('div');
+  div.className = 'city-label';
+  div.textContent = city.name;
+  div.onclick = (e) => {
+    e.stopPropagation();
+    showCityCard(city);
+  };
+  const label = new CSS2DObject(div);
+  label.position.copy(labelPos);
+  label.userData.city = city;
+  label.userData.line = line;
+  markerGroup.add(label);
+
+  cityLabels.push(label);
+
+  // 触发碰撞检测
+  fixLabelCollisionForOne(label);
+}
+
+// 对单个标签进行碰撞检测和连线
+function fixLabelCollisionForOne(newLabel) {
+  const THRESHOLD = 15;
+  const allMarkers = [];
+  const allLabels = cityLabels.filter(l => l.userData.city && !l.userData.isFlag && !l.userData.city.isBeijing);
+
+  cityData.forEach(c => {
+    if (c.isBeijing) return;
+    const mp = latLonToVector3(c.lat, c.lon, RADIUS + 0.06);
+    allMarkers.push(worldToScreen(mp));
+  });
+
+  const city = newLabel.userData.city;
+  const markerPos = latLonToVector3(city.lat, city.lon, RADIUS + 0.06);
+  const newMarkerScreen = worldToScreen(markerPos);
+
+  function distInScreen(a, b) {
+    const dx = a.x - b.x;
+    const dy = a.y - b.y;
+    return Math.sqrt(dx * dx + dy * dy);
+  }
+
+  function updateLabel(label, newPos) {
+    const c = label.userData.city;
+    const mp = latLonToVector3(c.lat, c.lon, RADIUS + 0.06);
+    const ln = markerGroup.children.find(x => x instanceof THREE.Line && x.userData.city && x.userData.city.name === c.name);
+    if (ln) {
+      ln.geometry.setFromPoints([mp, newPos.clone()]);
+      ln.material.opacity = 0.8;
+    }
+    label.position.copy(newPos);
+  }
+
+  const newLabelScreen = worldToScreen(newLabel.position);
+
+  // 检测是否压在任何圆点上
+  for (const mp of allMarkers) {
+    if (distInScreen(newLabelScreen, mp) < THRESHOLD) {
+      // 推到右边
+      const newPos = newLabel.position.clone();
+      newPos.x += 0.15;
+      updateLabel(newLabel, newPos);
+      newLabelScreen.x = newPos.x;
+      break;
+    }
+  }
+
+  // 检测是否压在其他标签上
+  for (const other of allLabels) {
+    if (other === newLabel) continue;
+    const otherScreen = worldToScreen(other.position);
+    if (distInScreen(newLabelScreen, otherScreen) < THRESHOLD) {
+      // 推到右边
+      const newPos = newLabel.position.clone();
+      newPos.x += 0.15;
+      updateLabel(newLabel, newPos);
+      newLabelScreen.x = newPos.x;
+      break;
+    }
+  }
 }
 
 // 初始化
