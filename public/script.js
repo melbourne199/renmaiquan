@@ -43,13 +43,13 @@ const cityData = [
   { name: '澳门', lat: 22.1987, lon: 113.5439, provided: 35, help: 6, isMacau: true },
   { name: '台北', lat: 25.0330, lon: 121.5654, provided: 78, help: 15, isTaiwan: true },
   // 南海岛礁（爱国点亮）
-  { name: '永兴岛', lat: 16.8331, lon: 112.3333, provided: 3, help: 1, isIsland: true, isChinaIsland: true },
-  { name: '南沙群岛', lat: 9.7497, lon: 115.1761, provided: 1, help: 0, isIsland: true, isChinaIsland: true },
-  { name: '钓鱼岛', lat: 25.7469, lon: 124.4833, provided: 1, help: 0, isIsland: true, isChinaIsland: true },
+  { name: '永兴岛', lat: 16.8331, lon: 112.3333, provided: 3, help: 1, isIsland: true, isChinaIsland: true, offset: { x: 0.1, y: 0 } },
+  { name: '南沙群岛', lat: 9.7497, lon: 115.1761, provided: 1, help: 0, isIsland: true, isChinaIsland: true, offset: { x: 0.1, y: 0 } },
+  { name: '钓鱼岛', lat: 25.7469, lon: 124.4833, provided: 1, help: 0, isIsland: true, isChinaIsland: true, offset: { x: 0.1, y: 0 } },
   // 南海其他岛礁
-  { name: '仁爱礁', lat: 9.7447, lon: 115.5397, provided: 1, help: 0, isIsland: true, isChinaIsland: true },
-  { name: '美济礁', lat: 9.9089, lon: 115.5350, provided: 1, help: 0, isIsland: true, isChinaIsland: true },
-  { name: '渚碧礁', lat: 10.9281, lon: 114.0569, provided: 1, help: 0, isIsland: true, isChinaIsland: true },
+  { name: '仁爱礁', lat: 9.7447, lon: 115.5397, provided: 1, help: 0, isIsland: true, isChinaIsland: true, offset: { x: 0.15, y: 0 } },
+  { name: '美济礁', lat: 9.9089, lon: 115.5350, provided: 1, help: 0, isIsland: true, isChinaIsland: true, offset: { x: 0.1, y: 0.08 } },
+  { name: '渚碧礁', lat: 10.9281, lon: 114.0569, provided: 1, help: 0, isIsland: true, isChinaIsland: true, offset: { x: 0.1, y: 0.15 } },
   // 藏南地区（达旺）
   { name: '达旺', lat: 27.5, lon: 92.0, provided: 1, help: 0, isIsland: true, isChinaIsland: true },
   // 阿克赛钦地区（班公湖）
@@ -178,15 +178,24 @@ function createCityMarkers() {
     } else if (city.isIsland) {
       // 南海岛礁：中国岛礁显示红旗
       if (city.isChinaIsland) {
-        // 钓鱼岛等中国岛礁显示红旗
+        // 钓鱼岛等中国岛礁显示红旗+名字
+        const flagPos = pos.clone();
+        if (city.offset) {
+          flagPos.x += city.offset.x;
+          flagPos.y += city.offset.y;
+        } else {
+          flagPos.x += 0.08;
+          flagPos.y += 0.02;
+        }
         const flagDiv = document.createElement('div');
         flagDiv.className = 'island-flag';
-        flagDiv.innerHTML = '<img src="/images/flag.webp" class="flag-img" />';
+        flagDiv.innerHTML = `<img src="/images/flag.webp" class="flag-img" />${city.name}`;
         const flagLabel = new CSS2DObject(flagDiv);
-        flagLabel.position.copy(pos);
+        flagLabel.position.copy(flagPos);
         flagLabel.userData.city = city;
         flagLabel.userData.isFlag = true;
         markerGroup.add(flagLabel);
+        return;
       } else {
         // 其他岛礁显示小灰点
         const dot = new THREE.Mesh(
