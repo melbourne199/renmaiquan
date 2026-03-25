@@ -24,7 +24,7 @@ const cityData = [
   { name: '天津', lat: 39.1256, lon: 117.1909, provided: 45, help: 7, offset: { x: -0.3, y: 0.1 } },
   { name: '石家庄', lat: 38.0428, lon: 114.5149, provided: 38, help: 6 },
   { name: '保定', lat: 38.8738, lon: 115.4646, provided: 25, help: 4 },
-  { name: '唐山', lat: 39.6243, lon: 118.1944, provided: 28, help: 3 },
+  { name: '唐山', lat: 39.6243, lon: 118.1944, provided: 28, help: 3, offset: { x: -0.2, y: 0.1 } },
   { name: '太原', lat: 37.8706, lon: 112.5489, provided: 35, help: 5 },
   { name: '大同', lat: 40.0769, lon: 113.2991, provided: 18, help: 2 },
   { name: '呼和浩特', lat: 40.8414, lon: 111.7519, provided: 30, help: 4 },
@@ -762,10 +762,10 @@ function addCityMarker(city) {
   glow.userData.isGlow = true;
   markerGroup.add(glow);
 
-  // 标签位置（先默认偏移）
+  // 标签位置（贴近圆点）
   let labelPos = pos.clone();
-  labelPos.x += 0.05;
-  labelPos.y += 0.02;
+  labelPos.x += 0.02;
+  labelPos.y += 0.01;
 
   // 创建连线
   const lineGeo = new THREE.BufferGeometry().setFromPoints([pos, labelPos.clone()]);
