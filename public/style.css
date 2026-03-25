@@ -511,35 +511,33 @@ body {
 
 /* ==================== 备案位预留 ==================== */
 .record-placeholder {
-  position: fixed;
-  left: 50%;
-  bottom: 10px;
-  transform: translateX(-50%);
-  z-index: 40;
-  font-size: 11px;
-  color: rgba(176, 192, 210, 0.52);
-  letter-spacing: 0.6px;
-  padding: 6px 12px;
-  border-radius: 999px;
-  background: rgba(3, 12, 26, 0.32);
-  border: 1px solid rgba(90, 200, 250, 0.08);
-  backdrop-filter: blur(12px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
+  font-size: 10px;
+  color: rgba(176, 192, 210, 0.44);
+  letter-spacing: 0.35px;
+  text-align: center;
 }
 
 /* ==================== 站点说明 ==================== */
-.site-disclaimer-card {
+.footer-meta {
   position: fixed;
   left: 50%;
-  bottom: 28px;
+  bottom: 10px;
   transform: translateX(-50%);
   z-index: 38;
   width: calc(100vw - 160px);
   max-width: 1180px;
   min-width: 780px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.site-disclaimer-card {
+  width: 100%;
   padding: 6px 12px;
   border-radius: 14px;
-  background: rgba(3, 12, 26, 0.22);
+  background: rgba(3, 12, 26, 0.18);
   border: 1px solid rgba(90, 200, 250, 0.04);
   backdrop-filter: blur(10px);
 }
@@ -548,7 +546,7 @@ body {
   text-align: center;
   font-size: 10px;
   line-height: 1.5;
-  color: rgba(184, 198, 214, 0.52);
+  color: rgba(184, 198, 214, 0.5);
   letter-spacing: 0.1px;
   white-space: nowrap;
   overflow: hidden;
@@ -629,14 +627,14 @@ body {
 
 /* ==================== 响应式 - 平板 ==================== */
 @media (max-width: 1100px) {
-  .site-disclaimer-card {
+  .footer-meta {
     width: calc(100vw - 100px);
     min-width: 0;
     max-width: 980px;
   }
 
   .cards-container {
-    bottom: 110px;
+    bottom: 122px;
   }
 
   .desktop-nav-links {
@@ -977,11 +975,16 @@ body {
   .navbar-brand { font-size: 0.8rem; }
   .search-section { top: 172px; width: calc(100% - 24px); }
   .city-card { top: 210px; right: 10px; width: min(104px, calc(44vw)); max-width: calc(100vw - 20px); }
+  .footer-meta {
+    bottom: 8px;
+    width: calc(100vw - 24px);
+    min-width: 0;
+    gap: 5px;
+  }
   .site-disclaimer-card {
-    bottom: 50px;
-    max-width: calc(100vw - 34px);
-    padding: 6px 10px;
-    border-radius: 13px;
+    width: 100%;
+    padding: 5px 8px;
+    border-radius: 12px;
   }
   .site-disclaimer {
     font-size: 8px;
@@ -991,12 +994,7 @@ body {
     overflow: hidden;
   }
   .record-placeholder {
-    bottom: 10px;
     font-size: 8px;
-    padding: 3px 8px;
-    max-width: calc(100vw - 36px);
-    text-align: center;
     color: rgba(176, 192, 210, 0.4);
-    background: rgba(3, 12, 26, 0.18);
   }
 }
