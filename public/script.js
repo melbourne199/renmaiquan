@@ -9,7 +9,7 @@ let beijingStar = null;
 let markerGroup;
 let animationComplete = false;
 let initStarted = false;
-let targetRotation = -1.85; // 地球目标旋转角度，默认中国
+let targetRotation = 2.28; // 地球目标旋转角度，默认中国
 
 const tooltip = document.getElementById('cityTooltip');
 const cityCard = document.getElementById('cityCard');
@@ -121,7 +121,8 @@ const cityData = [
 ];
 
 const RADIUS = 5.02;
-const CHINA_ROTATION_Y = -1.85;
+const CHINA_ROTATION_Y = 2.28; // 从太平洋中心继续向中国推进
+console.log('CURRENT CHINA_ROTATION_Y =', CHINA_ROTATION_Y);
 
 function latLonToVector3(lat, lon, radius) {
   const phi = (90 - lat) * (Math.PI / 180);
@@ -313,8 +314,8 @@ function createCityMarkers() {
 
     // 城市标签贴近圆点
     let labelPos = pos.clone();
-    labelPos.x += city.offset ? city.offset.x : 0.02;
-    labelPos.y += city.offset ? city.offset.y : 0.01;
+    labelPos.x += city.offset ? city.offset.x : 0.002;
+    labelPos.y += city.offset ? city.offset.y : 0.001;
 
     // 线条从城市点位延伸到标签位置（亮蓝色，2px）
     const lineGeo = new THREE.BufferGeometry().setFromPoints([pos, labelPos]);
@@ -349,56 +350,121 @@ function createCityMarkers() {
   scene.add(markerGroup);
 }
 
-// 标签防碰撞：找最近空位，不随机
+// 标签防碰撞：优先贴近圆点，其次避开碰撞
 function fixLabelCollision() {
-  const THRESHOLD = 25; // 像素距离阈值
+  const THRESHOLD = 28;
+  const LABEL_MIN_DIST = 20; // label与自身marker的最小屏幕像素距离
   const labels = cityLabels.filter(l => l.userData.city && !l.userData.isFlag && !l.userData.city.isBeijing && !l.userData.city.offset);
 
-  function isTooClose(pos, others) {
+  function getMarkerScreenPos(excludeName) {
+    return cityData
+      .filter(c => !c.isBeijing && !c.offset && c.name !== excludeName)
+      .map(c => worldToScreen(latLonToVector3(c.lat, c.lon, RADIUS + 0.06)));
+  }
+
+  function hasCollision(pos, excludeLabel, excludeName, markerSp) {
     const sp = worldToScreen(pos);
-    for (const other of others) {
-      if (other === pos) continue;
-      const so = worldToScreen(other);
-      const dx = sp.x - so.x;
-      const dy = sp.y - so.y;
-      if (Math.sqrt(dx * dx + dy * dy) < THRESHOLD) return true;
+    // 检查与其他label的碰撞
+    for (const lbl of labels) {
+      if (lbl === excludeLabel) continue;
+      const lp = worldToScreen(lbl.position);
+      const dx = sp.x - lp.x, dy = sp.y - lp.y;
+      if (Math.sqrt(dx*dx + dy*dy) < THRESHOLD) return true;
+    }
+    // 检查与其他marker的碰撞
+    const markerPos = getMarkerScreenPos(excludeName);
+    for (const mp of markerPos) {
+      const dx = sp.x - mp.x, dy = sp.y - mp.y;
+      if (Math.sqrt(dx*dx + dy*dy) < THRESHOLD * 0.8) return true;
     }
     return false;
   }
 
-  // 8个方向：右、下、左、上、右下、左下、右上、左上
   const directions = [
-    { x: 1, y: 0 }, { x: 0, y: 1 }, { x: -1, y: 0 }, { x: 0, y: -1 },
-    { x: 0.7, y: 0.7 }, { x: -0.7, y: 0.7 }, { x: 0.7, y: -0.7 }, { x: -0.7, y: -0.7 }
+    { x: 1, y: 0 }, { x: 0.7, y: 0.7 }, { x: 0, y: 1 }, { x: -0.7, y: 0.7 },
+    { x: -1, y: 0 }, { x: -0.7, y: -0.7 }, { x: 0, y: -1 }, { x: 0.7, y: -0.7 }
   ];
 
   for (const label of labels) {
     const city = label.userData.city;
     const markerPos = latLonToVector3(city.lat, city.lon, RADIUS + 0.06);
-    const allPositions = [markerPos, ...labels.map(l => l.position)];
+    const markerSp = worldToScreen(markerPos);
+    const line = markerGroup.children.find(c => c instanceof THREE.Line && c.userData.city && c.userData.city.name === city.name);
 
-    // 从最近的地方开始找空位
-    for (let dist = 5; dist < 50; dist += 5) {
-      let found = false;
+    let finalPos = null;
+    let usedLine = false;
 
+    // 搜索最近可用位置（确保与marker有足够距离）
+    for (let step = 0; step < 20; step++) {
+      const dist = 0.005 + step * 0.005;
       for (const dir of directions) {
-        const testPos = label.position.clone();
-        testPos.x += dir.x * dist * 0.01;
-        testPos.y += dir.y * dist * 0.01;
+        const testPos = markerPos.clone();
+        testPos.x += dir.x * dist;
+        testPos.y += dir.y * dist;
+        const testSp = worldToScreen(testPos);
 
-        if (!isTooClose(testPos, allPositions)) {
-          // 找到空位了
-          const line = markerGroup.children.find(c => c instanceof THREE.Line && c.userData.city && c.userData.city.name === city.name);
-          if (line) {
-            line.geometry.setFromPoints([markerPos, testPos.clone()]);
-          }
-          label.position.copy(testPos);
-          found = true;
+        // 必须与自身marker保持距离
+        const dx = testSp.x - markerSp.x, dy = testSp.y - markerSp.y;
+        if (Math.sqrt(dx*dx + dy*dy) < LABEL_MIN_DIST) continue;
+
+        if (!hasCollision(testPos, label, city.name, markerSp)) {
+          finalPos = testPos;
+          usedLine = step > 0;
           break;
         }
       }
+      if (finalPos) break;
+    }
 
-      if (found) break;
+    // 找不到空位：搜索与所有marker保持最大距离的位置
+    if (!finalPos) {
+      let bestPos = null;
+      let bestMinDist = 0;
+      for (let step = 0; step < 30; step++) {
+        const dist = 0.005 + step * 0.005;
+        for (const dir of directions) {
+          const testPos = markerPos.clone();
+          testPos.x += dir.x * dist;
+          testPos.y += dir.y * dist;
+          const testSp = worldToScreen(testPos);
+
+          const dx = testSp.x - markerSp.x, dy = testSp.y - markerSp.y;
+          if (Math.sqrt(dx*dx + dy*dy) < LABEL_MIN_DIST) continue;
+
+          // 找与所有其他marker的最小距离中最大的那个位置
+          let minDistToOthers = Infinity;
+          for (const lbl of labels) {
+            if (lbl === label) continue;
+            const lp = worldToScreen(lbl.position);
+            const dlx = testSp.x - lp.x, dly = testSp.y - lp.y;
+            minDistToOthers = Math.min(minDistToOthers, Math.sqrt(dlx*dlx + dly*dly));
+          }
+          for (const mp of getMarkerScreenPos(city.name)) {
+            const dmx = testSp.x - mp.x, dmy = testSp.y - mp.y;
+            minDistToOthers = Math.min(minDistToOthers, Math.sqrt(dmx*dmx + dmy*dmy));
+          }
+
+          if (minDistToOthers > bestMinDist) {
+            bestMinDist = minDistToOthers;
+            bestPos = testPos;
+          }
+        }
+      }
+      finalPos = bestPos || markerPos.clone();
+      finalPos.x += 0.02;
+      finalPos.y += 0.01;
+      usedLine = true;
+    }
+
+    label.position.copy(finalPos);
+
+    if (line) {
+      if (usedLine) {
+        line.geometry.setFromPoints([markerPos, finalPos.clone()]);
+        line.material.opacity = 0.8;
+      } else {
+        line.material.opacity = 0;
+      }
     }
   }
 }
@@ -604,54 +670,40 @@ function hideTooltip() {
 
 // 聚焦中国飞入动画
 function focusChinaAnimation() {
-  // 目标：中国中部（东经105度，北纬35度）
-  const chinaLon = 105;
-  const lonDiff = (chinaLon - 116.4) * Math.PI / 180;
-  targetRotation = CHINA_ROTATION_Y - lonDiff;
+  targetRotation = CHINA_ROTATION_Y;
 
-  // 初始锁定地球位置
   earth.rotation.y = targetRotation;
   clouds.rotation.y = targetRotation;
   atmosphere.rotation.y = targetRotation;
   if (markerGroup) markerGroup.rotation.y = targetRotation;
 
-  // 相机从远处飞入对准地球
-  const startPos = { x: 0, y: 3, z: 15 };
-  const endPos = { x: 0, y: 0, z: 12 };
+  const startPos = { x: 0, y: 10, z: 40 };
+  const endPos = { x: 0, y: 0.8, z: 12 };
   camera.position.set(startPos.x, startPos.y, startPos.z);
-  controls.target.set(0, 0, 0);
+  controls.target.set(0.15, 0.12, 0);
   const duration = 3000;
   const start = performance.now();
 
-  // 动画期间不旋转地球
   animationComplete = false;
-
-  // 初始就锁定地球位置
-  earth.rotation.y = targetRotation;
-  clouds.rotation.y = targetRotation;
-  atmosphere.rotation.y = targetRotation;
-  if (markerGroup) markerGroup.rotation.y = targetRotation;
 
   function step(now) {
     const t = Math.min((now - start) / duration, 1);
     const eased = 1 - Math.pow(1 - t, 3);
     camera.position.set(
-      0 + (endPos.x - 0) * eased,
-      10 + (endPos.y - 10) * eased,
-      40 + (endPos.z - 40) * eased
+      startPos.x + (endPos.x - startPos.x) * eased,
+      startPos.y + (endPos.y - startPos.y) * eased,
+      startPos.z + (endPos.z - startPos.z) * eased
     );
-    controls.update();
-
-    // 持续锁定地球位置
+    controls.target.set(0.15, 0.12, 0);
     earth.rotation.y = targetRotation;
     clouds.rotation.y = targetRotation;
     atmosphere.rotation.y = targetRotation;
     if (markerGroup) markerGroup.rotation.y = targetRotation;
+    controls.update();
 
     if (t < 1) {
       requestAnimationFrame(step);
     } else {
-      // 动画完成后解锁
       animationComplete = true;
     }
   }
@@ -667,19 +719,17 @@ function animate() {
 
   // 地球自转（动画完成后才开始，且初始位置正对中国）
   if (animationComplete) {
-    earth.rotation.y += 0.00015;
-    clouds.rotation.y += 0.00022;
-    atmosphere.rotation.y += 0.00015;
-    if (markerGroup) {
-      markerGroup.rotation.y = earth.rotation.y;
-    }
+    earth.rotation.y = targetRotation;
+    clouds.rotation.y = targetRotation;
+    atmosphere.rotation.y = targetRotation;
   } else {
     // 动画期间保持静止，正对中国
     earth.rotation.y = targetRotation;
     clouds.rotation.y = targetRotation;
     atmosphere.rotation.y = targetRotation;
-    if (markerGroup) markerGroup.rotation.y = targetRotation;
   }
+  // 始终让 markerGroup 跟随 earth.rotation.y
+  if (markerGroup) markerGroup.rotation.y = earth.rotation.y;
 
   // 城市标签跟随地球，不修改位置
   cityLabels.forEach((label) => {
@@ -764,8 +814,8 @@ function addCityMarker(city) {
 
   // 标签位置（贴近圆点）
   let labelPos = pos.clone();
-  labelPos.x += 0.02;
-  labelPos.y += 0.01;
+  labelPos.x += 0.002;
+  labelPos.y += 0.001;
 
   // 创建连线
   const lineGeo = new THREE.BufferGeometry().setFromPoints([pos, labelPos.clone()]);
@@ -797,81 +847,139 @@ function addCityMarker(city) {
   fixLabelCollisionForOne(label);
 }
 
-// 对所有标签进行碰撞检测：迭代处理直到无碰撞
-function fixLabelCollisionForOne(newLabel) {
-  const THRESHOLD = 35; // 大像素阈值确保不重叠
-  const PUSH_STEP = 0.25; // 大步长推开
+// 对所有标签进行碰撞检测：优先贴近圆点，找最近空位
+function fixLabelCollisionForOne(label) {
+  const THRESHOLD = 28;
+  const LABEL_MIN_DIST = 20;
 
-  // 收集所有城市标签（不含国旗、固定偏移）
   function getAllCityLabels() {
     return cityLabels.filter(l =>
-      l.userData.city &&
-      !l.userData.isFlag &&
-      !l.userData.city.isBeijing &&
-      !l.userData.city.offset
+      l.userData.city && !l.userData.isFlag && !l.userData.city.isBeijing && !l.userData.city.offset
     );
   }
 
-  function distInScreen(a, b) {
-    const dx = a.x - b.x;
-    const dy = a.y - b.y;
-    return Math.sqrt(dx * dx + dy * dy);
+  function getMarkerScreenPos(excludeName) {
+    return cityData
+      .filter(c => !c.isBeijing && !c.offset && c.name !== excludeName)
+      .map(c => worldToScreen(latLonToVector3(c.lat, c.lon, RADIUS + 0.06)));
   }
 
-  function updateLabel(label, newPos) {
-    const c = label.userData.city;
-    if (!c) return;
-    const mp = latLonToVector3(c.lat, c.lon, RADIUS + 0.06);
-    const ln = markerGroup.children.find(x => x instanceof THREE.Line && x.userData.city && x.userData.city.name === c.name);
-    if (ln) {
-      ln.geometry.setFromPoints([mp, newPos.clone()]);
-      ln.material.opacity = 0.8;
+  function hasCollision(pos, excludeLabel, excludeName) {
+    const sp = worldToScreen(pos);
+    for (const lbl of getAllCityLabels()) {
+      if (lbl === excludeLabel) continue;
+      const lp = worldToScreen(lbl.position);
+      const dx = sp.x - lp.x, dy = sp.y - lp.y;
+      if (Math.sqrt(dx*dx + dy*dy) < THRESHOLD) return true;
     }
-    label.position.copy(newPos);
+    const markerPos = getMarkerScreenPos(excludeName);
+    for (const mp of markerPos) {
+      const dx = sp.x - mp.x, dy = sp.y - mp.y;
+      if (Math.sqrt(dx*dx + dy*dy) < THRESHOLD * 0.8) return true;
+    }
+    return false;
   }
 
-  // 多次迭代，确保所有碰撞都被解决
-  for (let iter = 0; iter < 50; iter++) {
-    const labels = getAllCityLabels();
-    let hasCollision = false;
+  const directions = [
+    { x: 1, y: 0 }, { x: 0.7, y: 0.7 }, { x: 0, y: 1 }, { x: -0.7, y: 0.7 },
+    { x: -1, y: 0 }, { x: -0.7, y: -0.7 }, { x: 0, y: -1 }, { x: 0.7, y: -0.7 }
+  ];
 
-    for (const label of labels) {
-      const city = label.userData.city;
-      const markerPos = latLonToVector3(city.lat, city.lon, RADIUS + 0.06);
-      const labelScreen = worldToScreen(label.position);
+  const city = label.userData.city;
+  if (!city) return;
+  const markerPos = latLonToVector3(city.lat, city.lon, RADIUS + 0.06);
+  const markerSp = worldToScreen(markerPos);
+  const line = markerGroup.children.find(c => c instanceof THREE.Line && c.userData.city && c.userData.city.name === city.name);
 
-      // 检查是否压在任何marker上（排除自己的）
-      for (const c of cityData) {
-        if (c.isBeijing || c.offset || c.name === city.name) continue;
-        const mp = latLonToVector3(c.lat, c.lon, RADIUS + 0.06);
-        const mpScreen = worldToScreen(mp);
-        if (distInScreen(labelScreen, mpScreen) < THRESHOLD) {
-          const newPos = label.position.clone();
-          newPos.x += PUSH_STEP;
-          updateLabel(label, newPos);
-          hasCollision = true;
-          break;
-        }
+  let finalPos = null;
+  let usedLine = false;
+
+  for (let step = 0; step < 20; step++) {
+    const dist = 0.005 + step * 0.005;
+    for (const dir of directions) {
+      const testPos = markerPos.clone();
+      testPos.x += dir.x * dist;
+      testPos.y += dir.y * dist;
+      const testSp = worldToScreen(testPos);
+
+      const dx = testSp.x - markerSp.x, dy = testSp.y - markerSp.y;
+      if (Math.sqrt(dx*dx + dy*dy) < LABEL_MIN_DIST) continue;
+
+      if (!hasCollision(testPos, label, city.name)) {
+        finalPos = testPos;
+        usedLine = step > 0;
+        break;
       }
-      if (hasCollision) continue;
+    }
+    if (finalPos) break;
+  }
 
-      // 检查是否压在其他标签上（排除自己）
-      for (const other of labels) {
-        if (other === label) continue;
-        const otherScreen = worldToScreen(other.position);
-        if (distInScreen(labelScreen, otherScreen) < THRESHOLD) {
-          const newPos = label.position.clone();
-          newPos.x += PUSH_STEP;
-          updateLabel(label, newPos);
-          hasCollision = true;
-          break;
+  // 找不到空位：搜索与所有marker保持最大距离的位置
+  if (!finalPos) {
+    let bestPos = null;
+    let bestMinDist = 0;
+    const allLabels = getAllCityLabels();
+    const allMarkers = getMarkerScreenPos(city.name);
+    for (let step = 0; step < 30; step++) {
+      const dist = 0.005 + step * 0.005;
+      for (const dir of directions) {
+        const testPos = markerPos.clone();
+        testPos.x += dir.x * dist;
+        testPos.y += dir.y * dist;
+        const testSp = worldToScreen(testPos);
+
+        const dx = testSp.x - markerSp.x, dy = testSp.y - markerSp.y;
+        if (Math.sqrt(dx*dx + dy*dy) < LABEL_MIN_DIST) continue;
+
+        let minDistToOthers = Infinity;
+        for (const lbl of allLabels) {
+          if (lbl === label) continue;
+          const lp = worldToScreen(lbl.position);
+          const dlx = testSp.x - lp.x, dly = testSp.y - lp.y;
+          minDistToOthers = Math.min(minDistToOthers, Math.sqrt(dlx*dlx + dly*dly));
+        }
+        for (const mp of allMarkers) {
+          const dmx = testSp.x - mp.x, dmy = testSp.y - mp.y;
+          minDistToOthers = Math.min(minDistToOthers, Math.sqrt(dmx*dmx + dmy*dmy));
+        }
+
+        if (minDistToOthers > bestMinDist) {
+          bestMinDist = minDistToOthers;
+          bestPos = testPos;
         }
       }
     }
+    finalPos = bestPos || markerPos.clone();
+    finalPos.x += 0.02;
+    finalPos.y += 0.01;
+    usedLine = true;
+  }
 
-    if (!hasCollision) break;
+  label.position.copy(finalPos);
+  if (line) {
+    if (usedLine) {
+      line.geometry.setFromPoints([markerPos, finalPos.clone()]);
+      line.material.opacity = 0.8;
+    } else {
+      line.material.opacity = 0;
+    }
   }
 }
 
 // 初始化
 init();
+
+// 【调试】← → 微调（动画完成后可用）
+window.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowLeft') {
+    earth.rotation.y -= 0.1;
+    clouds.rotation.y -= 0.1;
+    atmosphere.rotation.y -= 0.1;
+    console.log('rotation.y =', earth.rotation.y.toFixed(3));
+  } else if (e.key === 'ArrowRight') {
+    earth.rotation.y += 0.1;
+    clouds.rotation.y += 0.1;
+    atmosphere.rotation.y += 0.1;
+    console.log('rotation.y =', earth.rotation.y.toFixed(3));
+  }
+});
