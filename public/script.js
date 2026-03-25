@@ -473,7 +473,8 @@ function worldToScreen(pos) {
   const vector = pos.clone().project(camera);
   return {
     x: (vector.x * 0.5 + 0.5) * window.innerWidth,
-    y: (-(vector.y * 0.5) + 0.5) * window.innerHeight
+    y: (-(vector.y * 0.5) + 0.5) * window.innerHeight,
+    z: vector.z
   };
 }
 
@@ -495,8 +496,9 @@ function closeCityCard() {
 function init() {
   scene = new THREE.Scene();
 
-  camera = new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, 0.1, 2000);
-  camera.position.set(0, 10, 40);
+  const isMobile = window.innerWidth <= 768;
+  camera = new THREE.PerspectiveCamera(isMobile ? 22 : 35, window.innerWidth / window.innerHeight, 0.1, 2000);
+  camera.position.set(0, isMobile ? 9.2 : 10, isMobile ? 64 : 40);
 
   renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
   renderer.setSize(window.innerWidth, window.innerHeight);
@@ -571,8 +573,8 @@ function init() {
   controls = new OrbitControls(camera, renderer.domElement);
   controls.enableDamping = true;
   controls.dampingFactor = 0.05;
-  controls.minDistance = 8;
-  controls.maxDistance = 20;
+  controls.minDistance = window.innerWidth <= 768 ? 13.5 : 8;
+  controls.maxDistance = window.innerWidth <= 768 ? 30 : 20;
   controls.enablePan = false;
   controls.target.set(0, 0, 0);
 
@@ -732,12 +734,23 @@ function animate() {
   if (markerGroup) markerGroup.rotation.y = earth.rotation.y;
 
   // 城市标签跟随地球，不修改位置
+  const isMobileView = window.innerWidth <= 768;
   cityLabels.forEach((label) => {
     if (!label.userData.city) return;
-    label.element.style.opacity = '1';
-    label.element.style.pointerEvents = 'auto';
+    const city = label.userData.city;
+    const projected = worldToScreen(label.position);
+    const isFront = projected.z < 1;
+    let visible = isFront;
+
+    if (isMobileView) {
+      const isPriority = city.isBeijing || city.isChinaIsland || city.isHK || city.isMacau || city.isTaiwan || city.provided >= 80 || city.help >= 12;
+      visible = isFront && isPriority;
+    }
+
+    label.element.style.opacity = visible ? '1' : '0';
+    label.element.style.pointerEvents = visible ? 'auto' : 'none';
     if (label.userData.line) {
-      label.userData.line.material.opacity = 0.8;
+      label.userData.line.material.opacity = visible ? label.userData.line.material.opacity : 0;
     }
   });
 
