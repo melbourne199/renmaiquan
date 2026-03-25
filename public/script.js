@@ -49,7 +49,11 @@ const cityData = [
   // 南海其他岛礁
   { name: '仁爱礁', lat: 9.7447, lon: 115.5397, provided: 1, help: 0, isIsland: true, isChinaIsland: true },
   { name: '美济礁', lat: 9.9089, lon: 115.5350, provided: 1, help: 0, isIsland: true, isChinaIsland: true },
-  { name: '渚碧礁', lat: 10.9281, lon: 114.0569, provided: 1, help: 0, isIsland: true, isChinaIsland: true }
+  { name: '渚碧礁', lat: 10.9281, lon: 114.0569, provided: 1, help: 0, isIsland: true, isChinaIsland: true },
+  // 藏南地区（达旺）
+  { name: '达旺', lat: 27.5, lon: 92.0, provided: 1, help: 0, isIsland: true, isChinaIsland: true },
+  // 阿克赛钦地区（班公湖）
+  { name: '班公湖', lat: 35.5, lon: 78.5, provided: 1, help: 0, isIsland: true, isChinaIsland: true }
 ];
 
 const RADIUS = 5.02;
