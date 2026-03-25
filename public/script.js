@@ -117,6 +117,23 @@ const cityData = [
   // 藏南地区
   { name: '达旺', lat: 27.5, lon: 92.0, provided: 1, help: 0, isIsland: true, isChinaIsland: true },
   // 阿克赛钦地区
+  { name: '太平岛', lat: 10.3833, lon: 114.3667, provided: 1, help: 0, isIsland: true, isChinaIsland: true },
+  { name: '中业岛', lat: 11.0528, lon: 114.2856, provided: 1, help: 0, isIsland: true, isChinaIsland: true },
+  { name: '南子岛', lat: 11.4417, lon: 114.3278, provided: 1, help: 0, isIsland: true, isChinaIsland: true },
+  { name: '北子岛', lat: 11.4561, lon: 114.3561, provided: 1, help: 0, isIsland: true, isChinaIsland: true },
+  { name: '鸿庥岛', lat: 10.1889, lon: 114.2833, provided: 1, help: 0, isIsland: true, isChinaIsland: true },
+  { name: '景宏岛', lat: 9.9028, lon: 114.3211, provided: 1, help: 0, isIsland: true, isChinaIsland: true },
+  { name: '南威岛', lat: 8.6456, lon: 111.9167, provided: 1, help: 0, isIsland: true, isChinaIsland: true },
+  { name: '西月岛', lat: 11.0833, lon: 114.2833, provided: 1, help: 0, isIsland: true, isChinaIsland: true },
+  { name: '马欢岛', lat: 10.75, lon: 115.8, provided: 1, help: 0, isIsland: true, isChinaIsland: true },
+  { name: '费信岛', lat: 10.8167, lon: 115.2833, provided: 1, help: 0, isIsland: true, isChinaIsland: true },
+  { name: '永暑礁', lat: 9.55, lon: 112.8833, provided: 1, help: 0, isIsland: true, isChinaIsland: true },
+  { name: '华阳礁', lat: 8.8667, lon: 112.85, provided: 1, help: 0, isIsland: true, isChinaIsland: true },
+  { name: '赤瓜礁', lat: 9.7167, lon: 114.2833, provided: 1, help: 0, isIsland: true, isChinaIsland: true },
+  { name: '东门礁', lat: 10.9167, lon: 114.3167, provided: 1, help: 0, isIsland: true, isChinaIsland: true },
+  { name: '南薰礁', lat: 10.1833, lon: 114.2167, provided: 1, help: 0, isIsland: true, isChinaIsland: true },
+  { name: '黄岩岛', lat: 15.1167, lon: 117.7667, provided: 1, help: 0, isIsland: true, isChinaIsland: true },
+  { name: '苏岩礁', lat: 32.1167, lon: 125.1833, provided: 1, help: 0, isIsland: true, isChinaIsland: true },
   { name: '班公湖', lat: 35.5, lon: 78.5, provided: 1, help: 0, isIsland: true, isChinaIsland: true }
 ];
 
