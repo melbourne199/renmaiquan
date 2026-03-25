@@ -17,42 +17,106 @@ const searchInput = document.getElementById('citySearch');
 const searchBtn = document.getElementById('searchBtn');
 const loadingEl = document.getElementById('loading');
 
-// 城市数据 - 只保留最重要城市
+// 城市数据 - 全国省会及主要城市
 const cityData = [
-  // 省会及重点城市（精简版）
+  // 华北
   { name: '北京', lat: 39.9042, lon: 116.4074, provided: 126, help: 18, isBeijing: true },
+  { name: '天津', lat: 39.1256, lon: 117.1909, provided: 45, help: 7, offset: { x: -0.3, y: 0.1 } },
+  { name: '石家庄', lat: 38.0428, lon: 114.5149, provided: 38, help: 6 },
+  { name: '保定', lat: 38.8738, lon: 115.4646, provided: 25, help: 4 },
+  { name: '唐山', lat: 39.6243, lon: 118.1944, provided: 28, help: 3 },
+  { name: '太原', lat: 37.8706, lon: 112.5489, provided: 35, help: 5 },
+  { name: '大同', lat: 40.0769, lon: 113.2991, provided: 18, help: 2 },
+  { name: '呼和浩特', lat: 40.8414, lon: 111.7519, provided: 30, help: 4 },
+
+  // 东北
+  { name: '沈阳', lat: 41.8057, lon: 123.4328, provided: 40, help: 6 },
+  { name: '大连', lat: 38.9140, lon: 121.6147, provided: 45, help: 7 },
+  { name: '鞍山', lat: 41.1086, lon: 122.9946, provided: 22, help: 3 },
+  { name: '长春', lat: 43.8171, lon: 125.3235, provided: 32, help: 4 },
+  { name: '吉林', lat: 43.8380, lon: 126.5600, provided: 20, help: 3 },
+  { name: '哈尔滨', lat: 45.8038, lon: 126.5340, provided: 34, help: 5 },
+  { name: '大庆', lat: 46.5907, lon: 125.1030, provided: 18, help: 2 },
+
+  // 华东
   { name: '上海', lat: 31.2304, lon: 121.4737, provided: 148, help: 22 },
+  { name: '南京', lat: 32.0603, lon: 118.7969, provided: 58, help: 8 },
+  { name: '苏州', lat: 31.2989, lon: 120.5853, provided: 65, help: 9 },
+  { name: '杭州', lat: 30.2741, lon: 120.1551, provided: 96, help: 13 },
+  { name: '宁波', lat: 29.8683, lon: 121.5440, provided: 52, help: 7 },
+  { name: '温州', lat: 28.0006, lon: 120.6994, provided: 38, help: 5 },
+  { name: '合肥', lat: 31.8206, lon: 117.2272, provided: 42, help: 6 },
+  { name: '芜湖', lat: 31.3529, lon: 118.3760, provided: 28, help: 4 },
+  { name: '福州', lat: 26.0745, lon: 119.2965, provided: 35, help: 5 },
+  { name: '厦门', lat: 24.4798, lon: 118.0894, provided: 48, help: 7 },
+  { name: '泉州', lat: 24.8740, lon: 118.6758, provided: 32, help: 4 },
+  { name: '南昌', lat: 28.6829, lon: 115.8579, provided: 30, help: 4 },
+  { name: '赣州', lat: 25.8292, lon: 114.9355, provided: 22, help: 3 },
+  { name: '济南', lat: 36.6512, lon: 117.1205, provided: 38, help: 5 },
+  { name: '青岛', lat: 36.0671, lon: 120.3826, provided: 55, help: 8 },
+  { name: '烟台', lat: 37.4639, lon: 121.4480, provided: 32, help: 4 },
+
+  // 华中
+  { name: '郑州', lat: 34.7466, lon: 113.6253, provided: 42, help: 8 },
+  { name: '洛阳', lat: 34.6197, lon: 112.4540, provided: 28, help: 4 },
+  { name: '开封', lat: 34.7972, lon: 114.3414, provided: 20, help: 3 },
+  { name: '武汉', lat: 30.5928, lon: 114.3055, provided: 73, help: 11 },
+  { name: '宜昌', lat: 30.6918, lon: 111.2868, provided: 25, help: 4 },
+  { name: '襄阳', lat: 32.0091, lon: 112.1226, provided: 22, help: 3 },
+  { name: '长沙', lat: 28.2282, lon: 112.9388, provided: 48, help: 9 },
+  { name: '株洲', lat: 27.8273, lon: 113.1340, provided: 25, help: 4 },
+  { name: '湘潭', lat: 27.8291, lon: 112.9442, provided: 20, help: 3 },
+
+  // 华南
   { name: '广州', lat: 23.1291, lon: 113.2644, provided: 102, help: 14 },
   { name: '深圳', lat: 22.5431, lon: 114.0579, provided: 165, help: 27 },
-  { name: '成都', lat: 30.5728, lon: 104.0668, provided: 84, help: 16 },
-  { name: '武汉', lat: 30.5928, lon: 114.3055, provided: 73, help: 11 },
-  { name: '西安', lat: 34.3416, lon: 108.9398, provided: 61, help: 9 },
-  { name: '杭州', lat: 30.2741, lon: 120.1551, provided: 96, help: 13 },
+  { name: '东莞', lat: 23.0469, lon: 113.7633, provided: 58, help: 8 },
+  { name: '佛山', lat: 23.0218, lon: 113.1220, provided: 45, help: 6 },
+  { name: '南宁', lat: 22.8170, lon: 108.3665, provided: 32, help: 5 },
+  { name: '桂林', lat: 25.2736, lon: 110.2900, provided: 25, help: 4 },
+  { name: '柳州', lat: 24.3263, lon: 109.3896, provided: 22, help: 3 },
+  { name: '海口', lat: 20.0444, lon: 110.1999, provided: 28, help: 4 },
+  { name: '三亚', lat: 18.2528, lon: 109.5119, provided: 35, help: 5 },
+
+  // 西南
   { name: '重庆', lat: 29.5630, lon: 106.5516, provided: 66, help: 10 },
-  { name: '南京', lat: 32.0603, lon: 118.7969, provided: 58, help: 8 },
-  { name: '天津', lat: 39.1256, lon: 117.1909, provided: 45, help: 7, offset: { x: -0.3, y: 0.1 } },
-  { name: '长沙', lat: 28.2282, lon: 112.9388, provided: 48, help: 9 },
-  { name: '郑州', lat: 34.7466, lon: 113.6253, provided: 42, help: 8 },
-  { name: '青岛', lat: 36.0671, lon: 120.3826, provided: 55, help: 8 },
-  { name: '沈阳', lat: 41.8057, lon: 123.4328, provided: 40, help: 6 },
-  { name: '哈尔滨', lat: 45.8038, lon: 126.5340, provided: 34, help: 5 },
-  { name: '乌鲁木齐', lat: 43.8256, lon: 87.6168, provided: 22, help: 3 },
+  { name: '成都', lat: 30.5728, lon: 104.0668, provided: 84, help: 16 },
+  { name: '绵阳', lat: 31.4675, lon: 104.6796, provided: 28, help: 4 },
+  { name: '贵阳', lat: 26.6470, lon: 106.6302, provided: 30, help: 5 },
+  { name: '遵义', lat: 27.7255, lon: 106.9272, provided: 22, help: 3 },
   { name: '昆明', lat: 25.0406, lon: 102.7129, provided: 32, help: 5 },
+  { name: '大理', lat: 25.6065, lon: 100.2676, provided: 18, help: 3 },
+  { name: '拉萨', lat: 29.6500, lon: 91.1000, provided: 12, help: 2 },
+
+  // 西北
+  { name: '西安', lat: 34.3416, lon: 108.9398, provided: 61, help: 9 },
+  { name: '咸阳', lat: 34.3296, lon: 108.7091, provided: 25, help: 4 },
+  { name: '宝鸡', lat: 34.3619, lon: 107.2374, provided: 20, help: 3 },
+  { name: '兰州', lat: 36.0611, lon: 103.8343, provided: 28, help: 4 },
+  { name: '天水', lat: 34.5808, lon: 105.7244, provided: 15, help: 2 },
+  { name: '西宁', lat: 36.6171, lon: 101.7782, provided: 18, help: 3 },
+  { name: '银川', lat: 38.4680, lon: 106.2731, provided: 20, help: 3 },
+  { name: '乌鲁木齐', lat: 43.8256, lon: 87.6168, provided: 22, help: 3 },
+  { name: '喀什', lat: 39.4677, lon: 75.9894, provided: 15, help: 2 },
+
   // 港澳台
   { name: '香港', lat: 22.3193, lon: 114.1694, provided: 95, help: 18, isHK: true },
   { name: '澳门', lat: 22.1987, lon: 113.5439, provided: 35, help: 6, isMacau: true },
   { name: '台北', lat: 25.0330, lon: 121.5654, provided: 78, help: 15, isTaiwan: true },
-  // 南海岛礁（爱国点亮）
+  { name: '高雄', lat: 22.6273, lon: 120.2844, provided: 42, help: 6 },
+  { name: '台中', lat: 24.1477, lon: 120.6736, provided: 38, help: 5 },
+
+  // 南海岛礁
   { name: '永兴岛', lat: 16.8331, lon: 112.3333, provided: 3, help: 1, isIsland: true, isChinaIsland: true, offset: { x: 0.1, y: 0 } },
   { name: '南沙群岛', lat: 9.7497, lon: 115.1761, provided: 1, help: 0, isIsland: true, isChinaIsland: true, offset: { x: 0.1, y: 0 } },
   { name: '钓鱼岛', lat: 25.7469, lon: 124.4833, provided: 1, help: 0, isIsland: true, isChinaIsland: true, offset: { x: 0.1, y: 0 } },
-  // 南海其他岛礁
   { name: '仁爱礁', lat: 9.7447, lon: 115.5397, provided: 1, help: 0, isIsland: true, isChinaIsland: true, offset: { x: 0.15, y: 0 } },
   { name: '美济礁', lat: 9.9089, lon: 115.5350, provided: 1, help: 0, isIsland: true, isChinaIsland: true, offset: { x: 0.1, y: 0.08 } },
   { name: '渚碧礁', lat: 10.9281, lon: 114.0569, provided: 1, help: 0, isIsland: true, isChinaIsland: true, offset: { x: 0.1, y: 0.15 } },
-  // 藏南地区（达旺）
+
+  // 藏南地区
   { name: '达旺', lat: 27.5, lon: 92.0, provided: 1, help: 0, isIsland: true, isChinaIsland: true },
-  // 阿克赛钦地区（班公湖）
+  // 阿克赛钦地区
   { name: '班公湖', lat: 35.5, lon: 78.5, provided: 1, help: 0, isIsland: true, isChinaIsland: true }
 ];
 
@@ -733,21 +797,20 @@ function addCityMarker(city) {
   fixLabelCollisionForOne(label);
 }
 
-// 对单个标签进行碰撞检测和连线
+// 对单个新标签进行碰撞检测：新城市优先，旧标签让位
 function fixLabelCollisionForOne(newLabel) {
   const THRESHOLD = 15;
-  const allMarkers = [];
-  const allLabels = cityLabels.filter(l => l.userData.city && !l.userData.isFlag && !l.userData.city.isBeijing);
+  const newCity = newLabel.userData.city;
+  const newMarkerPos = latLonToVector3(newCity.lat, newCity.lon, RADIUS + 0.06);
+  const newMarkerScreen = worldToScreen(newMarkerPos);
 
-  cityData.forEach(c => {
-    if (c.isBeijing) return;
-    const mp = latLonToVector3(c.lat, c.lon, RADIUS + 0.06);
-    allMarkers.push(worldToScreen(mp));
-  });
-
-  const city = newLabel.userData.city;
-  const markerPos = latLonToVector3(city.lat, city.lon, RADIUS + 0.06);
-  const newMarkerScreen = worldToScreen(markerPos);
+  const allOldLabels = cityLabels.filter(l =>
+    l !== newLabel &&
+    l.userData.city &&
+    !l.userData.isFlag &&
+    !l.userData.city.isBeijing &&
+    l.userData.city !== newCity
+  );
 
   function distInScreen(a, b) {
     const dx = a.x - b.x;
@@ -766,31 +829,29 @@ function fixLabelCollisionForOne(newLabel) {
     label.position.copy(newPos);
   }
 
-  const newLabelScreen = worldToScreen(newLabel.position);
-
-  // 检测是否压在任何圆点上
-  for (const mp of allMarkers) {
-    if (distInScreen(newLabelScreen, mp) < THRESHOLD) {
-      // 推到右边
-      const newPos = newLabel.position.clone();
-      newPos.x += 0.15;
-      updateLabel(newLabel, newPos);
-      newLabelScreen.x = newPos.x;
-      break;
+  // 旧标签如果压在新城市marker上，就挤开
+  for (const oldLabel of allOldLabels) {
+    const oldLabelScreen = worldToScreen(oldLabel.position);
+    if (distInScreen(oldLabelScreen, newMarkerScreen) < THRESHOLD + 20) {
+      // 旧标签压到新marker了，推到右边
+      const newPos = oldLabel.position.clone();
+      newPos.x += 0.2;
+      updateLabel(oldLabel, newPos);
     }
   }
 
-  // 检测是否压在其他标签上
-  for (const other of allLabels) {
-    if (other === newLabel) continue;
-    const otherScreen = worldToScreen(other.position);
-    if (distInScreen(newLabelScreen, otherScreen) < THRESHOLD) {
-      // 推到右边
-      const newPos = newLabel.position.clone();
-      newPos.x += 0.15;
-      updateLabel(newLabel, newPos);
-      newLabelScreen.x = newPos.x;
-      break;
+  // 新标签如果压在旧marker上，也要挤开旧marker的标签
+  for (const oldLabel of allOldLabels) {
+    const oldCity = oldLabel.userData.city;
+    const oldMarkerPos = latLonToVector3(oldCity.lat, oldCity.lon, RADIUS + 0.06);
+    const newLabelScreen = worldToScreen(newLabel.position);
+    const oldMarkerScreen = worldToScreen(oldMarkerPos);
+
+    if (distInScreen(newLabelScreen, oldMarkerScreen) < THRESHOLD) {
+      // 新标签压在旧marker上，把旧标签挤开
+      const newPos = oldLabel.position.clone();
+      newPos.x += 0.2;
+      updateLabel(oldLabel, newPos);
     }
   }
 }
