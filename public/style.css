@@ -471,7 +471,8 @@ body {
 .island-flag {
   pointer-events: auto;
   cursor: pointer;
-  display: inline-flex;
+  display: flex;
+  flex-direction: row;
   align-items: center;
   background: rgba(200, 0, 0, 0.15);
   padding: 2px 6px;
@@ -480,6 +481,7 @@ body {
   font-size: 11px;
   color: #ffccaa;
   white-space: nowrap;
+  gap: 4px;
 }
 
 .flag-img {
@@ -487,7 +489,7 @@ body {
   height: auto;
   animation: flagWave 1.5s ease-in-out infinite;
   transform-origin: left center;
-  vertical-align: middle;
+  flex-shrink: 0;
 }
 
 @keyframes flagWave {

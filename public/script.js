@@ -30,7 +30,7 @@ const cityData = [
   { name: '杭州', lat: 30.2741, lon: 120.1551, provided: 96, help: 13 },
   { name: '重庆', lat: 29.5630, lon: 106.5516, provided: 66, help: 10 },
   { name: '南京', lat: 32.0603, lon: 118.7969, provided: 58, help: 8 },
-  { name: '天津', lat: 39.1256, lon: 117.1909, provided: 45, help: 7, offset: { x: 0.15, y: 0 } },
+  { name: '天津', lat: 39.1256, lon: 117.1909, provided: 45, help: 7, offset: { x: -0.3, y: 0.1 } },
   { name: '长沙', lat: 28.2282, lon: 112.9388, provided: 48, help: 9 },
   { name: '郑州', lat: 34.7466, lon: 113.6253, provided: 42, help: 8 },
   { name: '青岛', lat: 36.0671, lon: 120.3826, provided: 55, help: 8 },
