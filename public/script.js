@@ -802,6 +802,7 @@ function focusChinaAnimation() {
 function animate() {
   requestAnimationFrame(animate);
 
+  controls.update(); // ensure camera matrix is fresh for worldToScreen
   const time = Date.now() * 0.001;
 
   // 地球自转（动画完成后才开始，且初始位置正对中国）
