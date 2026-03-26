@@ -262,28 +262,22 @@ function createCityMarkers() {
       // 只显示中国固有领土（含争议）：其他国家的岛直接跳过不渲染
       if (city.controlledBy && city.controlledBy !== 'cn') return;
 
-      // 岛礁标签：初始贴近坐标点，用碰撞检测找最近空位
-      const flagPos = pos.clone();
-      flagPos.x += 0.004;
-      flagPos.y += 0.001;
-
-      const flagLineGeo = new THREE.BufferGeometry().setFromPoints([pos, flagPos.clone()]);
-      const flagLine = new THREE.Line(flagLineGeo, new THREE.LineBasicMaterial({
-        color: 0xff6b6b,
-        transparent: true,
-        opacity: 0.85
-      }));
-      flagLine.userData.city = city;
-      markerGroup.add(flagLine);
+      // 旗杆：精准从坐标点竖直向上延伸
+      const poleTop = pos.clone();
+      poleTop.y += 0.12; // 旗杆高度
+      const poleGeo = new THREE.BufferGeometry().setFromPoints([pos, poleTop]);
+      const poleLine = new THREE.Line(poleGeo, new THREE.LineBasicMaterial({ color: 0xff6b6b, transparent: true, opacity: 0.9 }));
+      poleLine.userData.city = city;
+      markerGroup.add(poleLine);
 
       const flagDiv = document.createElement('div');
       flagDiv.className = 'island-flag';
       flagDiv.innerHTML = `<span class="flag-mark">🇨🇳</span>${city.name}`;
       const flagLabel = new CSS2DObject(flagDiv);
-      flagLabel.position.copy(flagPos);
+      flagLabel.position.copy(poleTop);
       flagLabel.userData.city = city;
       flagLabel.userData.isFlag = true;
-      flagLabel.userData.line = flagLine;
+      flagLabel.userData.line = poleLine;
       markerGroup.add(flagLabel);
       cityLabels.push(flagLabel);
       return;
@@ -298,9 +292,10 @@ function createCityMarkers() {
       dot.userData.isGlow = true;
       markerGroup.add(dot);
 
+      // 发光点缩小到合理比例
       const glow = new THREE.Mesh(
-        new THREE.SphereGeometry(0.035, 10, 10),
-        new THREE.MeshBasicMaterial({ color: 0x00aaff, transparent: true, opacity: 0.25 })
+        new THREE.SphereGeometry(0.018, 10, 10),
+        new THREE.MeshBasicMaterial({ color: 0x00aaff, transparent: true, opacity: 0.2 })
       );
       glow.position.copy(pos);
       glow.userData.city = city;
@@ -337,10 +332,10 @@ function createCityMarkers() {
       dot.userData.city = city;
       markerGroup.add(dot);
 
-      // 城市光晕
+      // 城市光晕：缩小基准尺寸，避免放大时压字
       const glow = new THREE.Mesh(
-        new THREE.SphereGeometry(0.025, 8, 8),
-        new THREE.MeshBasicMaterial({ color: 0x5ac8fa, transparent: true, opacity: 0.25 })
+        new THREE.SphereGeometry(0.014, 8, 8),
+        new THREE.MeshBasicMaterial({ color: 0x5ac8fa, transparent: true, opacity: 0.2 })
       );
       glow.position.copy(pos);
       glow.userData.city = city;
@@ -352,7 +347,7 @@ function createCityMarkers() {
       labelPos.x += city.offset ? city.offset.x : 0.002;
       labelPos.y += city.offset ? city.offset.y : 0.001;
 
-      // 线条从城市点位延伸到标签位置（亮蓝色，2px）
+      // 线条从城市点位延伸到标签位置
       const lineGeo = new THREE.BufferGeometry().setFromPoints([pos, labelPos]);
       const line = new THREE.Line(lineGeo, new THREE.LineBasicMaterial({
         color: 0x00aaff,
