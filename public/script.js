@@ -881,10 +881,10 @@ function addCityMarker(city) {
   glow.userData.isGlow = true;
   markerGroup.add(glow);
 
-  // 标签位置（贴近圆点）
+  // 标签位置（默认不压点，先明显离开圆点）
   let labelPos = pos.clone();
-  labelPos.x += 0.002;
-  labelPos.y += 0.001;
+  labelPos.x += 0.028;
+  labelPos.y += 0.012;
 
   // 创建连线
   const lineGeo = new THREE.BufferGeometry().setFromPoints([pos, labelPos.clone()]);
@@ -919,7 +919,7 @@ function addCityMarker(city) {
 // 对所有标签进行碰撞检测：优先贴近圆点，找最近空位
 function fixLabelCollisionForOne(label) {
   const THRESHOLD = 28;
-  const LABEL_MIN_DIST = 20;
+  const LABEL_MIN_DIST = 34;
 
   function getAllCityLabels() {
     return cityLabels.filter(l =>
@@ -950,8 +950,9 @@ function fixLabelCollisionForOne(label) {
   }
 
   const directions = [
-    { x: 1, y: 0 }, { x: 0.7, y: 0.7 }, { x: 0, y: 1 }, { x: -0.7, y: 0.7 },
-    { x: -1, y: 0 }, { x: -0.7, y: -0.7 }, { x: 0, y: -1 }, { x: 0.7, y: -0.7 }
+    { x: 1, y: 0 }, { x: 1, y: 0.6 }, { x: 1, y: -0.6 }, { x: 0.6, y: 1 },
+    { x: 0, y: 1 }, { x: -0.6, y: 1 }, { x: -1, y: 0 }, { x: -1, y: 0.6 },
+    { x: -1, y: -0.6 }, { x: 0, y: -1 }, { x: 0.6, y: -1 }
   ];
 
   const city = label.userData.city;
