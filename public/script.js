@@ -291,11 +291,10 @@ function createCityMarkers() {
         };
         const cameraDistance = camera.position.length();
         const isMobileView = window.innerWidth <= 768;
-        const minDist = isMobileView ? 34 : 24;
         const maxDist = isMobileView ? 84 : 56;
-        // cameraDistance越大(globe越小) → scale越大(globe最小时spread最大)
-        // 基准：minDist时scale=2.0（已充分散开），maxDist时scale=4.5（globe极小需更大spread）
-        const islandScale = 2.0 + (cameraDistance - minDist) / (maxDist - minDist) * 2.5;
+        // cameraDistance越大(globe越小) → spread越小（投影压缩效应）
+        // 用倒数：maxDist时(基准)spread=1.0，camera越大spread越大
+        const islandScale = Math.max(1.0, Math.min(5.0, (cameraDistance / maxDist)));
         const offset = islandSpread[city.name] || { x: 0.16, y: 0.04 };
         flagPos.x += offset.x * islandScale;
         flagPos.y += offset.y * islandScale;
