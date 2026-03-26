@@ -115,7 +115,7 @@ const cityData = [
   { name: '美济礁', lat: 9.9089, lon: 115.5350, provided: 1, help: 0, isIsland: true, controlledBy: 'cn', offset: { x: 0.1, y: 0.08 } },
   { name: '渚碧礁', lat: 10.9281, lon: 114.0569, provided: 1, help: 0, isIsland: true, controlledBy: 'cn', offset: { x: 0.1, y: 0.15 } },
   // 藏南地区（印度实际控制）
-  { name: '达旺', lat: 27.5, lon: 92.0, provided: 1, help: 0, isIsland: true, controlledBy: 'in' },
+  { name: '达旺', lat: 27.5, lon: 92.0, provided: 1, help: 0, isIsland: true, controlledBy: 'cn' },
   // 南沙岛礁（非中国控制）
   { name: '太平岛', lat: 10.3833, lon: 114.3667, provided: 1, help: 0, isIsland: true, controlledBy: 'tw' },
   { name: '中业岛', lat: 11.0528, lon: 114.2856, provided: 1, help: 0, isIsland: true, controlledBy: 'ph' },
