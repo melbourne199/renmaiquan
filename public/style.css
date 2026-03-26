@@ -140,7 +140,7 @@ body {
 /* ==================== 主标题区 ==================== */
 .hero-section {
   position: absolute;
-  top: 180px;
+  top: 100px;
   left: 50%;
   transform: translateX(-50%);
   text-align: center;
@@ -225,7 +225,7 @@ body {
 /* ==================== 搜索区 ==================== */
 .search-section {
   position: absolute;
-  top: 390px;
+  top: 310px;
   left: 50%;
   transform: translateX(-50%);
   width: 90%;
@@ -803,7 +803,7 @@ body {
   /* === 标题：居中浮动 === */
   .hero-section {
     position: fixed;
-    top: 126px; left: 50%;
+    top: 46px; left: 50%;
     transform: translateX(-50%);
     text-align: center;
     z-index: 50;
@@ -852,7 +852,7 @@ body {
   /* === 搜索框：居中底部浮动 === */
   .search-section {
     position: fixed;
-    top: 226px;
+    top: 146px;
     left: 50%;
     bottom: auto;
     transform: translateX(-50%);
