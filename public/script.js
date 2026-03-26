@@ -262,13 +262,23 @@ function createCityMarkers() {
       // 只显示中国固有领土（含争议）：其他国家的岛直接跳过不渲染
       if (city.controlledBy && city.controlledBy !== 'cn') return;
 
-      // 初始贴近坐标点，就近原则
-      const flagPos = pos.clone();
-      flagPos.x += 0.003;
-      flagPos.y += 0.001;
+      // 扇形展开：把球面3D空间按地理方位角展开，每个岛往不同方向走
+      // 计算岛屿簇中心（中国南海岛礁群）
+      const clusterCenterLat = 10.5, clusterCenterLon = 114.0;
+      const dLon = city.lon - clusterCenterLon;
+      const dLat = city.lat - clusterCenterLat;
+      const angle = Math.atan2(dLon, dLat); // 弧度：东为0，西为±π
+      const spreadR = 0.18; // 扇形半径
 
-      // 初始短线（碰撞检测后会更新起点到坐标点，拉长或缩短）
-      const flagLineGeo = new THREE.BufferGeometry().setFromPoints([pos, flagPos.clone()]);
+      const flagPos = pos.clone();
+      // 计算切线方向
+      const normal = flagPos.clone().normalize();
+      const tangentX = new THREE.Vector3(0, 1, 0).cross(normal).normalize();
+      const tangentZ = normal.clone().cross(tangentX);
+      flagPos.addScaledVector(tangentX, Math.cos(angle) * spreadR);
+      flagPos.addScaledVector(tangentZ, Math.sin(angle) * spreadR);
+
+      const flagLineGeo = new THREE.BufferGeometry().setFromPoints([pos.clone(), flagPos.clone()]);
       const flagLine = new THREE.Line(flagLineGeo, new THREE.LineBasicMaterial({ color: 0xff6b6b, transparent: true, opacity: 0.9 }));
       flagLine.userData.city = city;
       markerGroup.add(flagLine);
