@@ -319,6 +319,7 @@ function createCityMarkers() {
       flagLabel.userData.isFlag = true;
       flagLabel.userData.line = flagLine;
       markerGroup.add(flagLabel);
+      return;
     } else if (city.isTaiwan || city.isHK || city.isMacau) {
       // 港澳台：略大蓝点
       const dot = new THREE.Mesh(
