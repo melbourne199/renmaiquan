@@ -390,7 +390,7 @@ function fixLabelCollision() {
   const labels = cityLabels.filter(l => {
     const city = l.userData.city;
     if (!city || city.isBeijing || city.offset) return false;
-    if (isOverview && city.isIsland && !['钓鱼岛', '永兴岛', '南沙群岛'].includes(city.name)) return false;
+    if (isOverview && city.isIsland) return false;
     if (isOverview && !city.isIsland && city.provided < 40 && city.help < 6 && !city.isTaiwan && !city.isHK && !city.isMacau) return false;
     return true;
   });
@@ -812,7 +812,7 @@ function animate() {
 
     if (isOverview) {
       if (city.isIsland) {
-        visible = isFront && ['钓鱼岛', '永兴岛', '南沙群岛'].includes(city.name);
+        visible = isFront; // 所有中国岛礁一级显示，一直可见
       } else {
         visible = isFront && (city.isBeijing || city.isTaiwan || city.isHK || city.isMacau || city.provided >= 60 || city.help >= 10);
       }
