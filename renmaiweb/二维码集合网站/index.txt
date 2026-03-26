@@ -1,0 +1,8 @@
+qr-platform/
+├── index.html          # 首页（已有，见下方完整代码）
+├── login.html          # 登录页（微信登录模拟）
+├── register.html       # 注册页
+├── upload.html         # 上传群码页
+├── details.html        # 详情页（需登录）
+├── admin.html          # 后台管理页（需管理员权限）
+└── style.css           # 公共样式（内嵌在各自页面，也可提取）

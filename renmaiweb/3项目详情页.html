@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>项目详情页预览 · 资源夜市</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+        body {
+            background: #f2f2f2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+        }
+        .preview-title {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 30px;
+            color: #1d1d1f;
+        }
+        .mockup-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 40px;
+            width: 100%;
+            max-width: 1400px;
+        }
+        /* 手机模拟 */
+        .phone-mock {
+            width: 360px;
+            background: #ffffff;
+            border-radius: 44px;
+            overflow: hidden;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.12), 0 0 0 8px #e8e8ed;
+            height: 720px;
+            display: flex;
+            flex-direction: column;
+        }
+        .phone-status {
+            background: #fff;
+            padding: 12px 20px 6px;
+            font-size: 0.75rem;
+            color: #1d1d1f;
+            display: flex;
+            justify-content: space-between;
+            font-weight: 500;
+        }
+        .phone-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px;
+            scrollbar-width: none;
+        }
+        .phone-content::-webkit-scrollbar {
+            display: none;
+        }
+        /* 返回栏 */
+        .nav-bar {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+        .back-icon {
+            font-size: 1.5rem;
+            line-height: 1;
+            color: #0071E3;
+        }
+        .page-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #1d1d1f;
+        }
+        /* 项目基本信息 */
+        .project-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 4px;
+            color: #1d1d1f;
+        }
+        .project-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px 16px;
+            color: #6e6e73;
+            font-size: 0.9rem;
+            margin-bottom: 16px;
+        }
+        /* 卡片样式 */
+        .info-card {
+            background: #f9f9fb;
+            border-radius: 20px;
+            padding: 16px;
+            margin-bottom: 20px;
+            border: 1px solid #f0f0f0;
+        }
+        .section-title {
+            font-weight: 600;
+            font-size: 1rem;
+            margin-bottom: 8px;
+            color: #1d1d1f;
+        }
+        .info-text {
+            color: #3a3a3c;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            margin-bottom: 12px;
+        }
+        .info-row {
+            display: flex;
+            margin-bottom: 12px;
+        }
+        .info-label {
+            width: 70px;
+            font-weight: 500;
+            color: #1d1d1f;
+        }
+        .info-value {
+            flex: 1;
+            color: #3a3a3c;
+        }
+        .tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 8px;
+        }
+        .tag {
+            background: #e8e8ed;
+            color: #1d1d1f;
+            padding: 4px 10px;
+            border-radius: 30px;
+            font-size: 0.7rem;
+        }
+        .divider {
+            border-top: 1px solid #f0f0f0;
+            margin: 16px 0;
+        }
+        /* 发布者信息 */
+        .publisher-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        .avatar {
+            width: 40px;
+            height: 40px;
+            background: #e0e0e0;
+            border-radius: 20px;
+        }
+        .publisher-detail {
+            flex: 1;
+        }
+        .publisher-name {
+            font-weight: 500;
+            color: #1d1d1f;
+        }
+        .publisher-meta {
+            font-size: 0.8rem;
+            color: #6e6e73;
+        }
+        /* 联系方式提示 */
+        .contact-hidden {
+            background: #f0f0f5;
+            border-radius: 30px;
+            padding: 12px 16px;
+            color: #6e6e73;
+            font-size: 0.9rem;
+            text-align: center;
+            margin: 16px 0;
+            border: 1px dashed #aaa;
+        }
+        .contact-hidden span {
+            color: #0071E3;
+            font-weight: 500;
+        }
+        /* 推荐按钮 */
+        .refer-btn {
+            background: #0071E3;
+            color: white;
+            border: none;
+            padding: 16px;
+            border-radius: 60px;
+            font-size: 1.1rem;
+            font-weight: 500;
+            width: 100%;
+            margin: 16px 0;
+            cursor: default;
+        }
+        .stats-row {
+            display: flex;
+            justify-content: space-between;
+            color: #6e6e73;
+            font-size: 0.9rem;
+            margin: 16px 0;
+        }
+        /* 电脑模拟 */
+        .desktop-mock {
+            width: 900px;
+            background: #ffffff;
+            border-radius: 24px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.15);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: 560px;
+        }
+        .desktop-header {
+            padding: 20px 30px 0;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+        .desktop-content {
+            padding: 20px 30px;
+            flex: 1;
+            overflow-y: auto;
+            display: flex;
+            gap: 40px;
+        }
+        .desktop-left {
+            flex: 1.5;
+        }
+        .desktop-right {
+            flex: 1;
+        }
+        .desktop-right .info-card {
+            margin-top: 0;
+        }
+        .desktop-mock .refer-btn {
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div class="preview-title">📱 项目详情页预览 · 包含描述/诉求/进展</div>
+    <div class="mockup-container">
+        <!-- 手机模拟：项目详情 -->
+        <div class="phone-mock">
+            <div class="phone-status">
+                <span>9:41</span>
+                <span>📶 🔋 100%</span>
+            </div>
+            <div class="phone-content">
+                <div class="nav-bar">
+                    <span class="back-icon">←</span>
+                    <span class="page-title">项目详情</span>
+                </div>
+                <div class="project-title">高端制造融资项目</div>
+                <div class="project-meta">
+                    <span>💰 体量 500万</span>
+                    <span>📍 深圳</span>
+                    <span>⏳ 剩余 12天</span>
+                </div>
+
+                <!-- 项目基本描述 -->
+                <div class="info-card">
+                    <div class="section-title">📄 项目简介</div>
+                    <div class="info-text">专注于精密零部件加工的硬科技企业，拥有3项发明专利，已为头部车企提供样品。现寻求A轮融资用于扩建产线和市场推广。</div>
+                </div>
+
+                <!-- 诉求与进展 -->
+                <div class="info-card">
+                    <div class="info-row">
+                        <div class="info-label">诉求</div>
+                        <div class="info-value">寻找产业投资方，可出让15%股权，已有核心技术专利</div>
+                    </div>
+                    <div class="info-row">
+                        <div class="info-label">进展</div>
+                        <div class="info-value">已完成样机，小批量试产，需资金扩大产能</div>
+                    </div>
+                    <div class="tags">
+                        <span class="tag">高端制造</span>
+                        <span class="tag">B轮</span>
+                        <span class="tag">硬科技</span>
+                    </div>
+                </div>
+
+                <!-- 发布者信息 -->
+                <div class="publisher-info">
+                    <div class="avatar"></div>
+                    <div class="publisher-detail">
+                        <div class="publisher-name">张先生 · 项目方</div>
+                        <div class="publisher-meta">高级会员 · 2024-12-01 发布</div>
+                    </div>
+                </div>
+
+                <!-- 联系方式隐藏提示 -->
+                <div class="contact-hidden">
+                    🔒 联系方式仅引荐后可见 <span>推荐给朋友</span> 获取
+                </div>
+
+                <!-- 推荐按钮 -->
+                <button class="refer-btn">🤝 推荐给朋友</button>
+
+                <div class="stats-row">
+                    <span>📢 已有 5 人推荐</span>
+                    <span>💰 累计积分 2,800</span>
+                </div>
+
+                <div style="color:#8e8e93; font-size:0.7rem; text-align:center; padding:12px;">
+                    成功引荐项目成交，一级引荐人共享60%居间服务费
+                </div>
+            </div>
+        </div>
+
+        <!-- 电脑模拟：项目详情 两栏布局 -->
+        <div class="desktop-mock">
+            <div class="desktop-header">
+                <span class="back-icon" style="font-size:1.8rem;">←</span>
+                <span class="page-title" style="font-size:1.4rem;">项目详情</span>
+            </div>
+            <div class="desktop-content">
+                <div class="desktop-left">
+                    <div class="project-title" style="font-size:1.8rem;">高端制造融资项目</div>
+                    <div class="project-meta" style="font-size:1rem; gap:30px;">
+                        <span>💰 体量 500万</span>
+                        <span>📍 深圳</span>
+                        <span>⏳ 剩余 12天</span>
+                    </div>
+
+                    <div class="info-card" style="margin-top:20px;">
+                        <div class="section-title">📄 项目简介</div>
+                        <div class="info-text">专注于精密零部件加工的硬科技企业，拥有3项发明专利，已为头部车企提供样品。现寻求A轮融资用于扩建产线和市场推广。</div>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="info-row">
+                            <div class="info-label" style="width:100px;">诉求</div>
+                            <div class="info-value">寻找产业投资方，可出让15%股权，已有核心技术专利</div>
+                        </div>
+                        <div class="info-row">
+                            <div class="info-label" style="width:100px;">进展</div>
+                            <div class="info-value">已完成样机，小批量试产，需资金扩大产能</div>
+                        </div>
+                        <div class="tags" style="margin-top:16px;">
+                            <span class="tag">高端制造</span>
+                            <span class="tag">B轮</span>
+                            <span class="tag">硬科技</span>
+                        </div>
+                    </div>
+
+                    <div class="publisher-info" style="margin-top:20px;">
+                        <div class="avatar"></div>
+                        <div class="publisher-detail">
+                            <div class="publisher-name">张先生 · 项目方</div>
+                            <div class="publisher-meta">高级会员 · 2024-12-01 发布</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="desktop-right">
+                    <div class="info-card">
+                        <div style="font-weight:600; margin-bottom:16px;">📊 引荐信息</div>
+                        <div class="stats-row" style="justify-content: flex-start; gap:30px;">
+                            <span>📢 5人推荐</span>
+                            <span>💰 累计积分 2,800</span>
+                        </div>
+                        <div class="contact-hidden" style="margin:20px 0;">
+                            🔒 联系方式仅引荐后可见
+                        </div>
+                        <button class="refer-btn" style="margin:0 0 16px;">🤝 推荐给朋友</button>
+                        <div style="color:#8e8e93; font-size:0.8rem;">
+                            * 成功引荐项目成交，一级引荐人共享60%居间服务费
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <p style="margin-top: 40px; color: #6e6e73;">✅ 已增加“项目简介”独立描述，与诉求、进展分开，信息更清晰。</p>
+</body>
+</html>

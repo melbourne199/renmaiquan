@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>资源夜市 · 登录</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+        }
+        body {
+            background: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 15px;
+        }
+        .phone-frame {
+            width: 375px;
+            background: #0b0b0b;
+            border-radius: 40px;
+            overflow: hidden;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.8);
+            border: 1px solid #3a2e1c;
+        }
+        .phone-screen {
+            height: 700px;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            background: #0b0b0b;
+            scrollbar-width: none;
+            padding-bottom: 20px;
+        }
+        .phone-screen::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* 顶部导航 */
+        .nav-bar {
+            display: flex;
+            align-items: center;
+            padding: 16px 16px 8px;
+            border-bottom: 1px solid #3a2e1a;
+            background: #0b0b0b;
+        }
+        .back-btn {
+            font-size: 1.5rem;
+            color: #b4a582;
+            cursor: pointer;
+            width: 32px;
+            text-align: left;
+        }
+        .nav-title {
+            flex: 1;
+            text-align: center;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #cfb87c;
+        }
+        .placeholder {
+            width: 32px;
+        }
+
+        /* 登录内容 */
+        .login-content {
+            padding: 30px 24px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Logo 区域 */
+        .logo-area {
+            margin-bottom: 40px;
+            text-align: center;
+        }
+        .logo-circle {
+            width: 80px;
+            height: 80px;
+            background: #1a170f;
+            border: 2px solid #cfb87c;
+            border-radius: 50%;
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            color: #cfb87c;
+        }
+        .logo-area h1 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: #cfb87c;
+            letter-spacing: 1px;
+        }
+        .logo-area p {
+            font-size: 0.8rem;
+            color: #b4a582;
+            margin-top: 5px;
+        }
+
+        /* 表单 */
+        .form-group {
+            width: 100%;
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            font-size: 0.8rem;
+            color: #b4a582;
+            margin-bottom: 6px;
+            letter-spacing: 0.5px;
+        }
+        .input-wrapper {
+            width: 100%;
+            background: #1a170f;
+            border: 1px solid #5f512f;
+            border-radius: 30px;
+            padding: 14px 20px;
+            transition: border 0.2s;
+        }
+        .input-wrapper:focus-within {
+            border-color: #cfb87c;
+        }
+        .input-wrapper input {
+            width: 100%;
+            background: transparent;
+            border: none;
+            outline: none;
+            color: #f0e2c5;
+            font-size: 1rem;
+        }
+        .input-wrapper input::placeholder {
+            color: #5f543b;
+            font-size: 0.9rem;
+        }
+
+        /* 登录按钮 */
+        .login-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #D6B26E, #E6C37A);
+            border: none;
+            border-radius: 40px;
+            padding: 16px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #121212;
+            cursor: pointer;
+            transition: 0.2s;
+            margin-top: 20px;
+            margin-bottom: 30px;
+        }
+        .login-btn:active {
+            transform: scale(0.98);
+            opacity: 0.9;
+        }
+
+        /* 额外链接 */
+        .extra-links {
+            text-align: center;
+        }
+        .extra-links a {
+            color: #b4a582;
+            text-decoration: none;
+            font-size: 0.9rem;
+            margin: 0 10px;
+        }
+        .extra-links a:hover {
+            color: #cfb87c;
+        }
+        .register-link {
+            margin-top: 15px;
+        }
+        .register-link span {
+            color: #5f543b;
+        }
+        .register-link a {
+            color: #cfb87c;
+            font-weight: 500;
+        }
+
+        /* 分隔线 */
+        .divider {
+            width: 100%;
+            text-align: center;
+            margin: 30px 0 15px;
+            position: relative;
+        }
+        .divider::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: #3a2e1a;
+            z-index: 1;
+        }
+        .divider span {
+            background: #0b0b0b;
+            padding: 0 15px;
+            color: #5f543b;
+            font-size: 0.8rem;
+            position: relative;
+            z-index: 2;
+        }
+    </style>
+</head>
+<body>
+    <div class="phone-frame">
+        <div class="phone-screen">
+            <!-- 顶部导航 -->
+            <div class="nav-bar">
+                <div class="back-btn" onclick="alert('返回首页')">←</div>
+                <div class="nav-title">登录</div>
+                <div class="placeholder"></div>
+            </div>
+
+            <!-- 登录内容 -->
+            <div class="login-content">
+                <!-- Logo 区域 -->
+                <div class="logo-area">
+                    <div class="logo-circle">⛩️</div>
+                    <h1>资源夜市</h1>
+                    <p>让连接更有价值</p>
+                </div>
+
+                <!-- 表单 -->
+                <div class="form-group">
+                    <label>用户名</label>
+                    <div class="input-wrapper">
+                        <input type="text" placeholder="请输入用户名">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>密码</label>
+                    <div class="input-wrapper">
+                        <input type="password" placeholder="请输入密码">
+                    </div>
+                </div>
+
+                <button class="login-btn" onclick="alert('登录成功（演示）')">登录</button>
+
+                <!-- 额外链接 -->
+                <div class="extra-links">
+                    <a href="#" onclick="alert('忘记密码')">忘记密码？</a>
+                </div>
+
+                <div class="divider">
+                    <span>还没有账号？</span>
+                </div>
+
+                <div class="register-link">
+                    <span>立即</span>
+                    <a href="#" onclick="alert('跳转注册页')">注册</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

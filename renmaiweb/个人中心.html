@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>资源夜市 · 用户中心</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+        }
+        body {
+            background: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 15px;
+        }
+        .phone-frame {
+            width: 375px;
+            background: #0b0b0b;
+            border-radius: 40px;
+            overflow: hidden;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.8);
+            border: 1px solid #3a2e1c;
+        }
+        .phone-screen {
+            height: 700px;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            background: #0b0b0b;
+            scrollbar-width: none;
+            padding-bottom: 20px;
+        }
+        .phone-screen::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* 顶部导航 */
+        .nav-bar {
+            display: flex;
+            align-items: center;
+            padding: 16px 16px 8px;
+            border-bottom: 1px solid #3a2e1a;
+            background: #0b0b0b;
+        }
+        .back-btn {
+            font-size: 1.5rem;
+            color: #b4a582;
+            cursor: pointer;
+            width: 32px;
+            text-align: left;
+        }
+        .nav-title {
+            flex: 1;
+            text-align: center;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #cfb87c;
+        }
+        .placeholder {
+            width: 32px;
+        }
+
+        /* 用户中心内容 */
+        .user-content {
+            padding: 16px;
+        }
+
+        /* 用户信息卡片 */
+        .user-card {
+            background: #1a170f;
+            border: 1px solid #5f512f;
+            border-radius: 24px;
+            padding: 20px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .avatar {
+            width: 60px;
+            height: 60px;
+            background: #2b251b;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: #cfb87c;
+            border: 2px solid #cfb87c;
+        }
+        .user-info {
+            flex: 1;
+        }
+        .user-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #f0e2c5;
+            margin-bottom: 4px;
+        }
+        .user-level {
+            display: inline-block;
+            background: #cfb87c20;
+            color: #cfb87c;
+            font-size: 0.7rem;
+            padding: 4px 10px;
+            border-radius: 30px;
+            border: 1px solid #cfb87c;
+            margin-bottom: 6px;
+        }
+        .user-stats {
+            display: flex;
+            gap: 20px;
+            font-size: 0.85rem;
+            color: #b4a582;
+        }
+        .user-stats span i {
+            margin-right: 4px;
+        }
+
+        /* 积分/次数卡片 */
+        .stats-card {
+            background: #1a170f;
+            border: 1px solid #5f512f;
+            border-radius: 20px;
+            padding: 16px;
+            margin-bottom: 24px;
+            display: flex;
+            justify-content: space-around;
+            text-align: center;
+        }
+        .stat-item {
+            flex: 1;
+        }
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #cfb87c;
+        }
+        .stat-label {
+            font-size: 0.7rem;
+            color: #b4a582;
+        }
+
+        /* 功能入口网格 */
+        .grid-title {
+            font-size: 1rem;
+            color: #e0d6bf;
+            margin-bottom: 12px;
+            padding-left: 4px;
+        }
+        .grid-menu {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 30px;
+        }
+        .grid-item {
+            background: #1a170f;
+            border: 1px solid #5f512f;
+            border-radius: 20px;
+            padding: 16px 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .grid-item:active {
+            transform: scale(0.96);
+            background: #1f1b14;
+        }
+        .grid-icon {
+            font-size: 1.8rem;
+            margin-bottom: 8px;
+            color: #cfb87c;
+        }
+        .grid-label {
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: #f0e2c5;
+        }
+
+        /* 底部菜单 */
+        .bottom-nav {
+            flex-shrink: 0;
+            height: 60px;
+            background: #121212;
+            border-top: 1px solid #3a2e1a;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            font-size: 0.7rem;
+            color: #b4a582;
+            z-index: 10;
+            margin-top: auto;
+        }
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            cursor: pointer;
+            flex: 1;
+            height: 100%;
+            text-align: center;
+        }
+        .nav-item.active {
+            color: #cfb87c;
+        }
+        .nav-item i {
+            font-size: 1.2rem;
+            line-height: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="phone-frame">
+        <div class="phone-screen">
+            <!-- 顶部导航 -->
+            <div class="nav-bar">
+                <div class="back-btn" onclick="alert('返回首页')">←</div>
+                <div class="nav-title">个人中心</div>
+                <div class="placeholder"></div>
+            </div>
+
+            <!-- 用户中心内容 -->
+            <div class="user-content">
+                <!-- 用户信息卡片 -->
+                <div class="user-card">
+                    <div class="avatar">👤</div>
+                    <div class="user-info">
+                        <div class="user-name">资源猎人</div>
+                        <div class="user-level">高级会员</div>
+                        <div class="user-stats">
+                            <span><i>📅</i> 加入 86天</span>
+                            <span><i>👥</i> 引荐 12人</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 积分/次数卡片 -->
+                <div class="stats-card">
+                    <div class="stat-item">
+                        <div class="stat-value">1,280</div>
+                        <div class="stat-label">积分余额</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">2/3</div>
+                        <div class="stat-label">免费群剩余</div>
+                    </div>
+                </div>
+
+                <!-- 功能入口网格 -->
+                <div class="grid-title">常用功能</div>
+                <div class="grid-menu">
+                    <div class="grid-item" onclick="alert('升级会员')">
+                        <div class="grid-icon">⭐</div>
+                        <div class="grid-label">升级会员</div>
+                    </div>
+                    <div class="grid-item" onclick="alert('我的群')">
+                        <div class="grid-icon">👥</div>
+                        <div class="grid-label">我的群</div>
+                    </div>
+                    <div class="grid-item" onclick="alert('引荐记录')">
+                        <div class="grid-icon">🔗</div>
+                        <div class="grid-label">引荐记录</div>
+                    </div>
+                    <div class="grid-item" onclick="alert('项目分成')">
+                        <div class="grid-icon">💰</div>
+                        <div class="grid-label">项目分成</div>
+                    </div>
+                    <div class="grid-item" onclick="alert('提现申请')">
+                        <div class="grid-icon">💸</div>
+                        <div class="grid-label">提现申请</div>
+                    </div>
+                    <div class="grid-item" onclick="alert('申请记录')">
+                        <div class="grid-icon">📋</div>
+                        <div class="grid-label">申请记录</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 底部菜单 -->
+            <nav class="bottom-nav">
+                <div class="nav-item"><i>🏠</i><span>首页</span></div>
+                <div class="nav-item"><i>📤</i><span>发布我的群码</span></div>
+                <div class="nav-item active"><i>👤</i><span>我的</span></div>
+            </nav>
+        </div>
+    </div>
+</body>
+</html>

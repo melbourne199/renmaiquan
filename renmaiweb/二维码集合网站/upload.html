@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>上传群码 · 资源夜市</title>
+    <style>
+        /* 样式与之前一致（此处保持简洁） */
+        * { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI',sans-serif; }
+        body { background:#0b0b0b; color:#e0d6bf; padding:20px; }
+        .container { max-width:800px; margin:0 auto; }
+        .header { text-align:center; margin-bottom:30px; }
+        .header h1 { font-size:2.2rem; color:#cfb87c; border-bottom:1px solid #3a2e1a; display:inline-block; padding-bottom:10px; }
+        .upload-card { background:#1a170f; border-radius:40px; padding:30px; border:1px solid #3a2e1c; }
+        .form-group { margin-bottom:25px; position:relative; }
+        .form-group label { display:block; color:#c9bc9f; margin-bottom:8px; }
+        .form-group input, .form-group textarea {
+            width:100%; background:#26221a; border:1px solid #52472e; border-radius:30px; padding:14px 20px; color:#f0e2c5; font-size:1rem; outline:none;
+        }
+        .form-group input:focus, .form-group textarea:focus { border-color:#b99b4b; }
+        .form-group textarea { border-radius:20px; resize:vertical; min-height:80px; }
+        .btn {
+            background:#b99b4b; border:none; color:#0b0b0b; padding:16px 30px; border-radius:40px; font-size:1.1rem; font-weight:600; width:100%; cursor:pointer; margin-top:20px;
+        }
+        .btn:hover { background:#dbb35c; }
+        .back-link { display:block; text-align:center; margin-top:20px; color:#a0937e; text-decoration:none; }
+        .back-link:hover { color:#cfb87c; }
+        .note { font-size:0.8rem; color:#5f543b; text-align:center; margin-top:10px; }
+        .preview-container { margin-top:15px; display:flex; gap:15px; flex-wrap:wrap; align-items:center; }
+        .preview-box { background:#2f2a1f; border-radius:20px; padding:10px; border:1px solid #52472e; }
+        .preview-box p { margin-bottom:8px; color:#b4a582; }
+        .preview-box canvas { width:150px; height:150px; border-radius:12px; border:1px solid #b99b4b; }
+        .char-counter { text-align:right; color:#5f543b; font-size:0.8rem; margin-top:5px; }
+        .char-counter span { color:#b99b4b; }
+        /* 自动补全下拉框 */
+        .autocomplete-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: #2f2a1f;
+            border: 1px solid #b99b4b;
+            border-radius: 20px;
+            margin-top: 5px;
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 1000;
+            display: none;
+        }
+        .autocomplete-dropdown.active { display: block; }
+        .suggestion-item {
+            padding: 12px 20px;
+            color: #e9d9b4;
+            cursor: pointer;
+            border-bottom: 1px solid #3f3627;
+        }
+        .suggestion-item:last-child { border-bottom: none; }
+        .suggestion-item:hover { background: #3f3627; }
+        .suggestion-item mark { background: #b99b4b; color: #0b0b0b; padding: 0 2px; border-radius: 4px; }
+    </style>
+    <!-- 引入外部地区数据 -->
+    <script src="region-data.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/pinyin-match@1.2.0/dist/pinyin-match.min.js"></script>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1 id="pageTitle">📤 上传群码</h1>
+    </div>
+    <div class="upload-card">
+        <form id="uploadForm">
+            <div class="form-group">
+                <label>群名称 *</label>
+                <input type="text" id="name" maxlength="10" placeholder="最多10字" required>
+                <div class="char-counter"><span id="nameCount">0</span>/10</div>
+            </div>
+            <div class="form-group">
+                <label>行业 *</label>
+                <input type="text" id="industry" maxlength="4" placeholder="最多4字" autocomplete="off" required>
+                <div id="industryDropdown" class="autocomplete-dropdown"></div>
+            </div>
+            <div class="form-group">
+                <label>群简介 *</label>
+                <textarea id="description" placeholder="介绍群的主题、人群等" required></textarea>
+            </div>
+            <div class="form-group">
+                <label>地区 *</label>
+                <input type="text" id="region" placeholder="例：深圳市" autocomplete="off" required>
+                <div id="regionDropdown" class="autocomplete-dropdown"></div>
+            </div>
+            <div class="form-group">
+                <label>上传二维码图片</label>
+                <input type="file" id="qrImage" accept="image/*">
+                <div id="previewArea" class="preview-container" style="display:none;">
+                    <div class="preview-box"><p>原图</p><canvas id="originalPreview" width="150" height="150"></canvas></div>
+                    <div class="preview-box"><p>裁剪后</p><canvas id="croppedPreview" width="150" height="150"></canvas></div>
+                </div>
+                <div id="cropStatus" style="color:#b99b4b; margin-top:8px;"></div>
+            </div>
+            <input type="hidden" id="croppedImageData">
+            <input type="hidden" id="editId">
+            <input type="hidden" id="originalMembers" value="0">
+            <button type="button" class="btn" id="submitBtn">提交发布</button>
+        </form>
+        <a href="index.html" class="back-link">← 返回首页</a>
+        <div class="note">群名称最多10字，行业最多4字。二维码将自动裁剪。支持拼音补全。</div>
+    </div>
+</div>
+
+<script>
+    const token = sessionStorage.getItem('token');
+    if (!token) { alert('请先登录'); window.location.href = 'login.html'; }
+
+    // 行业数据（保留内联，较小）
+    const industryData = [
+        { name: 'IT互联网', keywords: 'IT互联网,it,互联,wangluo' },
+        { name: '教育培训', keywords: '教育,培训,学校,老师,学生,辅导,jiaoyu' },
+        { name: '金融投资', keywords: '金融,投资,理财,保险,股票,基金,银行,jinrong' },
+        { name: '房地产', keywords: '地产,房产,楼盘,置业,中介,fangdichan' },
+        { name: '餐饮美食', keywords: '餐饮,美食,饭店,餐厅,外卖,can yin' },
+        { name: '医疗健康', keywords: '医疗,医院,医生,诊所,健康,药品,yiliao' },
+        { name: '旅游出行', keywords: '旅游,旅行,景点,酒店,机票,lvyou' },
+        { name: '制造业', keywords: '制造,工厂,生产,工业,机械,zhizao' },
+        { name: '物流运输', keywords: '物流,快递,运输,仓储,wuliu' },
+        { name: '服装服饰', keywords: '服装,服饰,鞋,包,时尚,fuzhuang' },
+        { name: '电商', keywords: '电商,淘宝,拼多多,京东,微商,dianshang' },
+        { name: '新媒体', keywords: '新媒体,短视频,抖音,快手,小红书' },
+        { name: '广告营销', keywords: '广告,营销,公关,推广,策划' },
+        { name: '建筑设计', keywords: '建筑,设计,室内,装修,园林' },
+        { name: '法律咨询', keywords: '法律,律师,咨询,法务' },
+        { name: '财税会计', keywords: '财务,税务,会计,记账' },
+        { name: '人力资源', keywords: '人力资源,招聘,猎头,hr' },
+        { name: '行政管理', keywords: '行政,管理,文秘,助理' },
+        { name: '销售', keywords: '销售,业务,市场,渠道' },
+        { name: '客服', keywords: '客服,售后,服务' },
+        { name: '供应链', keywords: '供应链,采购,供应商' },
+        { name: '进出口贸易', keywords: '进出口,外贸,贸易,国际' },
+        { name: '能源', keywords: '能源,石油,煤炭,电力,新能源' },
+        { name: '环保', keywords: '环保,环境,绿化,生态' },
+        { name: '农业', keywords: '农业,农产品,种植,养殖' },
+        { name: '宠物', keywords: '宠物,猫,狗,动物' },
+        { name: '母婴', keywords: '母婴,育儿,宝宝,孕产' },
+        { name: '美妆', keywords: '美妆,化妆,护肤品,美容' },
+        { name: '健身', keywords: '健身,运动,瑜伽,体育' },
+        { name: '摄影', keywords: '摄影,拍照,摄像' },
+        { name: '音乐', keywords: '音乐,乐器,唱歌' },
+        { name: '游戏', keywords: '游戏,电竞,手游' },
+        { name: '区块链', keywords: '区块链,web3,比特币' },
+        { name: '人工智能', keywords: '人工智能,ai,算法' },
+        { name: '大数据', keywords: '大数据,数据,分析' },
+        { name: '云计算', keywords: '云计算,云服务' },
+        { name: '物联网', keywords: '物联网,iot' },
+        { name: '半导体', keywords: '半导体,芯片,集成电路' },
+        { name: '汽车', keywords: '汽车,新能源车,汽修' },
+        { name: '交通', keywords: '交通,运输,铁路,航空' },
+        { name: '政府机构', keywords: '政府,事业单位,机关' },
+        { name: '非营利组织', keywords: '非营利,公益,npo' },
+        { name: '其他', keywords: '其他,其它' }
+    ];
+
+    // 自动补全函数
+    function setupAutocomplete(inputId, dropdownId, dataList, displayKey = 'name', searchFields = ['name', 'pinyin']) {
+        const input = document.getElementById(inputId);
+        const dropdown = document.getElementById(dropdownId);
+        let activeIndex = -1;
+        let currentMatched = [];
+
+        input.addEventListener('input', function(e) {
+            const query = e.target.value.trim();
+            if (query.length < 1) {
+                dropdown.classList.remove('active');
+                return;
+            }
+
+            const matched = dataList.filter(item => {
+                const nameMatch = window.pinyinMatch ? 
+                    window.pinyinMatch.match(item[displayKey], query) : 
+                    item[displayKey].toLowerCase().includes(query.toLowerCase());
+                
+                let pinyinMatch = false;
+                if (item.pinyin) {
+                    pinyinMatch = window.pinyinMatch ? 
+                        window.pinyinMatch.match(item.pinyin, query) : 
+                        item.pinyin.includes(query.toLowerCase());
+                }
+                
+                let keywordMatch = false;
+                if (item.keywords) {
+                    keywordMatch = item.keywords.toLowerCase().includes(query.toLowerCase());
+                }
+
+                return nameMatch || pinyinMatch || keywordMatch;
+            }).slice(0, 10);
+            
+            currentMatched = matched;
+
+            if (matched.length === 0) {
+                dropdown.classList.remove('active');
+                return;
+            }
+
+            let html = '';
+            matched.forEach((item, index) => {
+                const displayName = item.fullname || item.name;
+                html += `<div class="suggestion-item" data-index="${index}">${highlightText(displayName, query)}</div>`;
+            });
+            dropdown.innerHTML = html;
+            dropdown.classList.add('active');
+
+            dropdown.querySelectorAll('.suggestion-item').forEach((el, idx) => {
+                el.addEventListener('click', () => {
+                    input.value = matched[idx].fullname || matched[idx].name;
+                    dropdown.classList.remove('active');
+                });
+            });
+        });
+
+        document.addEventListener('click', function(e) {
+            if (!input.contains(e.target) && !dropdown.contains(e.target)) {
+                dropdown.classList.remove('active');
+            }
+        });
+    }
+
+    function highlightText(text, query) {
+        if (!query || !window.pinyinMatch) return text;
+        try {
+            const regex = new RegExp(`(${query})`, 'gi');
+            return text.replace(regex, '<mark>$1</mark>');
+        } catch (e) {
+            return text;
+        }
+    }
+
+    // 初始化自动补全（注意 regionData 来自外部文件）
+    window.onload = function() {
+        setupAutocomplete('industry', 'industryDropdown', industryData, 'name', ['name', 'keywords']);
+        if (typeof window.regionData !== 'undefined') {
+            setupAutocomplete('region', 'regionDropdown', window.regionData, 'fullname', ['fullname', 'pinyin']);
+        } else {
+            console.error('地区数据未加载');
+        }
+    };
+
+    // 字数统计
+    document.getElementById('name').addEventListener('input', function() {
+        document.getElementById('nameCount').innerText = this.value.length;
+    });
+
+    // 二维码裁剪（同前）
+    const fileInput = document.getElementById('qrImage');
+    const previewArea = document.getElementById('previewArea');
+    const originalCanvas = document.getElementById('originalPreview');
+    const croppedCanvas = document.getElementById('croppedPreview');
+    const cropStatus = document.getElementById('cropStatus');
+    let croppedBase64 = '';
+
+    fileInput.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (!file) { previewArea.style.display = 'none'; cropStatus.innerText = ''; return; }
+
+        const reader = new FileReader();
+        reader.onload = function(ev) {
+            const img = new Image();
+            img.onload = function() {
+                originalCanvas.width = 150; originalCanvas.height = 150;
+                originalCanvas.getContext('2d').drawImage(img, 0, 0, 150, 150);
+
+                try {
+                    const canvas = document.createElement('canvas');
+                    canvas.width = img.width; canvas.height = img.height;
+                    canvas.getContext('2d').drawImage(img, 0, 0);
+                    const imageData = canvas.getContext('2d').getImageData(0, 0, img.width, img.height);
+
+                    const code = jsQR(imageData.data, img.width, img.height, { inversionAttempts: "attemptBoth" });
+
+                    if (code) {
+                        const points = [code.location.topLeftCorner, code.location.topRightCorner, code.location.bottomRightCorner, code.location.bottomLeftCorner];
+                        let minX = img.width, minY = img.height, maxX = 0, maxY = 0;
+                        points.forEach(p => { minX = Math.min(minX, p.x); minY = Math.min(minY, p.y); maxX = Math.max(maxX, p.x); maxY = Math.max(maxY, p.y); });
+
+                        const side = Math.max(maxX - minX, maxY - minY);
+                        const padding = side * 0.1;
+                        let cropX = Math.max(0, minX - padding);
+                        let cropY = Math.max(0, minY - padding);
+                        let cropSize = Math.min(side + 2 * padding, img.width - cropX, img.height - cropY);
+
+                        croppedCanvas.width = 150; croppedCanvas.height = 150;
+                        croppedCanvas.getContext('2d').drawImage(img, cropX, cropY, cropSize, cropSize, 0, 0, 150, 150);
+
+                        const fullCanvas = document.createElement('canvas');
+                        fullCanvas.width = cropSize; fullCanvas.height = cropSize;
+                        fullCanvas.getContext('2d').drawImage(img, cropX, cropY, cropSize, cropSize, 0, 0, cropSize, cropSize);
+                        croppedBase64 = fullCanvas.toDataURL('image/png');
+                        cropStatus.innerText = '✅ 已自动裁剪二维码';
+                    } else {
+                        cropStatus.innerText = '⚠️ 未能识别二维码，将使用原图';
+                        croppedCanvas.width = 150; croppedCanvas.height = 150;
+                        croppedCanvas.getContext('2d').drawImage(img, 0, 0, 150, 150);
+                        const fullCanvas = document.createElement('canvas');
+                        fullCanvas.width = img.width; fullCanvas.height = img.height;
+                        fullCanvas.getContext('2d').drawImage(img, 0, 0);
+                        croppedBase64 = fullCanvas.toDataURL('image/png');
+                    }
+                    previewArea.style.display = 'flex';
+                } catch (err) {
+                    cropStatus.innerText = '❌ 处理出错';
+                }
+            };
+            img.src = ev.target.result;
+        };
+        reader.readAsDataURL(file);
+    });
+
+    // 编辑模式
+    const urlParams = new URLSearchParams(window.location.search);
+    const editId = urlParams.get('id');
+    if (editId) {
+        document.getElementById('editId').value = editId;
+        document.getElementById('pageTitle').innerText = '📝 编辑群码';
+        document.getElementById('submitBtn').innerText = '更新群码';
+        fetch(`/api/qrcodes/${editId}`)
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById('name').value = data.name || '';
+                document.getElementById('industry').value = data.industry || '';
+                document.getElementById('description').value = data.description || '';
+                document.getElementById('region').value = data.region || '';
+                document.getElementById('originalMembers').value = data.members || 0;
+            })
+            .catch(err => {
+                console.error(err);
+                alert('加载数据失败');
+            });
+    }
+
+    // 提交
+    document.getElementById('submitBtn').addEventListener('click', async function() {
+        const name = document.getElementById('name').value.trim();
+        const industry = document.getElementById('industry').value.trim();
+        const description = document.getElementById('description').value.trim();
+        const region = document.getElementById('region').value.trim();
+        const file = fileInput.files[0];
+        const id = document.getElementById('editId').value;
+
+        if (!name || !industry || !description || !region) {
+            alert('请填写所有必填项');
+            return;
+        }
+
+        if (!id && !file) {
+            alert('请上传二维码图片');
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('name', name.slice(0, 10));
+        formData.append('industry', industry);
+        formData.append('description', description);
+        formData.append('region', region);
+
+        // 编辑时使用原members，新增时随机
+        if (id) {
+            const originalMembers = document.getElementById('originalMembers').value;
+            formData.append('members', originalMembers);
+        } else {
+            formData.append('members', Math.floor(Math.random() * 291) + 10);
+        }
+
+        if (file) {
+            if (croppedBase64) {
+                const blob = await (await fetch(croppedBase64)).blob();
+                formData.append('qrImage', blob, 'qrcode.png');
+            } else {
+                formData.append('qrImage', file);
+            }
+        }
+
+        const url = id ? `/api/admin/qrcodes/${id}` : '/api/qrcodes';
+        const method = id ? 'PUT' : 'POST';
+
+        try {
+            const res = await fetch(url, {
+                method: method,
+                headers: { 'Authorization': 'Bearer ' + token },
+                body: formData
+            });
+            const data = await res.json();
+            if (data.success) {
+                alert(id ? '更新成功！' : '发布成功！');
+                window.location.href = id ? 'admin.html' : 'index.html';
+            } else {
+                alert('操作失败：' + (data.error || '未知错误'));
+            }
+        } catch (err) {
+            alert('网络错误');
+        }
+    });
+</script>
+</body>
+</html>

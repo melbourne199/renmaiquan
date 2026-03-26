@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>注册 · 资源夜市</title>
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI',sans-serif; }
+        body { background:#0b0b0b; color:#e0d6bf; padding:20px; min-height:100vh; display:flex; align-items:center; justify-content:center; }
+        .register-card {
+            background: #1a170f;
+            border-radius: 40px;
+            padding: 40px;
+            border: 1px solid #3a2e1c;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.6);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+        .register-card h2 {
+            color: #cfb87c;
+            font-size: 2rem;
+            font-weight: 400;
+            margin-bottom: 30px;
+            border-bottom: 1px solid #3a2e1a;
+            padding-bottom: 10px;
+        }
+        .register-card input {
+            width: 100%;
+            background: #26221a;
+            border: 1px solid #52472e;
+            border-radius: 40px;
+            padding: 14px 20px;
+            color: #f0e2c5;
+            font-size: 1rem;
+            outline: none;
+            margin-bottom: 20px;
+        }
+        .register-card button {
+            background: #b99b4b;
+            border: none;
+            color: #0b0b0b;
+            padding: 14px 20px;
+            border-radius: 40px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            width: 100%;
+            cursor: pointer;
+            transition: 0.2s;
+            margin-bottom: 15px;
+        }
+        .register-card button:hover {
+            background: #dbb35c;
+        }
+        .register-card a {
+            color: #a0937e;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+        .register-card a:hover {
+            color: #cfb87c;
+        }
+        .note {
+            margin-top: 20px;
+            color: #5f543b;
+            font-size: 0.8rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="register-card">
+        <h2>注册</h2>
+        <input type="text" id="username" placeholder="用户名">
+        <input type="password" id="password" placeholder="密码">
+        <input type="password" id="confirmPassword" placeholder="确认密码">
+        <button id="registerBtn">注册</button>
+        <div style="margin-top: 20px;">
+            <a href="login.html">已有账号？登录</a> | <a href="index.html">返回首页</a>
+        </div>
+        <div class="note">注册后自动登录</div>
+    </div>
+    <script>
+        async function register() {
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+            const confirm = document.getElementById('confirmPassword').value;
+
+            if (!username || !password || !confirm) {
+                alert('用户名和密码不能为空');
+                return;
+            }
+            if (password !== confirm) {
+                alert('两次输入的密码不一致');
+                return;
+            }
+
+            const res = await fetch('/api/auth/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, password })
+            });
+            const data = await res.json();
+            if (data.success) {
+                sessionStorage.setItem('token', data.token);
+                sessionStorage.setItem('user', JSON.stringify(data.user));
+                window.location.href = 'index.html';
+            } else {
+                alert(data.error || '注册失败');
+            }
+        }
+        document.getElementById('registerBtn').addEventListener('click', register);
+    </script>
+</body>
+</html>

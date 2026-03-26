@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>资源夜市 · 群详情页</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+        }
+        body {
+            background: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 15px;
+        }
+        .phone-frame {
+            width: 375px;
+            background: #0b0b0b;
+            border-radius: 40px;
+            overflow: hidden;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.8);
+            border: 1px solid #3a2e1c;
+        }
+        .phone-screen {
+            height: 700px;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            background: #0b0b0b;
+            scrollbar-width: none;
+            padding-bottom: 20px; /* 底部留白，防止贴边 */
+        }
+        .phone-screen::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* 顶部导航 */
+        .nav-bar {
+            display: flex;
+            align-items: center;
+            padding: 16px 16px 8px;
+            border-bottom: 1px solid #3a2e1a;
+            background: #0b0b0b;
+        }
+        .back-btn {
+            font-size: 1.5rem;
+            color: #b4a582;
+            cursor: pointer;
+            width: 32px;
+            text-align: left;
+        }
+        .nav-title {
+            flex: 1;
+            text-align: center;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #cfb87c;
+        }
+        .placeholder {
+            width: 32px;
+        }
+
+        /* 详情内容 */
+        .detail-card {
+            padding: 16px;
+        }
+
+        /* 群头信息 */
+        .group-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+        .group-name {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #f0e2c5;
+        }
+        .group-tag {
+            background: #cfb87c;
+            color: #121212;
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 30px;
+        }
+        .group-tag.senior {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .meta-row {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 16px;
+            font-size: 0.85rem;
+            color: #b4a582;
+        }
+        .meta-row span i {
+            margin-right: 4px;
+        }
+
+        /* 二维码区域：居中，大小150x150 */
+        .qr-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .qr-wrapper {
+            width: 150px;
+            height: 150px;
+            position: relative;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 2px solid #5f512f;
+            background: #2b251b;
+            margin-bottom: 10px;
+        }
+        .qr-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+        /* 权限不足时的覆盖层 */
+        .qr-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(4px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #cfb87c;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-align: center;
+            line-height: 1.3;
+            border-radius: 16px;
+        }
+        .qr-overlay span {
+            background: #1a170f;
+            padding: 6px 12px;
+            border: 1px solid #cfb87c;
+            border-radius: 30px;
+            margin-top: 8px;
+            font-size: 0.65rem;
+            color: white;
+        }
+        .qr-tip {
+            font-size: 0.7rem;
+            color: #b4a582;
+        }
+
+        /* 群简介卡片 */
+        .desc-card {
+            background: #1a170f;
+            border: 1px solid #5f512f;
+            border-radius: 20px;
+            padding: 18px;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            color: #e0d6bf;
+            margin-bottom: 20px;
+        }
+
+        /* 创意小卡片：群活跃度 + 群主推荐 */
+        .info-cards {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+        .info-card {
+            flex: 1;
+            background: #1a170f;
+            border: 1px solid #5f512f;
+            border-radius: 16px;
+            padding: 12px;
+            text-align: center;
+        }
+        .info-card .label {
+            font-size: 0.65rem;
+            color: #b4a582;
+            margin-bottom: 4px;
+        }
+        .info-card .value {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #cfb87c;
+        }
+        .info-card .sub {
+            font-size: 0.6rem;
+            color: #5f512f;
+        }
+
+        /* 加入按钮 */
+        .join-btn {
+            width: 100%;
+            background: #cfb87c;
+            border: none;
+            border-radius: 40px;
+            padding: 16px;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #121212;
+            cursor: pointer;
+            transition: 0.2s;
+            margin-bottom: 30px;
+        }
+        .join-btn.disabled {
+            background: #5f512f;
+            color: #b4a582;
+            cursor: not-allowed;
+        }
+        .join-btn:active {
+            transform: scale(0.98);
+        }
+
+        /* 演示切换标签（仅预览用，正式页面可移除） */
+        .demo-tabs {
+            display: flex;
+            gap: 8px;
+            padding: 0 16px 0;
+        }
+        .demo-tab {
+            flex: 1;
+            background: #1f1b14;
+            border: 1px solid #5f512f;
+            border-radius: 30px;
+            padding: 10px;
+            text-align: center;
+            font-size: 0.75rem;
+            color: #b4a582;
+            cursor: pointer;
+        }
+        .demo-tab.active {
+            background: #cfb87c20;
+            color: #cfb87c;
+            border-color: #cfb87c;
+        }
+    </style>
+</head>
+<body>
+    <div class="phone-frame">
+        <div class="phone-screen" id="phoneScreen">
+            <!-- 顶部导航 -->
+            <div class="nav-bar">
+                <div class="back-btn" onclick="alert('返回首页')">←</div>
+                <div class="nav-title" id="navTitle">群详情</div>
+                <div class="placeholder"></div>
+            </div>
+
+            <!-- 详情内容由JS动态更新 -->
+            <div class="detail-card" id="detailContainer"></div>
+
+            <!-- 演示切换标签（仅预览用） -->
+            <div class="demo-tabs">
+                <div class="demo-tab active" onclick="switchGroup('normal')">普通群（有权限）</div>
+                <div class="demo-tab" onclick="switchGroup('senior')">高级群（权限不足）</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const groups = {
+            normal: {
+                name: '深圳人脉资源对接群',
+                tag: '普通',
+                tagClass: '',
+                members: '234',
+                city: '深圳',
+                desc: '深圳本地创业者、投资人、企业主交流群，每周线下活动，资源对接。成员覆盖互联网、金融、实体等行业。进群请备注行业+职位。',
+                qrCode: 'https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=深圳人脉群',
+                permission: 'ok',
+                activeLevel: '高',
+                recommend: '群主推荐'
+            },
+            senior: {
+                name: '北京项目投融资对接',
+                tag: '高级',
+                tagClass: 'senior',
+                members: '156',
+                city: '北京',
+                desc: '北京地区投融资项目对接，涵盖天使轮到B轮，投资人直连。仅限高级会员查看完整二维码。',
+                qrCode: 'https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=北京项目群',
+                permission: 'deny',
+                activeLevel: '中',
+                recommend: '需审核'
+            }
+        };
+
+        function renderGroup(groupKey) {
+            const group = groups[groupKey];
+            const container = document.getElementById('detailContainer');
+            const navTitle = document.getElementById('navTitle');
+            navTitle.innerText = group.name;
+
+            let qrInner = '';
+            if (group.permission === 'ok') {
+                qrInner = `<img src="${group.qrCode}" alt="群二维码">`;
+            } else {
+                qrInner = `
+                    <img src="${group.qrCode}" alt="群二维码">
+                    <div class="qr-overlay">
+                        暂无权限查看<br>
+                        <span>升级高级会员</span>
+                    </div>
+                `;
+            }
+
+            const joinBtnDisabled = group.permission !== 'ok' ? 'disabled' : '';
+            const joinBtnText = group.permission === 'ok' ? '立即加入' : '升级会员以加入';
+
+            const html = `
+                <div class="group-header">
+                    <span class="group-name">${group.name}</span>
+                    <span class="group-tag ${group.tagClass}">${group.tag}</span>
+                </div>
+                <div class="meta-row">
+                    <span><i>👥</i> ${group.members}人</span>
+                    <span><i>📍</i> ${group.city}</span>
+                </div>
+
+                <!-- 二维码区域 150x150 -->
+                <div class="qr-section">
+                    <div class="qr-wrapper">
+                        ${qrInner}
+                    </div>
+                    <div class="qr-tip">扫一扫二维码加入群聊</div>
+                </div>
+
+                <!-- 创意小卡片 -->
+                <div class="info-cards">
+                    <div class="info-card">
+                        <div class="label">群活跃度</div>
+                        <div class="value">${group.activeLevel}</div>
+                        <div class="sub">今日消息 30+</div>
+                    </div>
+                    <div class="info-card">
+                        <div class="label">群主推荐</div>
+                        <div class="value">${group.recommend}</div>
+                        <div class="sub">优质人脉圈</div>
+                    </div>
+                </div>
+
+                <!-- 群简介卡片 -->
+                <div class="desc-card">
+                    ${group.desc}
+                </div>
+
+                <button class="join-btn ${joinBtnDisabled}" onclick="handleJoin('${groupKey}')">${joinBtnText}</button>
+            `;
+            container.innerHTML = html;
+        }
+
+        function handleJoin(groupKey) {
+            const group = groups[groupKey];
+            if (group.permission === 'ok') {
+                alert(`您已成功加入群：${group.name}`);
+            } else {
+                alert('权限不足，请先升级高级会员');
+            }
+        }
+
+        function switchGroup(type) {
+            document.querySelectorAll('.demo-tab').forEach(tab => tab.classList.remove('active'));
+            event.target.classList.add('active');
+            renderGroup(type);
+        }
+
+        // 默认显示普通群
+        renderGroup('normal');
+    </script>
+</body>
+</html>

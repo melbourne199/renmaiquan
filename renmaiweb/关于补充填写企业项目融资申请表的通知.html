@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>融资申请表填写通知（致谭总）</title>
+    <style>
+        body {
+            font-family: "SimSun", "宋体", sans-serif;
+            line-height: 1.8;
+            margin: 20px;
+            color: #333;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background: #fff;
+        }
+        h1, h2, h3 {
+            text-align: center;
+            color: #222;
+            font-weight: bold;
+        }
+        h1 {
+            font-size: 24px;
+            margin-bottom: 30px;
+        }
+        h2 {
+            font-size: 20px;
+            margin: 25px 0 15px;
+            text-align: left;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 5px;
+        }
+        h3 {
+            font-size: 18px;
+            text-align: left;
+            margin: 20px 0 10px;
+        }
+        .red-text {
+            color: #ff0000;
+            font-weight: bold;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        table td, table th {
+            border: 1px solid #000;
+            padding: 8px 10px;
+            vertical-align: top;
+        }
+        table th {
+            background: #f5f5f5;
+            font-weight: bold;
+            text-align: center;
+        }
+        .btn-download {
+            display: block;
+            width: 200px;
+            height: 45px;
+            line-height: 45px;
+            text-align: center;
+            background: #0066cc;
+            color: #fff;
+            font-size: 16px;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 30px auto;
+            cursor: pointer;
+        }
+        .btn-download:hover {
+            background: #0052a3;
+        }
+        .note {
+            font-size: 14px;
+            color: #666;
+            margin-top: 20px;
+            line-height: 1.6;
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html-docx-js/0.3.1/html-docx.js"></script>
+    <script>
+        // 下载Word文档功能
+        function downloadWord() {
+            // 获取需要导出的HTML内容
+            const content = document.getElementById('export-content').innerHTML;
+            // 构建完整的HTML结构（适配Word格式）
+            const fullHtml = `
+                <html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">
+                <head>
+                    <meta charset="UTF-8">
+                    <style>
+                        body { font-family: SimSun; line-height: 1.8; }
+                        h1, h2, h3 { font-weight: bold; }
+                        h1 { font-size: 24pt; text-align: center; }
+                        h2 { font-size: 20pt; border-bottom: 1px solid #ccc; padding-bottom: 5px; }
+                        h3 { font-size: 18pt; }
+                        table { border-collapse: collapse; width: 100%; }
+                        td, th { border: 1px solid #000; padding: 8px; }
+                        .red-text { color: red; font-weight: bold; }
+                    </style>
+                </head>
+                <body>${content}</body>
+                </html>
+            `;
+            // 转换为Blob并下载
+            const converted = htmlDocx.asBlob(fullHtml);
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(converted);
+            link.download = '企业项目融资申请表（鑫鑫鑫公司）.docx';
+            link.click();
+        }
+    </script>
+</head>
+<body>
+    <div class="container" id="export-content">
+        <h1>关于补充填写企业项目融资申请表的通知</h1>
+        <p>致：湖南鑫鑫鑫健康养老服务有限公司 谭总</p>
+        <p>您好！</p>
+        <p>根据贵阳投资公司（姚总）的融资准入要求及硬性规定，需贵司按标准格式完整填写《企业项目融资申请表》。我方已根据贵司提供的现有信息完成核心内容预填，其中<span class="red-text">红色字体标注部分为需贵司补充提供的信息</span>，请务必按要求填写完整，确保融资流程高效推进。</p>
+        <p>贵司颐和苑康养中心项目经首轮评估，符合融资核心准入条件，补充完整申请表后即可进入立项初审环节，望贵司积极配合。</p>
+
+        <h2>企业项目融资申请表</h2>
+
+        <h3>一、企业基本信息</h3>
+        <table>
+            <tr>
+                <th width="20%">项目</th>
+                <th width="80%">填写内容</th>
+            </tr>
+            <tr>
+                <td>企业名称</td>
+                <td>湖南鑫鑫鑫健康养老服务有限公司</td>
+            </tr>
+            <tr>
+                <td>营业执照号</td>
+                <td>91430482MAD7LFA73E</td>
+            </tr>
+            <tr>
+                <td>经营地址</td>
+                <td>湖南省衡阳市石鼓区黄沙湾街道松木村黄家垅组</td>
+            </tr>
+            <tr>
+                <td>经营场地产权情况</td>
+                <td><span class="red-text">请勾选：自有□ 租赁□ （补充产权证明复印件）</span></td>
+            </tr>
+            <tr>
+                <td>法定代表人</td>
+                <td>伍楚国</td>
+            </tr>
+            <tr>
+                <td>公司成立日期</td>
+                <td>2024年10月30日</td>
+            </tr>
+            <tr>
+                <td>注册资本</td>
+                <td>1688万元</td>
+            </tr>
+            <tr>
+                <td>企业经济性质</td>
+                <td>√有限责任 □国有 □集体 □股份有限 □联营 □私营 □个人独资 □合伙企业</td>
+            </tr>
+            <tr>
+                <td>员工人数</td>
+                <td>14人</td>
+            </tr>
+            <tr>
+                <td>前三大股东名称1</td>
+                <td>罗玉算</td>
+            </tr>
+            <tr>
+                <td>出资金额1</td>
+                <td>1688万元</td>
+            </tr>
+            <tr>
+                <td>持股比例1</td>
+                <td>100%</td>
+            </tr>
+            <tr>
+                <td>前三大股东名称2</td>
+                <td>无</td>
+            </tr>
+            <tr>
+                <td>出资金额2</td>
+                <td>无</td>
+            </tr>
+            <tr>
+                <td>持股比例2</td>
+                <td>无</td>
+            </tr>
+            <tr>
+                <td>前三大股东名称3</td>
+                <td>无</td>
+            </tr>
+            <tr>
+                <td>出资金额3</td>
+                <td>无</td>
+            </tr>
+            <tr>
+                <td>持股比例3</td>
+                <td>无</td>
+            </tr>
+            <tr>
+                <td>主营业务介绍</td>
+                <td>养老服务、中医养生保健服务（非医疗）、护理机构服务（不含医疗服务）、母婴生活护理（不含医疗服务）、家政服务、康复辅具适配服务、个人卫生用品销售、可穿戴智能设备销售、殡葬服务、健康咨询服务（不含诊疗服务）等（以营业执照为准）</td>
+            </tr>
+            <tr>
+                <td>企业联系人</td>
+                <td>谭总/周宏杰</td>
+            </tr>
+            <tr>
+                <td>职务</td>
+                <td>项目负责人</td>
+            </tr>
+            <tr>
+                <td>办公电话</td>
+                <td>无</td>
+            </tr>
+            <tr>
+                <td>手机</td>
+                <td>13973448958/15200747939</td>
+            </tr>
+        </table>
+
+        <h3>二、企业实际控制人基本信息</h3>
+        <table>
+            <tr>
+                <th width="20%">项目</th>
+                <th width="80%">填写内容</th>
+            </tr>
+            <tr>
+                <td>姓名</td>
+                <td>罗玉算</td>
+            </tr>
+            <tr>
+                <td>性别</td>
+                <td>√男 □女</td>
+            </tr>
+            <tr>
+                <td>年龄</td>
+                <td><span class="red-text">请补充（按身份证实际信息填写）</span></td>
+            </tr>
+            <tr>
+                <td>教育程度</td>
+                <td><span class="red-text">请勾选：□研究生及以上 □大学本科 □大专／高职 □高中／职高 □初中及以下</span></td>
+            </tr>
+            <tr>
+                <td>固定电话</td>
+                <td>无</td>
+            </tr>
+            <tr>
+                <td>手机</td>
+                <td><span class="red-text">请补充罗玉算实际联系方式</span></td>
+            </tr>
+            <tr>
+                <td>工作经历（时间1）</td>
+                <td><span class="red-text">请补充罗玉算过往从业时间</span></td>
+            </tr>
+            <tr>
+                <td>工作单位1</td>
+                <td><span class="red-text">请补充罗玉算过往从业单位</span></td>
+            </tr>
+            <tr>
+                <td>职务1</td>
+                <td><span class="red-text">请补充罗玉算过往从业职务</span></td>
+            </tr>
+            <tr>
+                <td>备注1</td>
+                <td>无</td>
+            </tr>
+            <tr>
+                <td>工作经历（时间2）</td>
+                <td>2024年10月至今</td>
+            </tr>
+            <tr>
+                <td>工作单位2</td>
+                <td>湖南鑫鑫鑫健康养老服务有限公司</td>
+            </tr>
+            <tr>
+                <td>职务2</td>
+                <td>股东/实际控制人</td>
+            </tr>
+            <tr>
+                <td>备注2</td>
+                <td>无</td>
+            </tr>
+        </table>
+
+        <h3>三、企业负债信息</h3>
+        <table>
+            <tr>
+                <th width="20%">项目</th>
+                <th width="80%">填写内容</th>
+            </tr>
+            <tr>
+                <td>银行贷款1（贷款银行）</td>
+                <td>无</td>
+            </tr>
+            <tr>
+                <td>原金额1</td>
+                <td>无</td>
+            </tr>
+            <tr>
+                <td>到期日1</td>
+                <td>无</td>
+            </tr>
+            <tr>
+                <td>当前余额1</td>
+                <td>无</td>
+            </tr>
+            <tr>
+                <td>还本方式1</td>
+                <td>无</td>
+            </tr>
+            <tr>
+                <td>银行贷款2（贷款银行）</td>
+                <td>无</td>
+            </tr>
+            <tr>
+                <td>原金额2</td>
+                <td>无</td>
+            </tr>
+            <tr>
+                <td>到期日2</td>
+                <td>无</td>
+            </tr>
+            <tr>
+                <td>当前余额2</td>
+                <td>无</td>
+            </tr>
+            <tr>
+                <td>还本方式2</td>
+                <td>无</td>
+            </tr>
+            <tr>
+                <td>银行贷款3（贷款银行）</td>
+                <td>无</td>
+            </tr>
+            <tr>
+                <td>原金额3</td>
+                <td>无</td>
+            </tr>
+            <tr>
+                <td>到期日3</td>
+                <td>无</td>
+            </tr>
+            <tr>
+                <td>当前余额3</td>
+                <td>无</td>
+            </tr>
+            <tr>
+                <td>还本方式3</td>
+                <td>无</td>
+            </tr>
+            <tr>
+                <td>私人借贷金额</td>
+                <td>无</td>
+            </tr>
+            <tr>
+                <td>私人借贷到期日</td>
+                <td>无</td>
+            </tr>
+            <tr>
+                <td>私人借贷还本方式</td>
+                <td>无</td>
+            </tr>
+            <tr>
+                <td>对外担保金额</td>
+                <td>无</td>
+            </tr>
+            <tr>
+                <td>被担保人</td>
+                <td>无</td>
+            </tr>
+            <tr>
+                <td>彼此关系</td>
+                <td>无</td>
+            </tr>
+        </table>
+
+        <h3>四、企业财务信息</h3>
+        <table>
+            <tr>
+                <th width="20%">项目</th>
+                <th width="80%">填写内容</th>
+            </tr>
+            <tr>
+                <td>当前资产总额</td>
+                <td><span class="red-text">请补充企业实际财务核算数据（参考项目评估值75895.44万元）</span></td>
+            </tr>
+            <tr>
+                <td>当前负债总额</td>
+                <td>0万元</td>
+            </tr>
+            <tr>
+                <td>当前现金及银行存款余额</td>
+                <td><span class="red-text">请补充企业基本户实际账户余额</span></td>
+            </tr>
+            <tr>
+                <td>当前固定资产净值</td>
+                <td><span class="red-text">请补充企业实际核算的固定资产净值</span></td>
+            </tr>
+            <tr>
+                <td>上年度销售总额</td>
+                <td>0万元（2024年10月成立）</td>
+            </tr>
+            <tr>
+                <td>最近一季度销售总额</td>
+                <td>0万元</td>
+            </tr>
+            <tr>
+                <td>当前存货</td>
+                <td>无</td>
+            </tr>
+            <tr>
+                <td>当前应收账款</td>
+                <td>无</td>
+            </tr>
+            <tr>
+                <td>主要欠款客户（应收账款）</td>
+                <td>无</td>
+            </tr>
+            <tr>
+                <td>当前应付账款</td>
+                <td>无</td>
+            </tr>
+            <tr>
+                <td>主要欠款客户（应付账款）</td>
+                <td>无</td>
+            </tr>
+        </table>
+
+        <h3>五、融资申请信息</h3>
+        <table>
+            <tr>
+                <th width="20%">项目</th>
+                <th width="80%">填写内容</th>
+            </tr>
+            <tr>
+                <td>合作方式</td>
+                <td>√债权（明股实债） □股权；年利率：6%-9.6%（协商确定）；股比：无</td>
+            </tr>
+            <tr>
+                <td>申请金额</td>
+                <td>5亿元</td>
+            </tr>
+            <tr>
+                <td>用款期限</td>
+                <td>5年</td>
+            </tr>
+            <tr>
+                <td>融资项目名称</td>
+                <td>颐和苑康养中心项目</td>
+            </tr>
+            <tr>
+                <td>项目情况简介</td>
+                <td>项目总规划建筑面积约22万平方米，总投资8.5亿元，已投入5.1亿元，拥有5700个养老床位，为全国百家智能化养老实验基地、衡阳市重点民生工程，享受政府普惠养老专项补贴，还款来源稳定。</td>
+            </tr>
+            <tr>
+                <td>项目规划总投资</td>
+                <td>8.5亿元</td>
+            </tr>
+            <tr>
+                <td>项目目前实际投资额度</td>
+                <td>5.1亿元</td>
+            </tr>
+            <tr>
+                <td>项目目前进度</td>
+                <td>一期完工拿证，二期主体完工85%，三期基础施工中；烂尾楼修复、消防等配套工程待推进</td>
+            </tr>
+            <tr>
+                <td>融资用途</td>
+                <td>养老公寓装修、烂尾楼修复、消防工程、康养医院装修、流动资金补充等</td>
+            </tr>
+            <tr>
+                <td>资金规划（用项1）</td>
+                <td>养老公寓装修、食堂及老年活动中心兴建装修</td>
+            </tr>
+            <tr>
+                <td>资金规划（用项2）</td>
+                <td>烂尾楼修复、消防水电工程、园林亮化</td>
+            </tr>
+            <tr>
+                <td>用款总额</td>
+                <td><span class="red-text">请补充实际用款明细金额（参考34260万元）</span></td>
+            </tr>
+            <tr>
+                <td>自筹资金部分</td>
+                <td>5.1亿元（已投入）</td>
+            </tr>
+            <tr>
+                <td>融资部分</td>
+                <td>5亿元</td>
+            </tr>
+            <tr>
+                <td>还款来源</td>
+                <td>床位租赁、政府补贴、别墅销售/租赁、养老服务、康养医院运营收入</td>
+            </tr>
+            <tr>
+                <td>还款规划</td>
+                <td>前四年还息，第五年一次性还本；可提前还款，无违约金</td>
+            </tr>
+        </table>
+
+        <h3>六、固定资产信息</h3>
+        <table>
+            <tr>
+                <th width="20%">项目</th>
+                <th width="80%">填写内容</th>
+            </tr>
+            <tr>
+                <td>固定资产类型</td>
+                <td>√土地 √在建工程 √成熟商业/房产 □专利/无形资产 □其他</td>
+            </tr>
+            <tr>
+                <td>固定资产名称1</td>
+                <td>颐和苑项目土地</td>
+            </tr>
+            <tr>
+                <td>产权归属所有人1</td>
+                <td>湖南鑫鑫鑫健康养老服务有限公司</td>
+            </tr>
+            <tr>
+                <td>固定资产地址1</td>
+                <td>湖南省衡阳市珠晖区酃湖乡解放村</td>
+            </tr>
+            <tr>
+                <td>固定资产所有期限1</td>
+                <td>至2054年7月16日</td>
+            </tr>
+            <tr>
+                <td>当前市值1</td>
+                <td>30594.04万元（参考评估报告）</td>
+            </tr>
+            <tr>
+                <td>固定资产名称2</td>
+                <td>颐和苑一期已完工公寓楼</td>
+            </tr>
+            <tr>
+                <td>产权归属所有人2</td>
+                <td>湖南鑫鑫鑫健康养老服务有限公司</td>
+            </tr>
+            <tr>
+                <td>固定资产地址2</td>
+                <td>湖南省衡阳市珠晖区酃湖乡颐和路颐和苑</td>
+            </tr>
+            <tr>
+                <td>固定资产所有期限2</td>
+                <td>长期</td>
+            </tr>
+            <tr>
+                <td>当前市值2</td>
+                <td>29067.32万元（参考评估报告）</td>
+            </tr>
+            <tr>
+                <td>固定资产名称3</td>
+                <td>颐和苑二期在建工程</td>
+            </tr>
+            <tr>
+                <td>产权归属所有人3</td>
+                <td>湖南鑫鑫鑫健康养老服务有限公司</td>
+            </tr>
+            <tr>
+                <td>固定资产地址3</td>
+                <td>湖南省衡阳市珠晖区酃湖乡颐和路颐和苑</td>
+            </tr>
+            <tr>
+                <td>固定资产所有期限3</td>
+                <td>长期</td>
+            </tr>
+            <tr>
+                <td>当前市值3</td>
+                <td>15454.92万元（参考评估报告）</td>
+            </tr>
+        </table>
+
+        <h2>提交要求</h2>
+        <p>1. 请贵司于3个工作日内补充完整<span class="red-text">红色字体标注的信息</span>，确保内容真实、准确；</p>
+        <p>2. 填写完成后加盖公司公章，电子版发送至指定邮箱：XXX@XXX.com，纸质版邮寄至指定地址；</p>
+        <p>3. 如有填写疑问，可联系对接人：圈哥，联系电话：XXX。</p>
+        <p>日期：202X年XX月XX日</p>
+    </div>
+
+    <!-- 下载Word按钮 -->
+    <a class="btn-download" onclick="downloadWord()">下载Word文档</a>
+    
+    <p class="note">注：下载的Word文档格式适配Microsoft Word，无特殊符号，可直接编辑、打印。</p>
+</body>
+</html>

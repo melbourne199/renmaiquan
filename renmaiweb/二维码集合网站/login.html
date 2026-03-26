@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>登录 · 资源夜市</title>
+    <style>
+        /* 复用首页黑金风格 */
+        * { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI',sans-serif; }
+        body { background:#0b0b0b; color:#e0d6bf; padding:20px; min-height:100vh; display:flex; align-items:center; justify-content:center; }
+        .login-card {
+            background: #1a170f;
+            border-radius: 40px;
+            padding: 40px;
+            border: 1px solid #3a2e1c;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.6);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+        .login-card h2 {
+            color: #cfb87c;
+            font-size: 2rem;
+            font-weight: 400;
+            margin-bottom: 30px;
+            border-bottom: 1px solid #3a2e1a;
+            padding-bottom: 10px;
+        }
+        .login-card input {
+            width: 100%;
+            background: #26221a;
+            border: 1px solid #52472e;
+            border-radius: 40px;
+            padding: 14px 20px;
+            color: #f0e2c5;
+            font-size: 1rem;
+            outline: none;
+            margin-bottom: 20px;
+        }
+        .login-card input::placeholder {
+            color: #7a6e58;
+        }
+        .login-card button {
+            background: #b99b4b;
+            border: none;
+            color: #0b0b0b;
+            padding: 14px 20px;
+            border-radius: 40px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            width: 100%;
+            cursor: pointer;
+            transition: 0.2s;
+            margin-bottom: 15px;
+        }
+        .login-card button:hover {
+            background: #dbb35c;
+        }
+        .login-card a {
+            color: #a0937e;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+        .login-card a:hover {
+            color: #cfb87c;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-card">
+        <h2>登录</h2>
+        <input type="text" id="username" placeholder="请输入用户名">
+        <input type="password" id="password" placeholder="请输入密码">
+        <button id="loginBtn">登录</button>
+        <div style="margin-top: 20px;">
+            <a href="register.html">还没有账号？注册</a> | <a href="index.html">返回首页</a>
+        </div>
+    </div>
+    <script>
+        async function login() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            if (!username || !password) {
+                alert('用户名和密码不能为空');
+                return;
+            }
+            const res = await fetch('/api/auth/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, password })
+            });
+            const data = await res.json();
+            if (data.success) {
+                sessionStorage.setItem('token', data.token);
+                sessionStorage.setItem('user', JSON.stringify(data.user));
+                window.location.href = 'index.html';
+            } else {
+                alert(data.error || '登录失败');
+            }
+        }
+        document.getElementById('loginBtn').addEventListener('click', login);
+    </script>
+</body>
+</html>

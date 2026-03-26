@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>后台管理 · 资源夜市</title>
+    <style>
+        /* 黑金风格 */
+        * { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI',sans-serif; }
+        body { background:#0b0b0b; color:#e0d6bf; padding:20px; }
+        .container { max-width:1400px; margin:0 auto; }
+        .header { display:flex; justify-content:space-between; align-items:center; margin-bottom:30px; }
+        .header h1 { color:#cfb87c; font-size:2rem; border-left:6px solid #b99b4b; padding-left:20px; }
+        .admin-panel { background:#1a170f; border-radius:40px; padding:30px; border:1px solid #3a2e1c; }
+        .tabs { display:flex; gap:10px; margin-bottom:20px; }
+        .tab-btn { background:#26221a; border:1px solid #52472e; color:#e0d6bf; padding:10px 30px; border-radius:40px; cursor:pointer; }
+        .tab-btn.active { background:#b99b4b; color:#0b0b0b; }
+        .filter-bar { display:flex; gap:15px; margin-bottom:20px; flex-wrap:wrap; }
+        .filter-bar input, .filter-bar select { background:#26221a; border:1px solid #52472e; border-radius:40px; padding:8px 15px; color:#f0e2c5; }
+        .btn { background:#b99b4b; border:none; color:#0b0b0b; padding:8px 20px; border-radius:40px; cursor:pointer; }
+        .btn-danger { background:#8b3a3a; color:#ffd6d6; }
+        table { width:100%; border-collapse:collapse; }
+        th { background:#2f2a1f; color:#cfb87c; padding:12px; text-align:left; }
+        td { padding:12px; border-bottom:1px solid #3f3829; }
+        .back-link { color:#a0937e; text-decoration:none; border:1px solid #52472e; padding:8px 20px; border-radius:40px; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>⚙️ 后台管理</h1>
+        <a href="index.html" class="back-link">返回首页</a>
+    </div>
+    <div class="admin-panel">
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="qrcodes">群码管理</button>
+            <button class="tab-btn" data-tab="users">用户管理</button>
+        </div>
+        <div id="qrcodesPanel">
+            <div class="filter-bar">
+                <input type="text" id="qrSearch" placeholder="搜索群名/行业/地区">
+                <select id="qrIndustryFilter"><option value="">全行业</option></select>
+                <select id="qrRegionFilter"><option value="">全地区</option></select>
+                <select id="qrUserFilter"><option value="">全部上传者</option></select>
+                <button class="btn" id="refreshQr">刷新</button>
+            </div>
+            <table><thead><tr><th>ID</th><th>群名</th><th>行业</th><th>地区</th><th>人数</th><th>上传者</th><th>操作</th></tr></thead><tbody id="qrTableBody"></tbody></table>
+        </div>
+        <div id="usersPanel" style="display:none;">
+            <div class="filter-bar">
+                <input type="text" id="userSearch" placeholder="搜索用户名">
+                <select id="userRoleFilter"><option value="">全部角色</option><option value="admin">管理员</option><option value="user">普通用户</option></select>
+                <button class="btn" id="refreshUsers">刷新</button>
+            </div>
+            <table><thead><tr><th>ID</th><th>用户名</th><th>角色</th><th>操作</th></tr></thead><tbody id="userTableBody"></tbody></table>
+        </div>
+    </div>
+</div>
+<script>
+    const token = sessionStorage.getItem('token');
+    if (!token) { alert('请先登录'); window.location.href = 'login.html'; }
+
+    function fetchWithAuth(url, options = {}) {
+        options.headers = { ...options.headers, 'Authorization': 'Bearer ' + token };
+        return fetch(url, options).then(res => res.json());
+    }
+
+    // 检查管理员权限
+    const user = JSON.parse(sessionStorage.getItem('user') || '{}');
+    if (user.role !== 'admin') { alert('需要管理员权限'); window.location.href = 'index.html'; }
+
+    // 选项卡切换
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            document.getElementById('qrcodesPanel').style.display = btn.dataset.tab === 'qrcodes' ? 'block' : 'none';
+            document.getElementById('usersPanel').style.display = btn.dataset.tab === 'users' ? 'block' : 'none';
+            if (btn.dataset.tab === 'qrcodes') loadQRCodes();
+            else loadUsers();
+        });
+    });
+
+    function loadQRCodes() {
+        fetchWithAuth('/api/admin/qrcodes').then(data => {
+            const tbody = document.getElementById('qrTableBody');
+            tbody.innerHTML = data.map(q => `<tr>
+                <td>${q.id}</td><td>${q.name}</td><td>${q.industry}</td><td>${q.region}</td><td>${q.members}</td><td>${q.uploader}</td>
+                <td><button class="btn btn-danger" onclick="deleteQR(${q.id})">删除</button></td>
+            </tr>`).join('');
+        });
+    }
+
+    window.deleteQR = function(id) {
+        if (confirm('确定删除？')) {
+            fetchWithAuth('/api/admin/qrcodes/' + id, { method: 'DELETE' }).then(() => loadQRCodes());
+        }
+    };
+
+    function loadUsers() {
+        fetchWithAuth('/api/admin/users').then(data => {
+            const tbody = document.getElementById('userTableBody');
+            tbody.innerHTML = data.map(u => `<tr>
+                <td>${u.id}</td><td>${u.username}</td><td>${u.role}</td>
+                <td><button class="btn btn-danger" onclick="deleteUser(${u.id})">删除</button></td>
+            </tr>`).join('');
+        });
+    }
+
+    window.deleteUser = function(id) {
+        if (confirm('确定删除？')) {
+            fetchWithAuth('/api/admin/users/' + id, { method: 'DELETE' }).then(() => loadUsers());
+        }
+    };
+
+    document.getElementById('refreshQr').addEventListener('click', loadQRCodes);
+    document.getElementById('refreshUsers').addEventListener('click', loadUsers);
+    loadQRCodes();
+</script>
+</body>
+</html>

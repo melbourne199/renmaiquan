@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>资源夜市 · 首页（LOGO宽50px）</title>
+    <style>
+        /* 手机模拟器样式 */
+        body {
+            background: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 15px;
+        }
+        .phone-frame {
+            width: 375px;
+            background: #0b0b0b;
+            border-radius: 40px;
+            overflow: hidden;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.8);
+            border: 1px solid #3a2e1c;
+        }
+        .phone-screen {
+            height: 700px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+        }
+
+        /* 顶部样式 */
+        .top-header {
+            flex-shrink: 0;
+            background: #0E0E0E;
+            border-bottom: 1px solid #3a2e1a;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 10;
+        }
+        .logo-area {
+            width: 50px; /* 固定宽度50px */
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+        }
+        .logo-area img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+        }
+        /* 占位方块（用于预览，用户可替换为真实LOGO） */
+        .logo-placeholder {
+            width: 50px;
+            height: 50px;
+            background: #D6B26E;
+            border-radius: 8px;
+        }
+        .title-area {
+            flex: 1;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .main-title {
+            font-size: 25px;
+            font-weight: 700;
+            color: #D6B26E;
+            line-height: 1.2;
+            margin-bottom: 6px;
+            white-space: nowrap;
+        }
+        .sub-line1 {
+            font-size: 15px;
+            font-weight: 500;
+            color: #E6C37A;
+            margin-bottom: 6px;
+        }
+        .sub-line2 {
+            font-size: 13px;
+            font-weight: 400;
+            color: rgba(214,178,110,0.75);
+            margin-bottom: 6px;
+        }
+        .sub-line3 {
+            font-size: 12px;
+            font-weight: 400;
+            color: rgba(214,178,110,0.6);
+        }
+        .right-placeholder {
+            width: 50px; /* 与左侧LOGO宽度一致 */
+        }
+
+        /* 广告横幅（无缝滚动） */
+        .ad-banner {
+            flex-shrink: 0;
+            height: 48px;
+            background: #1f1b14;
+            border-top: 1px solid #5f512f;
+            border-bottom: 1px solid #5f512f;
+            display: flex;
+            align-items: center;
+            overflow: hidden;
+            z-index: 9;
+        }
+        .marquee-wrap {
+            display: flex;
+            white-space: nowrap;
+            animation: scrollMarquee 30s linear infinite;
+        }
+        .marquee-content {
+            display: inline-block;
+            font-size: 0.85rem;
+            color: #cfb87c;
+            letter-spacing: 1px;
+        }
+        .marquee-content span {
+            margin-right: 40px;
+            color: #e0d6bf;
+        }
+        .marquee-content .highlight {
+            color: #cfb87c;
+            font-weight: 600;
+        }
+        @keyframes scrollMarquee {
+            0% { transform: translateX(0%); }
+            100% { transform: translateX(-50%); }
+        }
+
+        /* 中部内容 */
+        .main-content {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+            background: #0b0b0b;
+            min-height: 0;
+        }
+        .left-category {
+            width: 24%;
+            background: #121212;
+            overflow-y: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            border-right: 1px solid #3a2e1a;
+            padding: 8px 0;
+        }
+        .left-category::-webkit-scrollbar {
+            display: none;
+        }
+        .category-item {
+            padding: 14px 4px;
+            text-align: center;
+            font-size: 0.7rem;
+            color: #b4a582;
+            border-bottom: 1px solid #2a231a;
+            transition: 0.1s;
+            word-break: break-word;
+            line-height: 1.3;
+        }
+        .category-item.active {
+            background: #1f1b14;
+            color: #cfb87c;
+            border-left: 3px solid #cfb87c;
+            padding-left: 1px;
+            font-weight: 500;
+        }
+        .right-cards {
+            width: 76%;
+            overflow-y: auto;
+            padding: 12px 8px 0 8px;
+            scrollbar-width: none;
+        }
+        .right-cards::-webkit-scrollbar {
+            display: none;
+        }
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 8px;
+        }
+        .resource-card {
+            background: #1a170f;
+            border: 1px solid #5f512f;
+            border-radius: 16px;
+            padding: 10px 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+            position: relative;
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+        }
+        .resource-card:active {
+            transform: scale(0.98);
+            opacity: 0.9;
+        }
+        .card-tag {
+            position: absolute;
+            top: 6px;
+            right: 6px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            padding: 4px 8px;
+            border-radius: 30px;
+            z-index: 5;
+            color: white;
+            background: #cfb87c;
+        }
+        .card-tag.normal {
+            background: #f39c12;
+        }
+        .card-tag.senior {
+            background: #e74c3c;
+        }
+        .qr-wrapper {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 1/1;
+            margin-bottom: 8px;
+            overflow: hidden;
+            border-radius: 12px;
+            background: #2b251b;
+        }
+        .qr-image {
+            width: 100%;
+            height: 100%;
+            background-image: url('https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=群二维码示例');
+            background-size: cover;
+            background-position: center;
+            filter: brightness(0.8);
+        }
+        .qr-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 92%;
+            height: 85%;
+            background: #1a170f;
+            border: 2px solid #cfb87c;
+            border-radius: 12px;
+            padding: 10px 6px;
+            color: #cfb87c;
+            font-size: 0.68rem;
+            line-height: 1.3;
+            text-align: center;
+            word-break: break-word;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.7);
+        }
+        .qr-overlay span {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            max-height: 2.6em;
+        }
+        .card-name {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #f0e2c5;
+            margin-bottom: 6px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            padding-right: 5px;
+            line-height: 1.4;
+            height: 1.4em;
+        }
+        .card-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.55rem;
+            color: #b4a582;
+            line-height: 1.2;
+            height: 1.2em;
+        }
+        .card-meta span i {
+            margin-right: 2px;
+        }
+        .ad-card {
+            border: 1px solid #cfb87c;
+            background: #1f1b14;
+            box-shadow: 0 0 0 1px rgba(207,184,124,0.3), 0 4px 12px rgba(0,0,0,0.5);
+        }
+        .ad-card .card-name {
+            color: #cfb87c;
+            text-align: center;
+        }
+        .ad-card .ad-text {
+            text-align: center;
+            color: #e0d6bf;
+            font-size: 0.65rem;
+            margin: 8px 0;
+        }
+        .ad-card .apply-btn {
+            background: #cfb87c;
+            color: #121212;
+            border: none;
+            padding: 6px;
+            border-radius: 30px;
+            font-weight: 600;
+            width: 100%;
+            font-size: 0.6rem;
+            cursor: pointer;
+            margin-top: 4px;
+        }
+
+        /* 底部菜单 */
+        .bottom-nav {
+            flex-shrink: 0;
+            height: 60px;
+            background: #121212;
+            border-top: 1px solid #3a2e1a;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            font-size: 0.7rem;
+            color: #b4a582;
+            z-index: 10;
+        }
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            cursor: pointer;
+            flex: 1;
+            height: 100%;
+            text-align: center;
+        }
+        .nav-item.active {
+            color: #cfb87c;
+        }
+        .nav-item i {
+            font-size: 1.2rem;
+            line-height: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="phone-frame">
+        <div class="phone-screen">
+            <!-- 顶部：LOGO宽度50px -->
+            <header class="top-header">
+                <div class="logo-area">
+                    <!-- 占位方块（50x50），用户可替换为真实LOGO图片 -->
+                    <div class="logo-placeholder"></div>
+                </div>
+                <div class="title-area">
+                    <div class="main-title">全国人脉二维码交流平台</div>
+                    <div class="sub-line1">人人可上传 · 人人可被看见</div>
+                    <div class="sub-line2">让信息流动 · 让合作发生</div>
+                    <div class="sub-line3">上传群码 · 汇聚资源 · 放大机会</div>
+                </div>
+                <div class="right-placeholder"></div>
+            </header>
+
+            <div class="ad-banner">
+                <div class="marquee-wrap">
+                    <div class="marquee-content">
+                        <span class="highlight">资源不流通，就是死资源</span>
+                        <span>让你的群被需要的人看到</span>
+                        <span>上传一次，持续曝光</span>
+                        <span class="highlight">🔥 今日推荐位限时开放</span>
+                    </div>
+                    <div class="marquee-content">
+                        <span class="highlight">资源不流通，就是死资源</span>
+                        <span>让你的群被需要的人看到</span>
+                        <span>上传一次，持续曝光</span>
+                        <span class="highlight">🔥 今日推荐位限时开放</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="main-content">
+                <div class="left-category" id="leftCategory"></div>
+                <div class="right-cards">
+                    <div class="card-grid" id="cardGrid"></div>
+                </div>
+            </div>
+
+            <nav class="bottom-nav">
+                <div class="nav-item active"><i>🏠</i><span>首页</span></div>
+                <div class="nav-item"><i>📤</i><span>发布我的群码</span></div>
+                <div class="nav-item"><i>👤</i><span>我的</span></div>
+            </nav>
+        </div>
+    </div>
+
+    <script>
+        const industryData = [
+            "全部分类",
+            "IT互联网", "教育培训", "金融投资", "房地产", "餐饮美食", "医疗健康",
+            "旅游出行", "制造业", "物流运输", "服装服饰", "电商", "新媒体",
+            "广告营销", "建筑设计", "法律咨询", "财税会计", "人力资源", "行政管理",
+            "销售", "客服", "供应链", "进出口贸易", "能源", "环保", "农业",
+            "宠物", "母婴", "美妆", "健身", "摄影", "音乐", "游戏", "区块链",
+            "人工智能", "大数据", "云计算", "物联网", "半导体", "汽车", "交通",
+            "政府机构", "非营利组织", "其他"
+        ];
+
+        function renderLeftCategory() {
+            const container = document.getElementById('leftCategory');
+            let html = '';
+            industryData.forEach((item, index) => {
+                const activeClass = index === 0 ? 'active' : '';
+                html += `<div class="category-item ${activeClass}">${item}</div>`;
+            });
+            container.innerHTML = html;
+
+            document.querySelectorAll('.category-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    document.querySelectorAll('.category-item').forEach(c => c.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+        }
+
+        const baseCards = [
+            { tag: '普通', name: '深圳人脉资源对接群', desc: '深圳本地创业者、投资人、企业主交流群，每周线下活动，资源对接。', members: '234', city: '深圳' },
+            { tag: '高级', name: '北京项目投融资对接', desc: '北京地区投融资项目对接，涵盖天使轮到B轮，投资人直连。', members: '156', city: '北京' },
+            { tag: '普通', name: '上海资源整合群', desc: '上海地区资源整合，供应链、渠道、人脉对接，长三角资源圈。', members: '312', city: '上海' },
+            { tag: '高级', name: '广州创业合伙人招募', desc: '广州创业者社群，寻找合伙人、融资、孵化，每周路演。', members: '98', city: '广州' },
+            { tag: '普通', name: '杭州电商运营交流', desc: '杭州电商运营交流，淘宝、抖音、拼多多经验分享，资源互换。', members: '178', city: '杭州' },
+            { tag: '高级', name: '成都精英圈层', desc: '成都高端人脉圈，企业家、投资人、行业专家，闭门交流。', members: '56', city: '成都' },
+            { tag: '普通', name: '武汉互联网求职内推', desc: '武汉互联网大厂内推，求职经验分享，技术交流群。', members: '203', city: '武汉' },
+            { tag: '高级', name: '南京企业家俱乐部', desc: '南京本地企业家、高管圈子，资源对接，合作共赢。', members: '87', city: '南京' },
+            { tag: '普通', name: '西安硬科技交流', desc: '西安硬科技、人工智能、半导体行业交流群。', members: '112', city: '西安' },
+            { tag: '高级', name: '重庆餐饮品牌联盟', desc: '重庆餐饮老板、供应链、品牌策划交流群。', members: '64', city: '重庆' }
+        ];
+
+        const adCardHtml = `
+            <div class="resource-card ad-card" onclick="alert('跳转广告详情页')">
+                <span class="card-tag">推荐</span>
+                <div class="qr-wrapper">
+                    <div class="qr-image"></div>
+                </div>
+                <div class="card-name">✨ 推荐位 · 限时开放</div>
+                <div class="ad-text">想让你的群排第一？<br>申请优质推荐位</div>
+                <button class="apply-btn" onclick="event.stopPropagation(); alert('申请推荐')">申请推荐</button>
+                <div class="card-meta" style="margin-top:8px;">
+                    <span><i>👥</i> 曝光+300%</span>
+                    <span><i>🏆</i> 限时</span>
+                </div>
+            </div>
+        `;
+
+        function generateCards() {
+            let html = '';
+            for (let i = 0; i < baseCards.length; i++) {
+                const card = baseCards[i];
+                const shortDesc = card.desc.length > 30 ? card.desc.slice(0, 30) + '…' : card.desc;
+                const tagClass = card.tag === '普通' ? 'normal' : (card.tag === '高级' ? 'senior' : '');
+                html += `
+                    <div class="resource-card" onclick="alert('跳转群详情页: ${card.name}')">
+                        <span class="card-tag ${tagClass}">${card.tag}</span>
+                        <div class="qr-wrapper">
+                            <div class="qr-image"></div>
+                            <div class="qr-overlay"><span>${shortDesc}</span></div>
+                        </div>
+                        <div class="card-name">${card.name}</div>
+                        <div class="card-meta">
+                            <span><i>👥</i> ${card.members}人</span>
+                            <span><i>📍</i> ${card.city}</span>
+                        </div>
+                    </div>
+                `;
+                if ((i + 1) % 6 === 0 && i !== baseCards.length - 1) {
+                    html += adCardHtml;
+                }
+            }
+            if (baseCards.length % 6 === 0) {
+                html += adCardHtml;
+            }
+            return html;
+        }
+
+        renderLeftCategory();
+        document.getElementById('cardGrid').innerHTML = generateCards();
+
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', function() {
+                document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>

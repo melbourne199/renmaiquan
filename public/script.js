@@ -289,9 +289,14 @@ function createCityMarkers() {
           '达旺': { x: 0.12, y: 0.08 },
           '班公湖': { x: 0.14, y: 0.04 }
         };
+        const cameraDistance = camera.position.length();
+        const isMobileView = window.innerWidth <= 768;
+        const maxDist = isMobileView ? 84 : 56;
+        // 以 maxDist（最小地球）为基准：camera越远scale越大（散开越多）
+        const islandScale = Math.max(1.0, Math.min(2.5, cameraDistance / maxDist));
         const offset = islandSpread[city.name] || { x: 0.16, y: 0.04 };
-        flagPos.x += offset.x;
-        flagPos.y += offset.y;
+        flagPos.x += offset.x * islandScale;
+        flagPos.y += offset.y * islandScale;
 
         const flagLineGeo = new THREE.BufferGeometry().setFromPoints([pos, flagPos.clone()]);
         const flagLine = new THREE.Line(flagLineGeo, new THREE.LineBasicMaterial({

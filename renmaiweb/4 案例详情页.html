@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>案例详情页预览 · 资源夜市</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+        body {
+            background: #f2f2f2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+        }
+        .preview-title {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 30px;
+            color: #1d1d1f;
+        }
+        .mockup-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 40px;
+            width: 100%;
+            max-width: 1400px;
+        }
+        /* 手机模拟 */
+        .phone-mock {
+            width: 360px;
+            background: #ffffff;
+            border-radius: 44px;
+            overflow: hidden;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.12), 0 0 0 8px #e8e8ed;
+            height: 720px;
+            display: flex;
+            flex-direction: column;
+        }
+        .phone-status {
+            background: #fff;
+            padding: 12px 20px 6px;
+            font-size: 0.75rem;
+            color: #1d1d1f;
+            display: flex;
+            justify-content: space-between;
+            font-weight: 500;
+        }
+        .phone-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px;
+            scrollbar-width: none;
+        }
+        .phone-content::-webkit-scrollbar {
+            display: none;
+        }
+        /* 返回栏 */
+        .nav-bar {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+        .back-icon {
+            font-size: 1.5rem;
+            line-height: 1;
+            color: #0071E3;
+        }
+        .page-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #1d1d1f;
+        }
+        /* 案例标题 */
+        .case-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #1d1d1f;
+        }
+        /* 元数据 */
+        .case-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            color: #6e6e73;
+            font-size: 0.9rem;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        /* 封面图 */
+        .cover-image {
+            width: 100%;
+            aspect-ratio: 16/9;
+            background: #e6e6ea;
+            border-radius: 20px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #aaa;
+            font-size: 14px;
+            border: 1px solid #f0f0f0;
+        }
+        /* 富文本内容 */
+        .rich-content {
+            background: #f9f9fb;
+            border-radius: 20px;
+            padding: 20px;
+            border: 1px solid #f0f0f0;
+        }
+        .rich-content p {
+            margin-bottom: 16px;
+            color: #3a3a3c;
+            line-height: 1.6;
+        }
+        .rich-content h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin: 20px 0 10px;
+            color: #1d1d1f;
+        }
+        .rich-content img {
+            width: 100%;
+            border-radius: 16px;
+            margin: 16px 0;
+            background: #e6e6ea;
+            padding: 20px;
+            text-align: center;
+            color: #aaa;
+        }
+        .rich-content ul {
+            margin: 16px 0;
+            padding-left: 24px;
+            color: #3a3a3c;
+        }
+        .rich-content li {
+            margin-bottom: 8px;
+        }
+        .quote {
+            background: #e8e8ed;
+            padding: 12px 16px;
+            border-radius: 16px;
+            font-style: italic;
+            color: #1d1d1f;
+            margin: 16px 0;
+        }
+        /* 电脑模拟 */
+        .desktop-mock {
+            width: 900px;
+            background: #ffffff;
+            border-radius: 24px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.15);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: 560px;
+        }
+        .desktop-header {
+            padding: 20px 30px 0;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+        .desktop-content {
+            padding: 20px 60px;
+            flex: 1;
+            overflow-y: auto;
+            max-width: 800px;
+            margin: 0 auto;
+            width: 100%;
+        }
+        .desktop-content .case-title {
+            font-size: 2rem;
+        }
+        .desktop-content .cover-image {
+            width: 100%;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="preview-title">📱 案例详情页预览 · 成功案例富文本展示</div>
+    <div class="mockup-container">
+        <!-- 手机模拟 -->
+        <div class="phone-mock">
+            <div class="phone-status">
+                <span>9:41</span>
+                <span>📶 🔋 100%</span>
+            </div>
+            <div class="phone-content">
+                <div class="nav-bar">
+                    <span class="back-icon">←</span>
+                    <span class="page-title">成功案例</span>
+                </div>
+                <div class="case-title">某AI医疗公司B轮融资成功案例</div>
+                <div class="case-meta">
+                    <span>💰 成交金额 2亿</span>
+                    <span>👤 引荐人 李XX</span>
+                    <span>📅 2025-10-28</span>
+                </div>
+                <!-- 封面图 -->
+                <div class="cover-image">📸 案例封面图</div>
+                <!-- 富文本正文 -->
+                <div class="rich-content">
+                    <p>这是一家专注于AI医学影像的初创公司，核心团队来自清华和约翰霍普金斯。公司成立3年，已获得3轮融资，本次B轮由某知名医疗基金领投。</p>
+                    <img src="#" alt="产品示意图" style="background:#d4d4d8; padding:30px; text-align:center;">产品示意图</img>
+                    <h3>项目背景</h3>
+                    <p>公司开发的肺结节AI检测系统已获得NMPA认证，在50多家三甲医院落地。本轮融资将用于拓展产品线，并启动海外临床。</p>
+                    <h3>引荐过程</h3>
+                    <p>平台引荐人张先生将项目推荐给投资人王女士，双方经过3个月尽调和谈判，最终达成投资协议。平台为双方提供了法务和财务支持。</p>
+                    <div class="quote">
+                        “感谢平台的精准匹配，让我们快速找到了合适的投资方。” —— 项目方创始人
+                    </div>
+                    <h3>成交数据</h3>
+                    <ul>
+                        <li>融资金额：2亿元人民币</li>
+                        <li>出让股份：12%</li>
+                        <li>投资方：某医疗产业基金</li>
+                        <li>引荐人分成：600万（一级引荐人）</li>
+                    </ul>
+                    <p>该案例入选平台2025年度十大成功案例，成为医疗AI领域的标杆。</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 电脑模拟 -->
+        <div class="desktop-mock">
+            <div class="desktop-header">
+                <span class="back-icon" style="font-size:1.8rem;">←</span>
+                <span class="page-title" style="font-size:1.4rem;">成功案例</span>
+            </div>
+            <div class="desktop-content">
+                <div class="case-title">某AI医疗公司B轮融资成功案例</div>
+                <div class="case-meta" style="margin-top:8px;">
+                    <span>💰 成交金额 2亿</span>
+                    <span>👤 引荐人 李XX</span>
+                    <span>📅 2025-10-28</span>
+                </div>
+                <div class="cover-image" style="max-width:700px; margin:20px auto;">📸 案例封面图</div>
+                <div class="rich-content">
+                    <p>这是一家专注于AI医学影像的初创公司，核心团队来自清华和约翰霍普金斯。公司成立3年，已获得3轮融资，本次B轮由某知名医疗基金领投。</p>
+                    <img src="#" alt="产品示意图" style="background:#d4d4d8; padding:30px; text-align:center; display:block; width:100%;">产品示意图</img>
+                    <h3>项目背景</h3>
+                    <p>公司开发的肺结节AI检测系统已获得NMPA认证，在50多家三甲医院落地。本轮融资将用于拓展产品线，并启动海外临床。</p>
+                    <h3>引荐过程</h3>
+                    <p>平台引荐人张先生将项目推荐给投资人王女士，双方经过3个月尽调和谈判，最终达成投资协议。平台为双方提供了法务和财务支持。</p>
+                    <div class="quote">
+                        “感谢平台的精准匹配，让我们快速找到了合适的投资方。” —— 项目方创始人
+                    </div>
+                    <h3>成交数据</h3>
+                    <ul>
+                        <li>融资金额：2亿元人民币</li>
+                        <li>出让股份：12%</li>
+                        <li>投资方：某医疗产业基金</li>
+                        <li>引荐人分成：600万（一级引荐人）</li>
+                    </ul>
+                    <p>该案例入选平台2025年度十大成功案例，成为医疗AI领域的标杆。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <p style="margin-top: 40px; color: #6e6e73;">✅ 案例详情页包含标题、成交金额、引荐人、封面图、富文本正文（段落、图片、列表、引用）。手机端和电脑端均适配。</p>
+</body>
+</html>

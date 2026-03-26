@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>案例与避坑列表预览 · 资源夜市</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+        body {
+            background: #f2f2f2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+        }
+        .preview-title {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 30px;
+            color: #1d1d1f;
+        }
+        .mockup-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 40px;
+            width: 100%;
+            max-width: 1600px;
+        }
+        /* 手机模拟 */
+        .phone-mock {
+            width: 360px;
+            background: #ffffff;
+            border-radius: 44px;
+            overflow: hidden;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.12), 0 0 0 8px #e8e8ed;
+            height: 720px;
+            display: flex;
+            flex-direction: column;
+        }
+        .phone-status {
+            background: #fff;
+            padding: 12px 20px 6px;
+            font-size: 0.75rem;
+            color: #1d1d1f;
+            display: flex;
+            justify-content: space-between;
+            font-weight: 500;
+        }
+        .phone-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px;
+            scrollbar-width: none;
+        }
+        .phone-content::-webkit-scrollbar {
+            display: none;
+        }
+        /* 返回栏 */
+        .nav-bar {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+        .back-icon {
+            font-size: 1.5rem;
+            line-height: 1;
+            color: #0071E3;
+        }
+        .page-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #1d1d1f;
+        }
+        /* 板块标题（手机端直接显示在页面内） */
+        .list-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        .list-header h2 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #1d1d1f;
+        }
+        .list-header span {
+            color: #6e6e73;
+            font-size: 0.85rem;
+        }
+        /* 卡片列表 */
+        .card-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .list-card {
+            background: #f9f9fb;
+            border-radius: 20px;
+            padding: 16px;
+            border: 1px solid #f0f0f0;
+            display: flex;
+            gap: 12px;
+        }
+        .card-image {
+            width: 80px;
+            height: 80px;
+            background: #e6e6ea;
+            border-radius: 16px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #aaa;
+            font-size: 10px;
+        }
+        .card-info {
+            flex: 1;
+        }
+        .card-title {
+            font-weight: 600;
+            font-size: 1rem;
+            color: #1d1d1f;
+            margin-bottom: 4px;
+        }
+        .card-subtitle {
+            font-size: 0.85rem;
+            color: #6e6e73;
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+        .card-meta {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            font-size: 0.75rem;
+            color: #8e8e93;
+        }
+        .card-meta span {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        /* 避坑卡片特殊标识 */
+        .warning-badge {
+            background: #ffeeee;
+            color: #d70015;
+            font-size: 0.65rem;
+            padding: 2px 8px;
+            border-radius: 30px;
+            display: inline-block;
+            margin-bottom: 6px;
+        }
+        /* 电脑模拟 */
+        .desktop-mock {
+            width: 900px;
+            background: #ffffff;
+            border-radius: 24px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.15);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: 560px;
+        }
+        .desktop-header {
+            padding: 20px 30px 0;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+        .desktop-content {
+            padding: 20px 30px;
+            flex: 1;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: row;
+            gap: 40px;
+        }
+        .desktop-col {
+            flex: 1;
+        }
+        .desktop-col .list-card {
+            margin-bottom: 16px;
+        }
+        .desktop-col h2 {
+            font-size: 1.6rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #1d1d1f;
+        }
+        .phone-label {
+            text-align: center;
+            margin-top: 8px;
+            color: #6e6e73;
+        }
+    </style>
+</head>
+<body>
+    <div class="preview-title">📱 成功案例列表 vs 避坑指南列表 · 独立一级菜单</div>
+    <div class="mockup-container">
+        <!-- 手机模拟：左侧成功案例列表，右侧避坑指南列表 -->
+        <div style="display: flex; gap: 20px; flex-wrap: wrap; justify-content: center;">
+            <!-- 成功案例手机 -->
+            <div>
+                <div class="phone-mock">
+                    <div class="phone-status">
+                        <span>9:41</span>
+                        <span>📶 🔋 100%</span>
+                    </div>
+                    <div class="phone-content">
+                        <div class="nav-bar">
+                            <span class="back-icon">←</span>
+                            <span class="page-title">成功案例</span>
+                        </div>
+                        <div class="list-header">
+                            <h2>最新案例</h2>
+                            <span>共 12 篇</span>
+                        </div>
+                        <div class="card-list">
+                            <div class="list-card">
+                                <div class="card-image">📸</div>
+                                <div class="card-info">
+                                    <div class="card-title">某AI医疗公司B轮融资2亿元</div>
+                                    <div class="card-subtitle">平台引荐人张先生对接，3个月完成尽调，成为医疗AI赛道年度最大融资案例</div>
+                                    <div class="card-meta">
+                                        <span>📅 2025-10-28</span>
+                                        <span>👤 引荐人 李XX</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="list-card">
+                                <div class="card-image">📸</div>
+                                <div class="card-info">
+                                    <div class="card-title">新能源项目A轮融资8000万</div>
+                                    <div class="card-subtitle">某储能技术公司通过平台匹配产业投资方，出让10%股份，已签署TS</div>
+                                    <div class="card-meta">
+                                        <span>📅 2025-09-15</span>
+                                        <span>👤 引荐人 王女士</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="list-card">
+                                <div class="card-image">📸</div>
+                                <div class="card-info">
+                                    <div class="card-title">供应链金融合作案例</div>
+                                    <div class="card-subtitle">某物流企业通过平台引荐获得5000万授信，解决资金周转难题</div>
+                                    <div class="card-meta">
+                                        <span>📅 2025-08-20</span>
+                                        <span>👤 引荐人 赵总</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="list-card">
+                                <div class="card-image">📸</div>
+                                <div class="card-info">
+                                    <div class="card-title">某生物医药公司C轮融资3.5亿</div>
+                                    <div class="card-subtitle">平台引荐顶级医疗基金，融资额超预期</div>
+                                    <div class="card-meta">
+                                        <span>📅 2025-07-12</span>
+                                        <span>👤 引荐人 陈博士</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="phone-label">📱 成功案例列表</div>
+            </div>
+            <!-- 避坑指南手机 -->
+            <div>
+                <div class="phone-mock">
+                    <div class="phone-status">
+                        <span>9:41</span>
+                        <span>📶 🔋 100%</span>
+                    </div>
+                    <div class="phone-content">
+                        <div class="nav-bar">
+                            <span class="back-icon">←</span>
+                            <span class="page-title">避坑指南</span>
+                        </div>
+                        <div class="list-header">
+                            <h2>最新警示</h2>
+                            <span>共 8 篇</span>
+                        </div>
+                        <div class="card-list">
+                            <div class="list-card">
+                                <div class="card-image">📸</div>
+                                <div class="card-info">
+                                    <div class="warning-badge">冒充央企</div>
+                                    <div class="card-title">冒充央企融资诈骗案</div>
+                                    <div class="card-subtitle">骗子伪造红头文件，以“国家项目”为名骗取保证金，多地受害者已报警</div>
+                                    <div class="card-meta">
+                                        <span>📅 2025-11-15</span>
+                                        <span>📍 全国多发</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="list-card">
+                                <div class="card-image">📸</div>
+                                <div class="card-info">
+                                    <div class="warning-badge">虚假项目</div>
+                                    <div class="card-title">微信群“荐股”骗局</div>
+                                    <div class="card-subtitle">不法分子冒充投资导师，诱导下载虚假APP，卷款跑路</div>
+                                    <div class="card-meta">
+                                        <span>📅 2025-10-08</span>
+                                        <span>📍 多地</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="list-card">
+                                <div class="card-image">📸</div>
+                                <div class="card-info">
+                                    <div class="warning-badge">合同陷阱</div>
+                                    <div class="card-title">加盟合作“阴阳合同”</div>
+                                    <div class="card-subtitle">某餐饮加盟品牌利用合同条款模糊，骗取加盟费后失联</div>
+                                    <div class="card-meta">
+                                        <span>📅 2025-09-22</span>
+                                        <span>📍 多地</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="list-card">
+                                <div class="card-image">📸</div>
+                                <div class="card-info">
+                                    <div class="warning-badge">资金盘</div>
+                                    <div class="card-title">“区块链挖矿”资金盘崩盘</div>
+                                    <div class="card-subtitle">涉案金额超5亿，数千人血本无归</div>
+                                    <div class="card-meta">
+                                        <span>📅 2025-08-30</span>
+                                        <span>📍 全国</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="phone-label">📱 避坑指南列表</div>
+            </div>
+        </div>
+
+        <!-- 电脑模拟：左右并排两个独立列表 -->
+        <div class="desktop-mock" style="width: 1000px;">
+            <div class="desktop-header">
+                <span class="back-icon" style="font-size:1.8rem;">←</span>
+                <span class="page-title" style="font-size:1.4rem;">案例 · 警示</span>
+            </div>
+            <div class="desktop-content">
+                <div class="desktop-col">
+                    <h2>成功案例</h2>
+                    <div class="list-card">
+                        <div class="card-image">📸</div>
+                        <div class="card-info">
+                            <div class="card-title">某AI医疗公司B轮融资2亿元</div>
+                            <div class="card-subtitle">平台引荐人张先生对接，3个月完成尽调</div>
+                            <div class="card-meta">
+                                <span>📅 2025-10-28</span>
+                                <span>👤 李XX</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="list-card">
+                        <div class="card-image">📸</div>
+                        <div class="card-info">
+                            <div class="card-title">新能源项目A轮融资8000万</div>
+                            <div class="card-subtitle">储能技术公司匹配产业投资方</div>
+                            <div class="card-meta">
+                                <span>📅 2025-09-15</span>
+                                <span>👤 王女士</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="list-card">
+                        <div class="card-image">📸</div>
+                        <div class="card-info">
+                            <div class="card-title">供应链金融合作案例</div>
+                            <div class="card-subtitle">物流企业获5000万授信</div>
+                            <div class="card-meta">
+                                <span>📅 2025-08-20</span>
+                                <span>👤 赵总</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="desktop-col">
+                    <h2>避坑指南</h2>
+                    <div class="list-card">
+                        <div class="card-image">📸</div>
+                        <div class="card-info">
+                            <div class="warning-badge">冒充央企</div>
+                            <div class="card-title">冒充央企融资诈骗案</div>
+                            <div class="card-subtitle">伪造红头文件，骗取保证金</div>
+                            <div class="card-meta">
+                                <span>📅 2025-11-15</span>
+                                <span>📍 全国</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="list-card">
+                        <div class="card-image">📸</div>
+                        <div class="card-info">
+                            <div class="warning-badge">虚假项目</div>
+                            <div class="card-title">微信群“荐股”骗局</div>
+                            <div class="card-subtitle">诱导下载虚假APP卷款</div>
+                            <div class="card-meta">
+                                <span>📅 2025-10-08</span>
+                                <span>📍 多地</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="list-card">
+                        <div class="card-image">📸</div>
+                        <div class="card-info">
+                            <div class="warning-badge">合同陷阱</div>
+                            <div class="card-title">加盟合作“阴阳合同”</div>
+                            <div class="card-subtitle">骗取加盟费后失联</div>
+                            <div class="card-meta">
+                                <span>📅 2025-09-22</span>
+                                <span>📍 多地</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <p style="margin-top: 40px; color: #6e6e73;">✅ 成功案例列表和避坑指南列表作为独立一级菜单分别展示，每个页面包含标题、副标题、日期等卡片，避坑卡片带警示标签。手机端两个独立模拟，电脑端左右并排对比。</p>
+</body>
+</html>

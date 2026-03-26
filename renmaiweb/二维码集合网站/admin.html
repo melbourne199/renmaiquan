@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>后台管理 · 资源夜市</title>
+    <style>
+        /* 黑金风格 - 与首页统一 */
+        * { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI',sans-serif; }
+        body { background:#0b0b0b; color:#e0d6bf; padding:20px; }
+        .container { max-width:1400px; margin:0 auto; }
+        .header { display:flex; justify-content:space-between; align-items:center; margin-bottom:30px; }
+        .header h1 { color:#cfb87c; font-size:2rem; border-left:6px solid #b99b4b; padding-left:20px; }
+        .back-link { color:#a0937e; text-decoration:none; border:1px solid #52472e; padding:8px 20px; border-radius:40px; }
+        .back-link:hover { background:#2f2a20; border-color:#b99b4b; color:#cfb87c; }
+        .admin-panel { background:#1a170f; border-radius:40px; padding:30px; border:1px solid #3a2e1c; }
+        .tabs { display:flex; gap:10px; margin-bottom:20px; }
+        .tab-btn { background:#26221a; border:1px solid #52472e; color:#e0d6bf; padding:10px 30px; border-radius:40px; cursor:pointer; }
+        .tab-btn.active { background:#b99b4b; color:#0b0b0b; }
+        .filter-bar { display:flex; gap:15px; margin-bottom:20px; flex-wrap:wrap; align-items:center; }
+        .filter-bar input, .filter-bar select { background:#26221a; border:1px solid #52472e; border-radius:40px; padding:8px 15px; color:#f0e2c5; outline:none; }
+        .btn { background:#b99b4b; border:none; color:#0b0b0b; padding:8px 20px; border-radius:40px; cursor:pointer; font-size:0.95rem; }
+        .btn-danger { background:#8b3a3a; color:#ffd6d6; }
+        table { width:100%; border-collapse:collapse; }
+        th { background:#2f2a1f; color:#cfb87c; padding:12px; text-align:left; }
+        td { padding:12px; border-bottom:1px solid #3f3829; }
+        .action-btns { display:flex; gap:5px; }
+        .note { margin-top:20px; color:#5f543b; font-size:0.85rem; text-align:center; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>⚙️ 后台管理 · 资源夜市</h1>
+        <a href="index.html" class="back-link">← 返回首页</a>
+    </div>
+    <div class="admin-panel">
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="qrcodes">群码管理</button>
+            <button class="tab-btn" data-tab="users">用户管理</button>
+        </div>
+        <!-- 群码管理面板 -->
+        <div id="qrcodesPanel">
+            <div class="filter-bar">
+                <input type="text" id="qrSearch" placeholder="搜索群名/行业/地区">
+                <select id="qrIndustryFilter"><option value="">全行业</option></select>
+                <select id="qrRegionFilter"><option value="">全地区</option></select>
+                <select id="qrUserFilter"><option value="">全部上传者</option></select>
+                <button class="btn" id="refreshQr">刷新</button>
+            </div>
+            <table>
+                <thead>
+                    <tr><th>ID</th><th>群名</th><th>行业</th><th>地区</th><th>人数</th><th>上传者</th><th>操作</th></tr>
+                </thead>
+                <tbody id="qrTableBody"></tbody>
+            </table>
+        </div>
+        <!-- 用户管理面板 -->
+        <div id="usersPanel" style="display:none;">
+            <div class="filter-bar">
+                <input type="text" id="userSearch" placeholder="搜索用户名">
+                <select id="userRoleFilter"><option value="">全部角色</option><option value="admin">管理员</option><option value="user">普通用户</option></select>
+                <button class="btn" id="refreshUsers">刷新</button>
+            </div>
+            <table>
+                <thead><tr><th>ID</th><th>用户名</th><th>角色</th><th>操作</th></tr></thead>
+                <tbody id="userTableBody"></tbody>
+            </table>
+        </div>
+    </div>
+    <div class="note">需要管理员权限。所有操作将同步到数据库。</div>
+</div>
+
+<script>
+    const token = sessionStorage.getItem('token');
+    const user = JSON.parse(sessionStorage.getItem('user') || '{}');
+    if (!token) { alert('请先登录'); window.location.href = 'login.html'; }
+    else if (user.role !== 'admin') { alert('需要管理员权限'); window.location.href = 'index.html'; }
+
+    async function fetchWithAuth(url, options = {}) {
+        const headers = { 'Authorization': 'Bearer ' + token, ...(options.headers || {}) };
+        const res = await fetch(url, { ...options, headers });
+        if (res.status === 401 || res.status === 403) {
+            alert('登录已过期或无权限');
+            sessionStorage.clear();
+            window.location.href = 'login.html';
+            return null;
+        }
+        return res.json();
+    }
+
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            const tab = btn.dataset.tab;
+            document.getElementById('qrcodesPanel').style.display = tab === 'qrcodes' ? 'block' : 'none';
+            document.getElementById('usersPanel').style.display = tab === 'users' ? 'block' : 'none';
+            if (tab === 'qrcodes') loadQRCodes();
+            else loadUsers();
+        });
+    });
+
+    async function loadQRCodes() {
+        const data = await fetchWithAuth('/api/admin/qrcodes');
+        if (!data) return;
+        // 填充筛选下拉（简化，实际可从data中提取）
+        const industries = [...new Set(data.map(q => q.industry).filter(Boolean))];
+        const regions = [...new Set(data.map(q => q.region).filter(Boolean))];
+        const users = [...new Set(data.map(q => q.uploader).filter(Boolean))];
+        document.getElementById('qrIndustryFilter').innerHTML = '<option value="">全行业</option>' + industries.map(i => `<option value="${i}">${i}</option>`).join('');
+        document.getElementById('qrRegionFilter').innerHTML = '<option value="">全地区</option>' + regions.map(r => `<option value="${r}">${r}</option>`).join('');
+        document.getElementById('qrUserFilter').innerHTML = '<option value="">全部上传者</option>' + users.map(u => `<option value="${u}">${u}</option>`).join('');
+
+        const tbody = document.getElementById('qrTableBody');
+        tbody.innerHTML = data.map(q => `
+            <tr>
+                <td>${q.id}</td>
+                <td>${q.name}</td>
+                <td>${q.industry || ''}</td>
+                <td>${q.region || ''}</td>
+                <td>${q.members}</td>
+                <td>${q.uploader || ''}</td>
+                <td class="action-btns">
+                    <button class="btn" onclick="editQR(${q.id})">编辑</button>
+                    <button class="btn btn-danger" onclick="deleteQR(${q.id})">删除</button>
+                </td>
+            </tr>
+        `).join('');
+    }
+
+    window.editQR = function(id) {
+        window.location.href = `upload.html?id=${id}`;
+    };
+
+    window.deleteQR = async function(id) {
+        if (!confirm('确定删除该群码？')) return;
+        await fetchWithAuth('/api/admin/qrcodes/' + id, { method: 'DELETE' });
+        loadQRCodes();
+    };
+
+    async function loadUsers() {
+        const data = await fetchWithAuth('/api/admin/users');
+        if (!data) return;
+        const tbody = document.getElementById('userTableBody');
+        tbody.innerHTML = data.map(u => `
+            <tr>
+                <td>${u.id}</td>
+                <td>${u.username}</td>
+                <td>${u.role}</td>
+                <td class="action-btns">
+                    ${u.role !== 'admin' ? `<button class="btn btn-danger" onclick="deleteUser(${u.id})">删除</button>` : '<span style="color:#5f543b;">不可删除</span>'}
+                </td>
+            </tr>
+        `).join('');
+    }
+
+    window.deleteUser = async function(id) {
+        if (!confirm('确定删除该用户？')) return;
+        await fetchWithAuth('/api/admin/users/' + id, { method: 'DELETE' });
+        loadUsers();
+    };
+
+    document.getElementById('refreshQr').addEventListener('click', loadQRCodes);
+    document.getElementById('refreshUsers').addEventListener('click', loadUsers);
+    document.getElementById('qrSearch').addEventListener('input', loadQRCodes);
+    document.getElementById('qrIndustryFilter').addEventListener('change', loadQRCodes);
+    document.getElementById('qrRegionFilter').addEventListener('change', loadQRCodes);
+    document.getElementById('qrUserFilter').addEventListener('change', loadQRCodes);
+    document.getElementById('userSearch').addEventListener('input', loadUsers);
+    document.getElementById('userRoleFilter').addEventListener('change', loadUsers);
+
+    loadQRCodes();
+    loadUsers();
+</script>
+</body>
+</html>
