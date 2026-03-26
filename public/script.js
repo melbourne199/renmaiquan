@@ -579,8 +579,8 @@ function init() {
   scene = new THREE.Scene();
 
   const isMobile = window.innerWidth <= 768;
-  camera = new THREE.PerspectiveCamera(isMobile ? 14 : 24, window.innerWidth / window.innerHeight, 0.1, 2000);
-  camera.position.set(0, isMobile ? 10.8 : 9.6, isMobile ? 144 : 84);
+  camera = new THREE.PerspectiveCamera(isMobile ? 12 : 22, window.innerWidth / window.innerHeight, 0.1, 2000);
+  camera.position.set(0, isMobile ? 11.4 : 10.0, isMobile ? 216 : 126);
 
   renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
   renderer.setSize(window.innerWidth, window.innerHeight);
@@ -655,8 +655,8 @@ function init() {
   controls = new OrbitControls(camera, renderer.domElement);
   controls.enableDamping = true;
   controls.dampingFactor = 0.05;
-  controls.minDistance = window.innerWidth <= 768 ? 26 : 18;
-  controls.maxDistance = window.innerWidth <= 768 ? 56 : 38;
+  controls.minDistance = window.innerWidth <= 768 ? 34 : 24;
+  controls.maxDistance = window.innerWidth <= 768 ? 84 : 56;
   controls.enablePan = false;
   controls.target.set(0, 0, 0);
 
