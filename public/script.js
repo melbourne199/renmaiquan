@@ -534,12 +534,9 @@ function fixLabelCollision() {
     label.position.copy(finalPos);
 
     if (line) {
-      if (usedLine) {
-        line.geometry.setFromPoints([markerPos, finalPos.clone()]);
-        line.material.opacity = 0.8;
-      } else {
-        line.material.opacity = 0;
-      }
+      // 所有标签（岛/城市）碰撞后都拉线：从坐标点连到最终位置
+      line.geometry.setFromPoints([markerPos, finalPos.clone()]);
+      line.material.opacity = 0.85;
     }
   }
 }
