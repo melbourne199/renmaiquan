@@ -534,25 +534,9 @@ function fixLabelCollision() {
     label.position.copy(finalPos);
 
     if (line) {
-      // 只对可见标签显示拉线
-      const projected = worldToScreen(label.position);
-      const isFront = projected.z < 1;
-      const city = label.userData.city;
-      const camDist = camera.position.length();
-      const isOverview = camDist > 26;
-      const isMobileView = window.innerWidth <= 768;
-      let labelVisible = isFront;
-      if (isOverview) {
-        if (city.isIsland) {
-          labelVisible = isFront;
-        } else {
-          labelVisible = isFront && (city.isBeijing || city.isTaiwan || city.isHK || city.isMacau || city.provided >= 60 || city.help >= 10);
-        }
-      } else if (isMobileView) {
-        const isPriority = city.isBeijing || city.isIsland || city.isHK || city.isMacau || city.isTaiwan || city.provided >= 80 || city.help >= 12;
-        labelVisible = isFront && isPriority;
-      }
-      if (labelVisible) {
+      // 只对可见且被碰撞检测推开的标签拉线（就近原则：能直接放就不拉线）
+      const isVisible = label.element.style.opacity !== '0';
+      if (isVisible && usedLine) {
         line.geometry.setFromPoints([markerPos, finalPos.clone()]);
         line.material.opacity = 0.85;
       } else {
