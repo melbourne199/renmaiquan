@@ -553,10 +553,9 @@ function fixLabelCollision() {
 
 function worldToScreen(pos) {
   const vector = pos.clone().project(camera);
-  const globeShiftY = window.innerHeight * 0.2;
   return {
     x: (vector.x * 0.5 + 0.5) * window.innerWidth,
-    y: (-(vector.y * 0.5) + 0.5) * window.innerHeight + globeShiftY,
+    y: (-(vector.y * 0.5) + 0.5) * window.innerHeight,
     z: vector.z
   };
 }
