@@ -108,12 +108,12 @@ const cityData = [
 
   // 南海岛礁
   // 控制方：cn=🇨🇳中国, tw=🇹🇼台湾, ph=🇵🇭菲律宾, vn=🇻🇳越南, in=🇮🇳印度
-  { name: '永兴岛', lat: 16.8331, lon: 112.3333, provided: 3, help: 1, isIsland: true, controlledBy: 'cn', offset: { x: 0.1, y: 0 } },
-  { name: '南沙群岛', lat: 9.7497, lon: 115.1761, provided: 1, help: 0, isIsland: true, controlledBy: 'cn', offset: { x: 0.1, y: 0 } },
-  { name: '钓鱼岛', lat: 25.7469, lon: 124.4833, provided: 1, help: 0, isIsland: true, controlledBy: 'cn', offset: { x: 0.1, y: 0 } },
-  { name: '仁爱礁', lat: 9.7447, lon: 115.5397, provided: 1, help: 0, isIsland: true, controlledBy: 'cn', offset: { x: 0.15, y: 0 } },
-  { name: '美济礁', lat: 9.9089, lon: 115.5350, provided: 1, help: 0, isIsland: true, controlledBy: 'cn', offset: { x: 0.1, y: 0.08 } },
-  { name: '渚碧礁', lat: 10.9281, lon: 114.0569, provided: 1, help: 0, isIsland: true, controlledBy: 'cn', offset: { x: 0.1, y: 0.15 } },
+  { name: '永兴岛', lat: 16.8331, lon: 112.3333, provided: 3, help: 1, isIsland: true, controlledBy: 'cn' },
+  { name: '南沙群岛', lat: 9.7497, lon: 115.1761, provided: 1, help: 0, isIsland: true, controlledBy: 'cn' },
+  { name: '钓鱼岛', lat: 25.7469, lon: 124.4833, provided: 1, help: 0, isIsland: true, controlledBy: 'cn' },
+  { name: '仁爱礁', lat: 9.7447, lon: 115.5397, provided: 1, help: 0, isIsland: true, controlledBy: 'cn' },
+  { name: '美济礁', lat: 9.9089, lon: 115.5350, provided: 1, help: 0, isIsland: true, controlledBy: 'cn' },
+  { name: '渚碧礁', lat: 10.9281, lon: 114.0569, provided: 1, help: 0, isIsland: true, controlledBy: 'cn' },
   // 藏南地区（印度实际控制）
   { name: '达旺', lat: 27.5, lon: 92.0, provided: 1, help: 0, isIsland: true, controlledBy: 'cn' },
   // 南沙岛礁（非中国控制）
@@ -261,49 +261,15 @@ function createCityMarkers() {
     } else if (city.isIsland) {
       // 只显示中国固有领土（含争议）：其他国家的岛直接跳过不渲染
       if (city.controlledBy && city.controlledBy !== 'cn') return;
-      const lineColor = 0xff6b6b; // 红色
 
+      // 岛礁标签：初始贴近坐标点，用碰撞检测找最近空位
       const flagPos = pos.clone();
-      const islandSpread = {
-        '钓鱼岛': { x: 0.05, y: 0.03 },
-        '永兴岛': { x: 0.05, y: 0.01 },
-        '南沙群岛': { x: 0.06, y: 0.04 },
-        '仁爱礁': { x: 0.06, y: -0.01 },
-        '美济礁': { x: 0.07, y: 0.03 },
-        '渚碧礁': { x: 0.06, y: 0.05 },
-        '太平岛': { x: 0.06, y: 0.06 },
-        '中业岛': { x: 0.08, y: 0.04 },
-        '南子岛': { x: 0.08, y: 0.07 },
-        '北子岛': { x: 0.09, y: 0.08 },
-        '鸿庥岛': { x: 0.05, y: 0.08 },
-        '景宏岛': { x: 0.07, y: 0.06 },
-        '南威岛': { x: 0.04, y: -0.04 },
-        '西月岛': { x: 0.08, y: 0.02 },
-        '马欢岛': { x: 0.09, y: -0.01 },
-        '费信岛': { x: 0.09, y: 0.01 },
-        '永暑礁': { x: 0.04, y: 0.04 },
-        '华阳礁': { x: 0.03, y: -0.05 },
-        '赤瓜礁': { x: 0.06, y: 0.01 },
-        '东门礁': { x: 0.08, y: 0.05 },
-        '南薰礁': { x: 0.07, y: 0.03 },
-        '黄岩岛': { x: 0.05, y: 0.04 },
-        '苏岩礁': { x: 0.05, y: 0.01 },
-        '达旺': { x: 0.04, y: 0.03 },
-        '班公湖': { x: 0.04, y: 0.01 }
-      };
-      const cameraDistance = camera.position.length();
-      const isMobileView = window.innerWidth <= 768;
-      const minDist = isMobileView ? 18 : 10;
-      const maxDist = isMobileView ? 84 : 56;
-      const t = Math.min(1, (cameraDistance - minDist) / (maxDist - minDist));
-      const islandScale = 0.3 + t * t * 1.2;
-      const offset = islandSpread[city.name] || { x: 0.16, y: 0.04 };
-      flagPos.x += offset.x * islandScale;
-      flagPos.y += offset.y * islandScale;
+      flagPos.x += 0.004;
+      flagPos.y += 0.001;
 
       const flagLineGeo = new THREE.BufferGeometry().setFromPoints([pos, flagPos.clone()]);
       const flagLine = new THREE.Line(flagLineGeo, new THREE.LineBasicMaterial({
-        color: lineColor,
+        color: 0xff6b6b,
         transparent: true,
         opacity: 0.85
       }));
@@ -319,9 +285,10 @@ function createCityMarkers() {
       flagLabel.userData.isFlag = true;
       flagLabel.userData.line = flagLine;
       markerGroup.add(flagLabel);
+      cityLabels.push(flagLabel);
       return;
     } else if (city.isTaiwan || city.isHK || city.isMacau) {
-      // 港澳台：略大蓝点
+      // 港澳台：略大蓝点+标签
       const dot = new THREE.Mesh(
         new THREE.SphereGeometry(0.022, 10, 10),
         new THREE.MeshBasicMaterial({ color: 0x00aaff })
@@ -339,6 +306,26 @@ function createCityMarkers() {
       glow.userData.city = city;
       glow.userData.isGlow = true;
       markerGroup.add(glow);
+
+      // 港澳台标签
+      let labelPos = pos.clone();
+      labelPos.x += 0.003;
+      labelPos.y += 0.001;
+      const twLineGeo = new THREE.BufferGeometry().setFromPoints([pos, labelPos.clone()]);
+      const twLine = new THREE.Line(twLineGeo, new THREE.LineBasicMaterial({ color: 0x00aaff, transparent: true, opacity: 0.8 }));
+      twLine.userData.city = city;
+      markerGroup.add(twLine);
+
+      const twDiv = document.createElement('div');
+      twDiv.className = 'city-label';
+      twDiv.textContent = city.name;
+      twDiv.onclick = (e) => { e.stopPropagation(); showCityCard(city); };
+      const twLabel = new CSS2DObject(twDiv);
+      twLabel.position.copy(labelPos);
+      twLabel.userData.city = city;
+      twLabel.userData.line = twLine;
+      markerGroup.add(twLabel);
+      cityLabels.push(twLabel);
 
     } else if (!city.isIsland) {
       // 普通城市：小蓝点（像句号大小）
@@ -407,7 +394,7 @@ function fixLabelCollision() {
   const isOverview = cameraDistance > 26;
   const labels = cityLabels.filter(l => {
     const city = l.userData.city;
-    if (!city || l.userData.isFlag || city.isBeijing || city.offset) return false;
+    if (!city || city.isBeijing || city.offset) return false;
     if (isOverview && city.isIsland && !['钓鱼岛', '永兴岛', '南沙群岛'].includes(city.name)) return false;
     if (isOverview && !city.isIsland && city.provided < 40 && city.help < 6 && !city.isTaiwan && !city.isHK && !city.isMacau) return false;
     return true;
