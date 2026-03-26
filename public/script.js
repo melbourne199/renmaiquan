@@ -259,12 +259,8 @@ function createCityMarkers() {
       markerGroup.add(glow);
 
     } else if (city.isIsland) {
-      // 南海岛礁：所有岛都显示标签+连线，按控制方显示国旗和颜色
-      const flagColorMap = { cn: 0xff6b6b, tw: 0xff8800, ph: 0x4488ff, vn: 0x44aa44, in: 0xaa8844 };
-      const flagEmojiMap = { cn: '🇨🇳', tw: '🇹🇼', ph: '🇵🇭', vn: '🇻🇳', in: '🇮🇳' };
-      const controlled = city.controlledBy || 'cn';
-      const lineColor = flagColorMap[controlled] || 0xff6b6b;
-      const flagEmoji = flagEmojiMap[controlled] || '🇨🇳';
+      // 只显示中国固有领土（含争议）：其他国家的岛直接跳过不渲染
+      if (city.controlledBy && city.controlledBy !== 'cn') return;
 
       const flagPos = pos.clone();
       const islandSpread = {
