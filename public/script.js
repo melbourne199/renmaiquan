@@ -291,9 +291,11 @@ function createCityMarkers() {
         };
         const cameraDistance = camera.position.length();
         const isMobileView = window.innerWidth <= 768;
+        const minDist = isMobileView ? 34 : 24;
         const maxDist = isMobileView ? 84 : 56;
-        // 以 maxDist（最小地球）为基准：camera越远scale越大（散开越多）
-        const islandScale = Math.max(1.0, Math.min(2.5, cameraDistance / maxDist));
+        // cameraDistance越大(globe越小) → scale越大(globe最小时spread最大)
+        // 基准：minDist时scale=2.0（已充分散开），maxDist时scale=4.5（globe极小需更大spread）
+        const islandScale = 2.0 + (cameraDistance - minDist) / (maxDist - minDist) * 2.5;
         const offset = islandSpread[city.name] || { x: 0.16, y: 0.04 };
         flagPos.x += offset.x * islandScale;
         flagPos.y += offset.y * islandScale;
