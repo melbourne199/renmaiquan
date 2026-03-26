@@ -260,15 +260,48 @@ function createCityMarkers() {
     } else if (city.isIsland) {
       // 南海岛礁：中国岛礁显示红旗
       if (city.isChinaIsland) {
-        // 钓鱼岛等中国岛礁显示红旗+名字
+        // 中国岛礁：标签散开并默认带细线
         const flagPos = pos.clone();
-        if (city.offset) {
-          flagPos.x += city.offset.x;
-          flagPos.y += city.offset.y;
-        } else {
-          flagPos.x += 0.08;
-          flagPos.y += 0.02;
-        }
+        const islandSpread = {
+          '钓鱼岛': { x: 0.16, y: 0.06 },
+          '永兴岛': { x: 0.15, y: 0.02 },
+          '南沙群岛': { x: 0.18, y: 0.10 },
+          '仁爱礁': { x: 0.20, y: -0.02 },
+          '美济礁': { x: 0.22, y: 0.06 },
+          '渚碧礁': { x: 0.20, y: 0.14 },
+          '太平岛': { x: 0.18, y: 0.18 },
+          '中业岛': { x: 0.25, y: 0.12 },
+          '南子岛': { x: 0.26, y: 0.20 },
+          '北子岛': { x: 0.28, y: 0.26 },
+          '鸿庥岛': { x: 0.16, y: 0.24 },
+          '景宏岛': { x: 0.22, y: 0.18 },
+          '南威岛': { x: 0.12, y: -0.10 },
+          '西月岛': { x: 0.26, y: 0.06 },
+          '马欢岛': { x: 0.30, y: -0.04 },
+          '费信岛': { x: 0.28, y: 0.04 },
+          '永暑礁': { x: 0.12, y: 0.12 },
+          '华阳礁': { x: 0.10, y: -0.16 },
+          '赤瓜礁': { x: 0.18, y: 0.02 },
+          '东门礁': { x: 0.26, y: 0.14 },
+          '南薰礁': { x: 0.22, y: 0.10 },
+          '黄岩岛': { x: 0.16, y: 0.12 },
+          '苏岩礁': { x: 0.16, y: 0.04 },
+          '达旺': { x: 0.12, y: 0.08 },
+          '班公湖': { x: 0.14, y: 0.04 }
+        };
+        const offset = islandSpread[city.name] || { x: 0.16, y: 0.04 };
+        flagPos.x += offset.x;
+        flagPos.y += offset.y;
+
+        const flagLineGeo = new THREE.BufferGeometry().setFromPoints([pos, flagPos.clone()]);
+        const flagLine = new THREE.Line(flagLineGeo, new THREE.LineBasicMaterial({
+          color: 0xff6b6b,
+          transparent: true,
+          opacity: 0.85
+        }));
+        flagLine.userData.city = city;
+        markerGroup.add(flagLine);
+
         const flagDiv = document.createElement('div');
         flagDiv.className = 'island-flag';
         flagDiv.innerHTML = `<span class="flag-mark">🇨🇳</span>${city.name}`;
@@ -276,6 +309,7 @@ function createCityMarkers() {
         flagLabel.position.copy(flagPos);
         flagLabel.userData.city = city;
         flagLabel.userData.isFlag = true;
+        flagLabel.userData.line = flagLine;
         markerGroup.add(flagLabel);
         return;
       } else {
