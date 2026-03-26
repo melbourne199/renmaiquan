@@ -261,6 +261,7 @@ function createCityMarkers() {
     } else if (city.isIsland) {
       // 只显示中国固有领土（含争议）：其他国家的岛直接跳过不渲染
       if (city.controlledBy && city.controlledBy !== 'cn') return;
+      const lineColor = 0xff6b6b; // 红色
 
       const flagPos = pos.clone();
       const islandSpread = {
