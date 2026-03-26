@@ -262,22 +262,25 @@ function createCityMarkers() {
       // 只显示中国固有领土（含争议）：其他国家的岛直接跳过不渲染
       if (city.controlledBy && city.controlledBy !== 'cn') return;
 
-      // 旗杆：精准从坐标点竖直向上延伸
-      const poleTop = pos.clone();
-      poleTop.y += 0.12; // 旗杆高度
-      const poleGeo = new THREE.BufferGeometry().setFromPoints([pos, poleTop]);
-      const poleLine = new THREE.Line(poleGeo, new THREE.LineBasicMaterial({ color: 0xff6b6b, transparent: true, opacity: 0.9 }));
-      poleLine.userData.city = city;
-      markerGroup.add(poleLine);
+      // 初始贴近坐标点，就近原则
+      const flagPos = pos.clone();
+      flagPos.x += 0.003;
+      flagPos.y += 0.001;
+
+      // 初始短线（碰撞检测后会更新起点到坐标点，拉长或缩短）
+      const flagLineGeo = new THREE.BufferGeometry().setFromPoints([pos, flagPos.clone()]);
+      const flagLine = new THREE.Line(flagLineGeo, new THREE.LineBasicMaterial({ color: 0xff6b6b, transparent: true, opacity: 0.9 }));
+      flagLine.userData.city = city;
+      markerGroup.add(flagLine);
 
       const flagDiv = document.createElement('div');
       flagDiv.className = 'island-flag';
       flagDiv.innerHTML = `<span class="flag-mark">🇨🇳</span>${city.name}`;
       const flagLabel = new CSS2DObject(flagDiv);
-      flagLabel.position.copy(poleTop);
+      flagLabel.position.copy(flagPos);
       flagLabel.userData.city = city;
       flagLabel.userData.isFlag = true;
-      flagLabel.userData.line = poleLine;
+      flagLabel.userData.line = flagLine;
       markerGroup.add(flagLabel);
       cityLabels.push(flagLabel);
       return;
