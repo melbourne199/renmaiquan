@@ -339,7 +339,7 @@ function createCityMarkers() {
       glow.userData.isGlow = true;
       markerGroup.add(glow);
 
-    } else {
+    } else if (!city.isIsland) {
       // 普通城市：小蓝点（像句号大小）
       const dot = new THREE.Mesh(
         new THREE.SphereGeometry(0.015, 8, 8),
@@ -358,38 +358,38 @@ function createCityMarkers() {
       glow.userData.city = city;
       glow.userData.isGlow = true;
       markerGroup.add(glow);
+
+      // 城市标签贴近圆点
+      let labelPos = pos.clone();
+      labelPos.x += city.offset ? city.offset.x : 0.002;
+      labelPos.y += city.offset ? city.offset.y : 0.001;
+
+      // 线条从城市点位延伸到标签位置（亮蓝色，2px）
+      const lineGeo = new THREE.BufferGeometry().setFromPoints([pos, labelPos]);
+      const line = new THREE.Line(lineGeo, new THREE.LineBasicMaterial({
+        color: 0x00aaff,
+        transparent: true,
+        opacity: 0.8,
+        linewidth: 2
+      }));
+      line.userData.city = city;
+      markerGroup.add(line);
+
+      const div = document.createElement('div');
+      div.className = 'city-label';
+      div.textContent = city.name;
+      div.onclick = (e) => {
+        e.stopPropagation();
+        showCityCard(city);
+      };
+      const label = new CSS2DObject(div);
+      label.position.copy(labelPos);
+      label.userData.city = city;
+      label.userData.line = line;
+      markerGroup.add(label);
+
+      cityLabels.push(label);
     }
-
-    // 城市标签贴近圆点
-    let labelPos = pos.clone();
-    labelPos.x += city.offset ? city.offset.x : 0.002;
-    labelPos.y += city.offset ? city.offset.y : 0.001;
-
-    // 线条从城市点位延伸到标签位置（亮蓝色，2px）
-    const lineGeo = new THREE.BufferGeometry().setFromPoints([pos, labelPos]);
-    const line = new THREE.Line(lineGeo, new THREE.LineBasicMaterial({
-      color: 0x00aaff,
-      transparent: true,
-      opacity: 0.8,
-      linewidth: 2
-    }));
-    line.userData.city = city;
-    markerGroup.add(line);
-
-    const div = document.createElement('div');
-    div.className = 'city-label';
-    div.textContent = city.name;
-    div.onclick = (e) => {
-      e.stopPropagation();
-      showCityCard(city);
-    };
-    const label = new CSS2DObject(div);
-    label.position.copy(labelPos);
-    label.userData.city = city;
-    label.userData.line = line;
-    markerGroup.add(label);
-
-    cityLabels.push(label);
   });
 
   // 防碰撞：只调整label，不动marker
