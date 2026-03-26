@@ -291,9 +291,12 @@ function createCityMarkers() {
         };
         const cameraDistance = camera.position.length();
         const isMobileView = window.innerWidth <= 768;
-        const initialDist = isMobileView ? 216 : 126;
-        // camera越大globe越小→spread需要越大；clamp保底2.0x，极端情况封顶6.0x
-        const islandScale = Math.min(6.0, Math.max(2.0, 2.0 * (initialDist / cameraDistance)));
+        const minDist = isMobileView ? 18 : 10;
+        const maxDist = isMobileView ? 84 : 56;
+        // cameraDistance大=globe小→spread大；cameraDistance小=globe大→spread小
+        // minDist(10)时scale=0.08，maxDist(56)时scale=3.5，initial(126)时scale封顶3.5
+        const t = Math.min(1, (cameraDistance - minDist) / (maxDist - minDist));
+        const islandScale = 0.08 + t * t * 3.42;
         const offset = islandSpread[city.name] || { x: 0.16, y: 0.04 };
         flagPos.x += offset.x * islandScale;
         flagPos.y += offset.y * islandScale;
@@ -660,7 +663,7 @@ function init() {
   controls = new OrbitControls(camera, renderer.domElement);
   controls.enableDamping = true;
   controls.dampingFactor = 0.05;
-  controls.minDistance = window.innerWidth <= 768 ? 34 : 24;
+  controls.minDistance = window.innerWidth <= 768 ? 18 : 10;
   controls.maxDistance = window.innerWidth <= 768 ? 84 : 56;
   controls.enablePan = false;
   controls.target.set(0, 0, 0);
