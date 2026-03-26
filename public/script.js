@@ -534,9 +534,30 @@ function fixLabelCollision() {
     label.position.copy(finalPos);
 
     if (line) {
-      // 所有标签（岛/城市）碰撞后都拉线：从坐标点连到最终位置
-      line.geometry.setFromPoints([markerPos, finalPos.clone()]);
-      line.material.opacity = 0.85;
+      // 只对可见标签显示拉线
+      const projected = worldToScreen(label.position);
+      const isFront = projected.z < 1;
+      const city = label.userData.city;
+      const camDist = camera.position.length();
+      const isOverview = camDist > 26;
+      const isMobileView = window.innerWidth <= 768;
+      let labelVisible = isFront;
+      if (isOverview) {
+        if (city.isIsland) {
+          labelVisible = isFront;
+        } else {
+          labelVisible = isFront && (city.isBeijing || city.isTaiwan || city.isHK || city.isMacau || city.provided >= 60 || city.help >= 10);
+        }
+      } else if (isMobileView) {
+        const isPriority = city.isBeijing || city.isIsland || city.isHK || city.isMacau || city.isTaiwan || city.provided >= 80 || city.help >= 12;
+        labelVisible = isFront && isPriority;
+      }
+      if (labelVisible) {
+        line.geometry.setFromPoints([markerPos, finalPos.clone()]);
+        line.material.opacity = 0.85;
+      } else {
+        line.material.opacity = 0;
+      }
     }
   }
 }
