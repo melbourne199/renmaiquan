@@ -107,34 +107,35 @@ const cityData = [
   { name: '台中', lat: 24.1477, lon: 120.6736, provided: 38, help: 5 },
 
   // 南海岛礁
-  { name: '永兴岛', lat: 16.8331, lon: 112.3333, provided: 3, help: 1, isIsland: true, isChinaIsland: true, offset: { x: 0.1, y: 0 } },
-  { name: '南沙群岛', lat: 9.7497, lon: 115.1761, provided: 1, help: 0, isIsland: true, isChinaIsland: true, offset: { x: 0.1, y: 0 } },
-  { name: '钓鱼岛', lat: 25.7469, lon: 124.4833, provided: 1, help: 0, isIsland: true, isChinaIsland: true, offset: { x: 0.1, y: 0 } },
-  { name: '仁爱礁', lat: 9.7447, lon: 115.5397, provided: 1, help: 0, isIsland: true, isChinaIsland: true, offset: { x: 0.15, y: 0 } },
-  { name: '美济礁', lat: 9.9089, lon: 115.5350, provided: 1, help: 0, isIsland: true, isChinaIsland: true, offset: { x: 0.1, y: 0.08 } },
-  { name: '渚碧礁', lat: 10.9281, lon: 114.0569, provided: 1, help: 0, isIsland: true, isChinaIsland: true, offset: { x: 0.1, y: 0.15 } },
-
-  // 藏南地区
-  { name: '达旺', lat: 27.5, lon: 92.0, provided: 1, help: 0, isIsland: true, isChinaIsland: true },
-  // 阿克赛钦地区
-  { name: '太平岛', lat: 10.3833, lon: 114.3667, provided: 1, help: 0, isIsland: true, isChinaIsland: true },
-  { name: '中业岛', lat: 11.0528, lon: 114.2856, provided: 1, help: 0, isIsland: true, isChinaIsland: true },
-  { name: '南子岛', lat: 11.4417, lon: 114.3278, provided: 1, help: 0, isIsland: true, isChinaIsland: true },
-  { name: '北子岛', lat: 11.4561, lon: 114.3561, provided: 1, help: 0, isIsland: true, isChinaIsland: true },
-  { name: '鸿庥岛', lat: 10.1889, lon: 114.2833, provided: 1, help: 0, isIsland: true, isChinaIsland: true },
-  { name: '景宏岛', lat: 9.9028, lon: 114.3211, provided: 1, help: 0, isIsland: true, isChinaIsland: true },
-  { name: '南威岛', lat: 8.6456, lon: 111.9167, provided: 1, help: 0, isIsland: true, isChinaIsland: true },
-  { name: '西月岛', lat: 11.0833, lon: 114.2833, provided: 1, help: 0, isIsland: true, isChinaIsland: true },
-  { name: '马欢岛', lat: 10.75, lon: 115.8, provided: 1, help: 0, isIsland: true, isChinaIsland: true },
-  { name: '费信岛', lat: 10.8167, lon: 115.2833, provided: 1, help: 0, isIsland: true, isChinaIsland: true },
-  { name: '永暑礁', lat: 9.55, lon: 112.8833, provided: 1, help: 0, isIsland: true, isChinaIsland: true },
-  { name: '华阳礁', lat: 8.8667, lon: 112.85, provided: 1, help: 0, isIsland: true, isChinaIsland: true },
-  { name: '赤瓜礁', lat: 9.7167, lon: 114.2833, provided: 1, help: 0, isIsland: true, isChinaIsland: true },
-  { name: '东门礁', lat: 10.9167, lon: 114.3167, provided: 1, help: 0, isIsland: true, isChinaIsland: true },
-  { name: '南薰礁', lat: 10.1833, lon: 114.2167, provided: 1, help: 0, isIsland: true, isChinaIsland: true },
-  { name: '黄岩岛', lat: 15.1167, lon: 117.7667, provided: 1, help: 0, isIsland: true, isChinaIsland: true },
-  { name: '苏岩礁', lat: 32.1167, lon: 125.1833, provided: 1, help: 0, isIsland: true, isChinaIsland: true },
-  { name: '班公湖', lat: 35.5, lon: 78.5, provided: 1, help: 0, isIsland: true, isChinaIsland: true }
+  // 控制方：cn=🇨🇳中国, tw=🇹🇼台湾, ph=🇵🇭菲律宾, vn=🇻🇳越南, in=🇮🇳印度
+  { name: '永兴岛', lat: 16.8331, lon: 112.3333, provided: 3, help: 1, isIsland: true, controlledBy: 'cn', offset: { x: 0.1, y: 0 } },
+  { name: '南沙群岛', lat: 9.7497, lon: 115.1761, provided: 1, help: 0, isIsland: true, controlledBy: 'cn', offset: { x: 0.1, y: 0 } },
+  { name: '钓鱼岛', lat: 25.7469, lon: 124.4833, provided: 1, help: 0, isIsland: true, controlledBy: 'cn', offset: { x: 0.1, y: 0 } },
+  { name: '仁爱礁', lat: 9.7447, lon: 115.5397, provided: 1, help: 0, isIsland: true, controlledBy: 'cn', offset: { x: 0.15, y: 0 } },
+  { name: '美济礁', lat: 9.9089, lon: 115.5350, provided: 1, help: 0, isIsland: true, controlledBy: 'cn', offset: { x: 0.1, y: 0.08 } },
+  { name: '渚碧礁', lat: 10.9281, lon: 114.0569, provided: 1, help: 0, isIsland: true, controlledBy: 'cn', offset: { x: 0.1, y: 0.15 } },
+  // 藏南地区（印度实际控制）
+  { name: '达旺', lat: 27.5, lon: 92.0, provided: 1, help: 0, isIsland: true, controlledBy: 'in' },
+  // 南沙岛礁（非中国控制）
+  { name: '太平岛', lat: 10.3833, lon: 114.3667, provided: 1, help: 0, isIsland: true, controlledBy: 'tw' },
+  { name: '中业岛', lat: 11.0528, lon: 114.2856, provided: 1, help: 0, isIsland: true, controlledBy: 'ph' },
+  { name: '南子岛', lat: 11.4417, lon: 114.3278, provided: 1, help: 0, isIsland: true, controlledBy: 'vn' },
+  { name: '北子岛', lat: 11.4561, lon: 114.3561, provided: 1, help: 0, isIsland: true, controlledBy: 'vn' },
+  { name: '鸿庥岛', lat: 10.1889, lon: 114.2833, provided: 1, help: 0, isIsland: true, controlledBy: 'vn' },
+  { name: '景宏岛', lat: 9.9028, lon: 114.3211, provided: 1, help: 0, isIsland: true, controlledBy: 'vn' },
+  { name: '南威岛', lat: 8.6456, lon: 111.9167, provided: 1, help: 0, isIsland: true, controlledBy: 'vn' },
+  { name: '西月岛', lat: 11.0833, lon: 114.2833, provided: 1, help: 0, isIsland: true, controlledBy: 'ph' },
+  { name: '马欢岛', lat: 10.75, lon: 115.8, provided: 1, help: 0, isIsland: true, controlledBy: 'ph' },
+  { name: '费信岛', lat: 10.8167, lon: 115.2833, provided: 1, help: 0, isIsland: true, controlledBy: 'ph' },
+  { name: '永暑礁', lat: 9.55, lon: 112.8833, provided: 1, help: 0, isIsland: true, controlledBy: 'cn' },
+  { name: '华阳礁', lat: 8.8667, lon: 112.85, provided: 1, help: 0, isIsland: true, controlledBy: 'cn' },
+  { name: '赤瓜礁', lat: 9.7167, lon: 114.2833, provided: 1, help: 0, isIsland: true, controlledBy: 'cn' },
+  { name: '东门礁', lat: 10.9167, lon: 114.3167, provided: 1, help: 0, isIsland: true, controlledBy: 'cn' },
+  { name: '南薰礁', lat: 10.1833, lon: 114.2167, provided: 1, help: 0, isIsland: true, controlledBy: 'cn' },
+  { name: '黄岩岛', lat: 15.1167, lon: 117.7667, provided: 1, help: 0, isIsland: true, controlledBy: 'cn' },
+  { name: '苏岩礁', lat: 32.1167, lon: 125.1833, provided: 1, help: 0, isIsland: true, controlledBy: 'cn' },
+  // 阿克赛钦地区（印度主张，中国实际控制）
+  { name: '班公湖', lat: 35.5, lon: 78.5, provided: 1, help: 0, isIsland: true, controlledBy: 'cn' }
 ];
 
 const RADIUS = 5.02;
@@ -258,78 +259,69 @@ function createCityMarkers() {
       markerGroup.add(glow);
 
     } else if (city.isIsland) {
-      // 南海岛礁：中国岛礁显示红旗
-      if (city.isChinaIsland) {
-        // 中国岛礁：标签散开并默认带细线
-        const flagPos = pos.clone();
-        const islandSpread = {
-          '钓鱼岛': { x: 0.16, y: 0.06 },
-          '永兴岛': { x: 0.15, y: 0.02 },
-          '南沙群岛': { x: 0.18, y: 0.10 },
-          '仁爱礁': { x: 0.20, y: -0.02 },
-          '美济礁': { x: 0.22, y: 0.06 },
-          '渚碧礁': { x: 0.20, y: 0.14 },
-          '太平岛': { x: 0.18, y: 0.18 },
-          '中业岛': { x: 0.25, y: 0.12 },
-          '南子岛': { x: 0.26, y: 0.20 },
-          '北子岛': { x: 0.28, y: 0.26 },
-          '鸿庥岛': { x: 0.16, y: 0.24 },
-          '景宏岛': { x: 0.22, y: 0.18 },
-          '南威岛': { x: 0.12, y: -0.10 },
-          '西月岛': { x: 0.26, y: 0.06 },
-          '马欢岛': { x: 0.30, y: -0.04 },
-          '费信岛': { x: 0.28, y: 0.04 },
-          '永暑礁': { x: 0.12, y: 0.12 },
-          '华阳礁': { x: 0.10, y: -0.16 },
-          '赤瓜礁': { x: 0.18, y: 0.02 },
-          '东门礁': { x: 0.26, y: 0.14 },
-          '南薰礁': { x: 0.22, y: 0.10 },
-          '黄岩岛': { x: 0.16, y: 0.12 },
-          '苏岩礁': { x: 0.16, y: 0.04 },
-          '达旺': { x: 0.12, y: 0.08 },
-          '班公湖': { x: 0.14, y: 0.04 }
-        };
-        const cameraDistance = camera.position.length();
-        const isMobileView = window.innerWidth <= 768;
-        const minDist = isMobileView ? 18 : 10;
-        const maxDist = isMobileView ? 84 : 56;
-        // cameraDistance大=globe小→spread大；cameraDistance小=globe大→spread小
-        // minDist(10)时scale=0.08，maxDist(56)时scale=3.5，initial(126)时scale封顶3.5
-        const t = Math.min(1, (cameraDistance - minDist) / (maxDist - minDist));
-        const islandScale = 0.08 + t * t * 3.42;
-        const offset = islandSpread[city.name] || { x: 0.16, y: 0.04 };
-        flagPos.x += offset.x * islandScale;
-        flagPos.y += offset.y * islandScale;
+      // 南海岛礁：所有岛都显示标签+连线，按控制方显示国旗和颜色
+      const flagColorMap = { cn: 0xff6b6b, tw: 0xff8800, ph: 0x4488ff, vn: 0x44aa44, in: 0xaa8844 };
+      const flagEmojiMap = { cn: '🇨🇳', tw: '🇹🇼', ph: '🇵🇭', vn: '🇻🇳', in: '🇮🇳' };
+      const controlled = city.controlledBy || 'cn';
+      const lineColor = flagColorMap[controlled] || 0xff6b6b;
+      const flagEmoji = flagEmojiMap[controlled] || '🇨🇳';
 
-        const flagLineGeo = new THREE.BufferGeometry().setFromPoints([pos, flagPos.clone()]);
-        const flagLine = new THREE.Line(flagLineGeo, new THREE.LineBasicMaterial({
-          color: 0xff6b6b,
-          transparent: true,
-          opacity: 0.85
-        }));
-        flagLine.userData.city = city;
-        markerGroup.add(flagLine);
+      const flagPos = pos.clone();
+      const islandSpread = {
+        '钓鱼岛': { x: 0.16, y: 0.06 },
+        '永兴岛': { x: 0.15, y: 0.02 },
+        '南沙群岛': { x: 0.18, y: 0.10 },
+        '仁爱礁': { x: 0.20, y: -0.02 },
+        '美济礁': { x: 0.22, y: 0.06 },
+        '渚碧礁': { x: 0.20, y: 0.14 },
+        '太平岛': { x: 0.18, y: 0.18 },
+        '中业岛': { x: 0.25, y: 0.12 },
+        '南子岛': { x: 0.26, y: 0.20 },
+        '北子岛': { x: 0.28, y: 0.26 },
+        '鸿庥岛': { x: 0.16, y: 0.24 },
+        '景宏岛': { x: 0.22, y: 0.18 },
+        '南威岛': { x: 0.12, y: -0.10 },
+        '西月岛': { x: 0.26, y: 0.06 },
+        '马欢岛': { x: 0.30, y: -0.04 },
+        '费信岛': { x: 0.28, y: 0.04 },
+        '永暑礁': { x: 0.12, y: 0.12 },
+        '华阳礁': { x: 0.10, y: -0.16 },
+        '赤瓜礁': { x: 0.18, y: 0.02 },
+        '东门礁': { x: 0.26, y: 0.14 },
+        '南薰礁': { x: 0.22, y: 0.10 },
+        '黄岩岛': { x: 0.16, y: 0.12 },
+        '苏岩礁': { x: 0.16, y: 0.04 },
+        '达旺': { x: 0.12, y: 0.08 },
+        '班公湖': { x: 0.14, y: 0.04 }
+      };
+      const cameraDistance = camera.position.length();
+      const isMobileView = window.innerWidth <= 768;
+      const minDist = isMobileView ? 18 : 10;
+      const maxDist = isMobileView ? 84 : 56;
+      const t = Math.min(1, (cameraDistance - minDist) / (maxDist - minDist));
+      const islandScale = 0.08 + t * t * 3.42;
+      const offset = islandSpread[city.name] || { x: 0.16, y: 0.04 };
+      flagPos.x += offset.x * islandScale;
+      flagPos.y += offset.y * islandScale;
 
-        const flagDiv = document.createElement('div');
-        flagDiv.className = 'island-flag';
-        flagDiv.innerHTML = `<span class="flag-mark">🇨🇳</span>${city.name}`;
-        const flagLabel = new CSS2DObject(flagDiv);
-        flagLabel.position.copy(flagPos);
-        flagLabel.userData.city = city;
-        flagLabel.userData.isFlag = true;
-        flagLabel.userData.line = flagLine;
-        markerGroup.add(flagLabel);
-        return;
-      } else {
-        // 其他岛礁显示小灰点
-        const dot = new THREE.Mesh(
-          new THREE.SphereGeometry(0.012, 6, 6),
-          new THREE.MeshBasicMaterial({ color: 0x888899 })
-        );
-        dot.position.copy(pos);
-        dot.userData.city = city;
-        markerGroup.add(dot);
-      }
+      const flagLineGeo = new THREE.BufferGeometry().setFromPoints([pos, flagPos.clone()]);
+      const flagLine = new THREE.Line(flagLineGeo, new THREE.LineBasicMaterial({
+        color: lineColor,
+        transparent: true,
+        opacity: 0.85
+      }));
+      flagLine.userData.city = city;
+      markerGroup.add(flagLine);
+
+      const flagDiv = document.createElement('div');
+      flagDiv.className = 'island-flag';
+      flagDiv.innerHTML = `<span class="flag-mark">${flagEmoji}</span>${city.name}`;
+      const flagLabel = new CSS2DObject(flagDiv);
+      flagLabel.position.copy(flagPos);
+      flagLabel.userData.city = city;
+      flagLabel.userData.isFlag = true;
+      flagLabel.userData.line = flagLine;
+      markerGroup.add(flagLabel);
     } else if (city.isTaiwan || city.isHK || city.isMacau) {
       // 港澳台：略大蓝点
       const dot = new THREE.Mesh(
@@ -841,7 +833,7 @@ function animate() {
         visible = isFront && (city.isBeijing || city.isTaiwan || city.isHK || city.isMacau || city.provided >= 60 || city.help >= 10);
       }
     } else if (isMobileView) {
-      const isPriority = city.isBeijing || city.isChinaIsland || city.isHK || city.isMacau || city.isTaiwan || city.provided >= 80 || city.help >= 12;
+      const isPriority = city.isBeijing || city.isIsland || city.isHK || city.isMacau || city.isTaiwan || city.provided >= 80 || city.help >= 12;
       visible = isFront && isPriority;
     }
 
