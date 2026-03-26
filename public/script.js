@@ -732,6 +732,9 @@ function init() {
 
   // 聚焦中国动画
   focusChinaAnimation();
+  camera.updateMatrixWorld();
+  camera.updateProjectionMatrix();
+  fixLabelCollision();
   loadingEl.style.display = 'none';
   animate();
 }
