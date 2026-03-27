@@ -864,6 +864,11 @@ function init() {
   controls.enablePan = false;
   controls.target.set(0, 0, 0);
 
+  // 地球交互层 - 鼠标悬停时激活
+  const earthEl = document.getElementById('earth-interaction');
+  earthEl.addEventListener('mouseenter', () => earthEl.classList.add('active'));
+  earthEl.addEventListener('mouseleave', () => earthEl.classList.remove('active'));
+
   // 射线检测
   const raycaster = new THREE.Raycaster();
   const mouse = new THREE.Vector2();
