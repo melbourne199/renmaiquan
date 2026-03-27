@@ -73,27 +73,46 @@
     <!-- 城市tooltip -->
     <div id="cityTooltip" class="city-tooltip hidden"></div>
 
-    <!-- 数据卡片（点击城市后显示） -->
-    <div id="cityCard" class="city-card hidden">
-      <div class="city-card-header">
-        <span class="city-card-name" id="cardCityName">北京</span>
-        <button class="city-card-close" onclick="closeCityCard()">×</button>
-      </div>
-      <div class="city-card-body">
-        <div class="city-card-stat">
-          <span class="stat-label">人脉提供</span>
-          <span class="stat-value" id="cardProvided">126 个</span>
+    <!-- 右侧数据卡片容器 -->
+    <div class="right-panel">
+      <!-- 总数卡片（默认显示） -->
+      <div class="stats-panel">
+        <div class="stats-header">
+          <span class="stats-globe">🌍</span>
+          <span class="stats-title">平台供需总览</span>
         </div>
-        <div class="city-card-stat">
-          <span class="stat-label">需要帮助</span>
-          <span class="stat-value" id="cardHelp">18 个</span>
+        <div class="stats-card">
+          <span>可对接资源</span>
+          <strong id="statProvided">936 条</strong>
         </div>
-        <div class="city-card-stat">
-          <span class="stat-label">今日活跃</span>
-          <span class="stat-value" id="cardActive">+23</span>
+        <div class="stats-card">
+          <span>有效需求</span>
+          <strong id="statHelp">127 条</strong>
         </div>
       </div>
-      <button class="city-card-btn" onclick="viewCityDetail()">查看详情</button>
+
+      <!-- 城市详情卡片（点击城市后显示，在总数卡片上方） -->
+      <div id="cityCard" class="city-card hidden">
+        <div class="city-card-header">
+          <span class="city-card-name" id="cardCityName">北京</span>
+          <button class="city-card-close" onclick="closeCityCard()">×</button>
+        </div>
+        <div class="city-card-body">
+          <div class="city-card-stat">
+            <span class="stat-label">人脉提供</span>
+            <span class="stat-value" id="cardProvided">126 个</span>
+          </div>
+          <div class="city-card-stat">
+            <span class="stat-label">需要帮助</span>
+            <span class="stat-value" id="cardHelp">18 个</span>
+          </div>
+          <div class="city-card-stat">
+            <span class="stat-label">今日活跃</span>
+            <span class="stat-value" id="cardActive">+23</span>
+          </div>
+        </div>
+        <button class="city-card-btn" onclick="viewCityDetail()">查看详情</button>
+      </div>
     </div>
 
     <!-- 底部功能卡片（发布入口） -->
@@ -151,25 +170,9 @@
       <button class="publish-menu-close" onclick="hidePublishMenu()">取消</button>
     </div>
 
-    <!-- 右下角平台供需总览 -->
-    <div class="stats-panel">
-      <div class="stats-header">
-        <span class="stats-globe">🌍</span>
-        <span class="stats-title">平台供需总览</span>
-      </div>
-      <div class="stats-card">
-        <span>可对接资源</span>
-        <strong id="statProvided">936 条</strong>
-      </div>
-      <div class="stats-card">
-        <span>有效需求</span>
-        <strong id="statHelp">127 条</strong>
-      </div>
-    </div>
-
     <div class="footer-meta">
       <div class="site-disclaimer-card">
-        <div class="site-disclaimer">这是个人网站中的个人整理与展示方式，仅代表个人表达。页面主要用于内容展示与资源记录，不用于公共争议裁决。</div>
+        <div class="site-disclaimer">资源夜市 · 个人资源平台<br>内容及观点仅代表发布者本人，用于资源展示与居间合作，不涉及公共议题讨论</div>
       </div>
       <div class="record-placeholder">© 2026 资源夜市 / 资源星河 · All Rights Reserved.　粤ICP备2026032295号</div>
     </div>
