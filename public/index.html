@@ -21,12 +21,12 @@
       </div>
       <div class="desktop-nav-links">
         <div class="nav-item active">首页</div>
-        <div class="nav-item" onclick="navigateTo('groups')">行业群码</div>
-        <div class="nav-item" onclick="navigateTo('energy')">政企资源</div>
-        <div class="nav-item" onclick="navigateTo('helps')">最新求助</div>
-        <div class="nav-item" onclick="navigateTo('finance')">民企金融</div>
-        <div class="nav-item" onclick="navigateTo('escort')">居间护航</div>
-        <div class="nav-item" onclick="navigateTo('cases')">资源案例</div>
+        <a class="nav-item" href="groups.html">行业群码</a>
+        <a class="nav-item" href="gov-list.html">政企资源</a>
+        <a class="nav-item" href="help-detail.html">最新求助</a>
+        <a class="nav-item" href="finance.html">民企金融</a>
+        <a class="nav-item" href="escort.html">居间护航</a>
+        <a class="nav-item" href="case-list.html">资源案例</a>
       </div>
       <div class="navbar-menu-btn" id="menuBtn" onclick="toggleMenu()">
         <span></span><span></span><span></span>
@@ -39,12 +39,12 @@
     <!-- 菜单面板 -->
     <div class="navbar-menu-panel" id="menuPanel">
       <div class="nav-item active">首页</div>
-      <div class="nav-item" onclick="navigateTo('groups');toggleMenu()">行业群码</div>
-      <div class="nav-item" onclick="navigateTo('energy');toggleMenu()">政企资源</div>
-      <div class="nav-item" onclick="navigateTo('helps');toggleMenu()">最新求助</div>
-      <div class="nav-item" onclick="navigateTo('finance');toggleMenu()">民企金融</div>
-      <div class="nav-item" onclick="navigateTo('escort');toggleMenu()">居间护航</div>
-      <div class="nav-item" onclick="navigateTo('cases');toggleMenu()">资源案例</div>
+      <a class="nav-item" href="groups.html">行业群码</a>
+      <a class="nav-item" href="gov-list.html">政企资源</a>
+      <a class="nav-item" href="help-detail.html">最新求助</a>
+      <a class="nav-item" href="finance.html">民企金融</a>
+      <a class="nav-item" href="escort.html">居间护航</a>
+      <a class="nav-item" href="case-list.html">资源案例</a>
     </div>
 
     <!-- 主标题区 (header-banner) -->
@@ -198,7 +198,6 @@
   }
 
   function navigateTo(page) {
-    alert('navigateTo called: ' + page);
     const pages = {
       'groups': 'groups.html',
       'group-detail': 'group-detail.html',
