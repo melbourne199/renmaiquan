@@ -956,7 +956,7 @@ function fixLabelCollisionForOne(label) {
 
   function getAllCityLabels() {
     return cityLabels.filter(l =>
-      l.userData.city && !l.userData.city.isBeijing && !l.userData.city.offset
+      l.userData.city && !l.userData.city.isBeijing && !l.userData.city.offset && !l.userData.city.isIsland
     );
   }
 
