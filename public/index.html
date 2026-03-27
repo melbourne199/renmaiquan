@@ -19,10 +19,12 @@
       </div>
       <div class="desktop-nav-links">
         <div class="nav-item active">首页</div>
-        <div class="nav-item" onclick="navigateTo('groups')">群码聚合</div>
-        <div class="nav-item" onclick="navigateTo('energy')">能量信息</div>
-        <div class="nav-item" onclick="navigateTo('helps')">求助信息</div>
-        <div class="nav-item" onclick="navigateTo('industry')">行业动态</div>
+        <div class="nav-item" onclick="navigateTo('groups')">行业群码</div>
+        <div class="nav-item" onclick="navigateTo('energy')">政企资源</div>
+        <div class="nav-item" onclick="navigateTo('helps')">最新求助</div>
+        <div class="nav-item" onclick="navigateTo('finance')">民企金融</div>
+        <div class="nav-item" onclick="navigateTo('escort')">居间护航</div>
+        <div class="nav-item" onclick="navigateTo('cases')">资源案例</div>
       </div>
       <div class="navbar-menu-btn" id="menuBtn" onclick="toggleMenu()">
         <span></span><span></span><span></span>
@@ -35,28 +37,35 @@
     <!-- 菜单面板 -->
     <div class="navbar-menu-panel" id="menuPanel">
       <div class="nav-item active">首页</div>
-      <div class="nav-item" onclick="navigateTo('groups');toggleMenu()">群码聚合</div>
-      <div class="nav-item" onclick="navigateTo('energy');toggleMenu()">能量信息</div>
-      <div class="nav-item" onclick="navigateTo('helps');toggleMenu()">求助信息</div>
-      <div class="nav-item" onclick="navigateTo('industry');toggleMenu()">行业动态</div>
+      <div class="nav-item" onclick="navigateTo('groups');toggleMenu()">行业群码</div>
+      <div class="nav-item" onclick="navigateTo('energy');toggleMenu()">政企资源</div>
+      <div class="nav-item" onclick="navigateTo('helps');toggleMenu()">最新求助</div>
+      <div class="nav-item" onclick="navigateTo('finance');toggleMenu()">民企金融</div>
+      <div class="nav-item" onclick="navigateTo('escort');toggleMenu()">居间护航</div>
+      <div class="nav-item" onclick="navigateTo('cases');toggleMenu()">资源案例</div>
     </div>
 
-    <!-- 主标题区 -->
+    <!-- 主标题区 (header-banner) -->
     <div class="hero-section">
       <div class="hero-overlay"></div>
-      <div class="hero-content">
-        <h1 class="hero-title">探索宇宙资源・共筑商业星河</h1>
-        <p class="hero-subtitle">让每一份资源，都在宇宙中发光</p>
-        <p class="hero-subtitle-line2">商业星河，一触即达</p>
-        <p class="hero-desc">将企业资源、人脉、项目与需求，汇入可搜索、可匹配、可脱敏的资源宇宙，<br>让高质量对接如星链般精准发生</p>
+      <div class="hero-content header-banner">
+        <div class="banner-title-wrap">
+          <h1 class="hero-title">探索宇宙资源・共筑商业星河</h1>
+        </div>
+        <div class="banner-subtitle-wrap">
+          <p class="hero-subtitle">让每一份资源，都在宇宙中发光</p>
+        </div>
+        <div class="banner-desc-wrap">
+          <p class="hero-desc">将企业资源、人脉、项目与需求，汇入可搜索、可匹配、可脱敏的资源宇宙，<br>让高质量对接如星链般精准发生</p>
+        </div>
+        <div class="banner-search-wrap">
+          <input id="citySearch" type="text" placeholder="搜索城市 / 项目 / 人脉 / 关键词..." />
+          <button id="searchBtn">探索</button>
+        </div>
       </div>
     </div>
 
-    <!-- 搜索区 -->
-    <div class="search-section">
-      <input id="citySearch" type="text" placeholder="搜索城市 / 项目 / 人脉 / 关键词..." />
-      <button id="searchBtn">探索</button>
-    </div>
+    <!-- 搜索提示 -->
     <p class="search-hint">数据实时更新・信息全程脱敏・服务合法合规</p>
 
     <!-- 城市tooltip -->
@@ -85,35 +94,96 @@
       <button class="city-card-btn" onclick="viewCityDetail()">查看详情</button>
     </div>
 
-    <!-- 底部四个功能卡片 -->
+    <!-- 底部功能卡片（发布入口） -->
     <div class="cards-container">
-      <div class="func-card" onclick="navigateTo('publish')">
+      <div class="func-card" onclick="showPublishMenu()">
         <h3>💰 发布企业资源</h3>
         <p>分享资源技能，让价值在星河中流动。</p>
       </div>
-      <div class="func-card" onclick="navigateTo('demand')">
-        <h3>📢 发布需求许个愿</h3>
+      <div class="func-card" onclick="showPublishMenu()">
+        <h3>📢 发布找群需求</h3>
         <p>精准对接全国商业资源与核心人脉。</p>
       </div>
-      <div class="func-card" onclick="navigateTo('wish')">
-        <h3>⭐ 发布[组织机构]能量帮助更多人</h3>
+      <div class="func-card" onclick="showPublishMenu()">
+        <h3>⭐ 发布机构能量</h3>
         <p>让创意、项目、愿景被更多人看见。</p>
       </div>
-      <div class="func-card" onclick="navigateTo('search')">
+      <div class="func-card" onclick="showPublishMenu()">
         <h3>🔎 发布优质项目</h3>
         <p>搜索全国城市、人脉、项目与合作机会。</p>
       </div>
     </div>
 
-    <!-- 右下角统计面板 -->
+    <!-- 发布弹窗 -->
+    <div class="publish-overlay" id="publishOverlay" onclick="hidePublishMenu()"></div>
+    <div class="publish-menu" id="publishMenu">
+      <div class="publish-menu-title">选择发布类型</div>
+      <div class="publish-menu-item" onclick="navigateTo('publish-resource')">
+        <span class="publish-icon">💼</span>
+        <div>
+          <div class="publish-item-title">发布企业资源</div>
+          <div class="publish-item-desc">企业供需信息</div>
+        </div>
+      </div>
+      <div class="publish-menu-item" onclick="navigateTo('publish-group')">
+        <span class="publish-icon">👥</span>
+        <div>
+          <div class="publish-item-title">发布找群需求</div>
+          <div class="publish-item-desc">找行业群需求</div>
+        </div>
+      </div>
+      <div class="publish-menu-item" onclick="navigateTo('publish-org')">
+        <span class="publish-icon">🏢</span>
+        <div>
+          <div class="publish-item-title">发布机构能量</div>
+          <div class="publish-item-desc">人脉/机关单位（脱敏）</div>
+        </div>
+      </div>
+      <div class="publish-menu-item" onclick="navigateTo('publish-project')">
+        <span class="publish-icon">🚀</span>
+        <div>
+          <div class="publish-item-title">发布优质项目</div>
+          <div class="publish-item-desc">融资/合作项目</div>
+        </div>
+      </div>
+      <button class="publish-menu-close" onclick="hidePublishMenu()">取消</button>
+    </div>
+
+    <!-- 金融金额版块 -->
+    <div class="finance-banner">
+      <div class="finance-banner-title">💰 金融对接服务</div>
+      <div class="finance-stats">
+        <div class="finance-stat">
+          <div class="finance-stat-value">¥12,580,000</div>
+          <div class="finance-stat-label">已成功对接金额</div>
+        </div>
+        <div class="finance-divider"></div>
+        <div class="finance-stat">
+          <div class="finance-stat-value">2 个</div>
+          <div class="finance-stat-label">在架产品</div>
+        </div>
+        <div class="finance-divider"></div>
+        <div class="finance-stat">
+          <div class="finance-stat-value">5 个</div>
+          <div class="finance-stat-label">今日新增</div>
+        </div>
+      </div>
+      <button class="finance-banner-btn" onclick="navigateTo('finance')">了解更多 →</button>
+    </div>
+
+    <!-- 右下角平台供需总览 -->
     <div class="stats-panel">
-      <div class="stats-card">
-        <span>人脉提供</span>
-        <strong id="statProvided">936 个</strong>
+      <div class="stats-header">
+        <span class="stats-globe">🌍</span>
+        <span class="stats-title">平台供需总览</span>
       </div>
       <div class="stats-card">
-        <span>需要帮助</span>
-        <strong id="statHelp">127 个</strong>
+        <span>可对接资源</span>
+        <strong id="statProvided">936 条</strong>
+      </div>
+      <div class="stats-card">
+        <span>有效需求</span>
+        <strong id="statHelp">127 条</strong>
       </div>
     </div>
 
@@ -121,7 +191,7 @@
       <div class="site-disclaimer-card">
         <div class="site-disclaimer">这是个人网站中的个人整理与展示方式，仅代表个人表达。页面主要用于内容展示与资源记录，不用于公共争议裁决。</div>
       </div>
-      <div class="record-placeholder">© 2026 资源夜市 / 资源星河 · All Rights Reserved.　备案核验编号：1891742（进行中）</div>
+      <div class="record-placeholder">© 2026 资源夜市 / 资源星河 · All Rights Reserved.　粤ICP备2026032295号</div>
     </div>
   </div>
 
@@ -133,6 +203,21 @@
     btn.classList.toggle('active');
     panel.classList.toggle('open');
     overlay.classList.toggle('open');
+  }
+
+  function showPublishMenu() {
+    document.getElementById('publishOverlay').classList.add('open');
+    document.getElementById('publishMenu').classList.add('open');
+  }
+
+  function hidePublishMenu() {
+    document.getElementById('publishOverlay').classList.remove('open');
+    document.getElementById('publishMenu').classList.remove('open');
+  }
+
+  function navigateTo(page) {
+    // 临时提示，后续完善路由
+    console.log('Navigate to:', page);
   }
   </script>
   <script type="importmap">
