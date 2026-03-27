@@ -570,12 +570,45 @@ function createCityMarkers() {
   scene.add(markerGroup);
 }
 
-// 标签防碰撞：优先贴近圆点，其次避开碰撞
+// 标签防碰撞：就近环绕原则，以圆点为圆心搜索8个方向空位
 function fixLabelCollision() {
-  const THRESHOLD = 28;
-  const LABEL_MIN_DIST = 20; // label与自身marker的最小屏幕像素距离
   const cameraDistance = camera.position.length();
   const isOverview = cameraDistance > 26;
+
+  // 估算文字尺寸（中文约14px宽，18px高，加上边距）
+  const LABEL_WIDTH = 70;  // 标签宽度（5个汉字约70px）
+  const LABEL_HEIGHT = 24; // 标签高度
+  const LABEL_MARGIN = 12; // 标签间距
+  const MARKER_TO_LABEL = 18; // 圆点到标签的最小距离
+
+  // 8个方向（以圆点为圆心环绕）
+  const DIRECTIONS = [
+    { x: 1, y: 0 },   // 右
+    { x: -1, y: 0 },  // 左
+    { x: 0, y: 1 },   // 上
+    { x: 0, y: -1 },  // 下
+    { x: 1, y: 1 },   // 右上
+    { x: 1, y: -1 },  // 右下
+    { x: -1, y: 1 },  // 左上
+    { x: -1, y: -1 }, // 左下
+  ];
+
+  // 根据城市地理位置调整优先级方向
+  function getOrderedDirections(city) {
+    const lon = city.lon;
+    const lat = city.lat;
+    // 东边城市优先往右，西边优先往左
+    // 北边城市优先往上，南边优先往下
+    const sorted = [...DIRECTIONS].sort((a, b) => {
+      // 计算方位偏好
+      const aScore = a.x * (lon >= 113 ? 1 : -1) + a.y * (lat >= 30 ? 1 : -1);
+      const bScore = b.x * (lon >= 113 ? 1 : -1) + b.y * (lat >= 30 ? 1 : -1);
+      return bScore - aScore; // 得分高的排前面
+    });
+    return sorted;
+  }
+
+  // 获取需要处理的标签
   const labels = cityLabels.filter(l => {
     const city = l.userData.city;
     if (!city || city.isBeijing || city.offset) return false;
@@ -584,137 +617,136 @@ function fixLabelCollision() {
     return true;
   });
 
-  function getMarkerScreenPos(excludeName) {
-    return cityData
-      .filter(c => !c.isBeijing && !c.offset && c.name !== excludeName)
-      .map(c => worldToScreen(latLonToVector3(c.lat, c.lon, RADIUS + 0.06)));
-  }
+  // 预计算所有标签和marker的屏幕位置
+  const labelScreenInfos = labels.map(l => ({
+    label: l,
+    city: l.userData.city,
+    screenPos: worldToScreen(l.position)
+  }));
 
-  function hasCollision(pos, excludeLabel, excludeName, markerSp) {
-    const sp = worldToScreen(pos);
-    // 检查与其他label的碰撞
-    for (const lbl of labels) {
-      if (lbl === excludeLabel) continue;
-      const lp = worldToScreen(lbl.position);
-      const dx = sp.x - lp.x, dy = sp.y - lp.y;
-      if (Math.sqrt(dx*dx + dy*dy) < THRESHOLD) return true;
+  const markerScreenInfos = cityData
+    .filter(c => !c.isBeijing && !c.offset)
+    .map(c => ({
+      city: c,
+      screenPos: worldToScreen(latLonToVector3(c.lat, c.lon, RADIUS + 0.06))
+    }));
+
+  // 检测碰撞（考虑标签尺寸，用矩形碰撞）
+  function checkCollision(testSp, excludeLabel, excludeCityName) {
+    // 与其他标签碰撞（使用矩形检测）
+    for (const info of labelScreenInfos) {
+      if (info.label === excludeLabel) continue;
+      const lp = info.screenPos;
+      // 水平距离和垂直距离
+      const hDist = Math.abs(testSp.x - lp.x);
+      const vDist = Math.abs(testSp.y - lp.y);
+      // 水平方向重叠 + 垂直方向重叠
+      if (hDist < LABEL_WIDTH + LABEL_MARGIN && vDist < LABEL_HEIGHT + LABEL_MARGIN) {
+        return true;
+      }
     }
-    // 检查与其他marker的碰撞
-    const markerPos = getMarkerScreenPos(excludeName);
-    for (const mp of markerPos) {
-      const dx = sp.x - mp.x, dy = sp.y - mp.y;
-      if (Math.sqrt(dx*dx + dy*dy) < THRESHOLD * 0.8) return true;
+
+    // 与marker碰撞（圆形检测）
+    for (const info of markerScreenInfos) {
+      if (info.city.name === excludeCityName) continue;
+      const mp = info.screenPos;
+      const dx = testSp.x - mp.x;
+      const dy = testSp.y - mp.y;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      if (dist < MARKER_TO_LABEL) {
+        return true;
+      }
     }
+
     return false;
   }
 
-  function getPreferredDirections(city) {
-    const horizontal = city.lon >= 113 ? 1 : -1;
-    const vertical = city.lat >= 30 ? 1 : -1;
-
-    const primary = horizontal > 0
-      ? [{ x: 1, y: 0 }, { x: 0.7, y: vertical * 0.7 }, { x: 0.7, y: -vertical * 0.7 }]
-      : [{ x: -1, y: 0 }, { x: -0.7, y: vertical * 0.7 }, { x: -0.7, y: -vertical * 0.7 }];
-
-    const secondary = vertical > 0
-      ? [{ x: 0, y: 1 }, { x: horizontal * 0.7, y: 0.7 }]
-      : [{ x: 0, y: -1 }, { x: horizontal * 0.7, y: -0.7 }];
-
-    const fallback = [
-      { x: -horizontal, y: 0 },
-      { x: -horizontal * 0.7, y: vertical * 0.7 },
-      { x: 0, y: -vertical },
-      { x: -horizontal * 0.7, y: -vertical * 0.7 }
-    ];
-
-    return [...primary, ...secondary, ...fallback];
-  }
-
-  for (const label of labels) {
-    const city = label.userData.city;
-    const markerPos = latLonToVector3(city.lat, city.lon, RADIUS + 0.06);
-    const markerSp = worldToScreen(markerPos);
-    const line = markerGroup.children.find(c => c instanceof THREE.Line && c.userData.city && c.userData.city.name === city.name);
-
-    let finalPos = null;
+  // 搜索8个方向的最佳空位
+  function findBestPosition(markerSp, markerWorldPos, label, city) {
+    const orderedDirs = getOrderedDirections(city);
+    let bestPos = null;
+    let bestDist = Infinity;
     let usedLine = false;
 
-    const directions = getPreferredDirections(city);
+    // 搜索距离圆点由近及远的位置
+    for (let ring = 1; ring <= 8; ring++) {
+      const baseDist = ring * 0.004; // 搜索半径步进
+      let foundInRing = false;
 
-    // 搜索最近可用位置（确保与marker有足够距离，并优先保持原始地理方位）
-    for (let step = 0; step < 20; step++) {
-      const dist = 0.005 + step * 0.005;
-      for (const dir of directions) {
-        const testPos = markerPos.clone();
-        testPos.x += dir.x * dist;
-        testPos.y += dir.y * dist;
+      for (const dir of orderedDirs) {
+        const testPos = markerWorldPos.clone();
+        // 添加一点随机偏移，让同方向的城市标签不完全重叠
+        const jitter = ring > 1 ? (Math.random() - 0.5) * 0.001 : 0;
+        testPos.x += dir.x * baseDist + jitter;
+        testPos.y += dir.y * baseDist;
+
         const testSp = worldToScreen(testPos);
 
-        // 必须与自身marker保持距离
-        const dx = testSp.x - markerSp.x, dy = testSp.y - markerSp.y;
-        if (Math.sqrt(dx*dx + dy*dy) < LABEL_MIN_DIST) continue;
+        // 到圆点的距离
+        const dx = testSp.x - markerSp.x;
+        const dy = testSp.y - markerSp.y;
+        const distToMarker = Math.sqrt(dx * dx + dy * dy);
 
-        if (!hasCollision(testPos, label, city.name, markerSp)) {
-          finalPos = testPos;
-          usedLine = step > 0;
-          break;
-        }
-      }
-      if (finalPos) break;
-    }
+        // 必须离圆点有最小距离
+        if (distToMarker < MARKER_TO_LABEL) continue;
 
-    // 找不到空位：搜索与所有marker保持最大距离的位置
-    if (!finalPos) {
-      let bestPos = null;
-      let bestScore = -Infinity;
-      for (let step = 0; step < 30; step++) {
-        const dist = 0.005 + step * 0.005;
-        for (const dir of directions) {
-          const testPos = markerPos.clone();
-          testPos.x += dir.x * dist;
-          testPos.y += dir.y * dist;
-          const testSp = worldToScreen(testPos);
-
-          const dx = testSp.x - markerSp.x, dy = testSp.y - markerSp.y;
-          if (Math.sqrt(dx*dx + dy*dy) < LABEL_MIN_DIST) continue;
-
-          // 找与所有其他marker的最小距离中最大的那个位置
-          let minDistToOthers = Infinity;
-          for (const lbl of labels) {
-            if (lbl === label) continue;
-            const lp = worldToScreen(lbl.position);
-            const dlx = testSp.x - lp.x, dly = testSp.y - lp.y;
-            minDistToOthers = Math.min(minDistToOthers, Math.sqrt(dlx*dlx + dly*dly));
-          }
-          for (const mp of getMarkerScreenPos(city.name)) {
-            const dmx = testSp.x - mp.x, dmy = testSp.y - mp.y;
-            minDistToOthers = Math.min(minDistToOthers, Math.sqrt(dmx*dmx + dmy*dmy));
-          }
-
-          const directionalBonus = city.lon >= 113 ? dir.x * 18 : -dir.x * 18;
-          const verticalBonus = city.lat >= 30 ? dir.y * 8 : -dir.y * 8;
-          const score = minDistToOthers + directionalBonus + verticalBonus;
-
-          if (score > bestScore) {
-            bestScore = score;
+        // 检查碰撞
+        if (!checkCollision(testSp, label, city.name)) {
+          if (distToMarker < bestDist) {
+            bestDist = distToMarker;
             bestPos = testPos;
+            usedLine = ring > 1;
           }
+          foundInRing = true;
         }
       }
-      finalPos = bestPos || markerPos.clone();
-      finalPos.x += 0.02;
-      finalPos.y += 0.01;
-      usedLine = true;
+
+      // 这一圈找到了更近的位置就停止
+      if (foundInRing && ring === 1) break;
+      // 找到了就不继续往外找
+      if (bestPos) break;
     }
 
+    return { pos: bestPos, usedLine };
+  }
+
+  // 处理每个标签
+  for (const info of labelScreenInfos) {
+    const label = info.label;
+    const city = info.city;
+    const markerWorldPos = latLonToVector3(city.lat, city.lon, RADIUS + 0.06);
+    const markerSp = worldToScreen(markerWorldPos);
+
+    // 找到最佳的标签位置
+    const result = findBestPosition(markerSp, markerWorldPos, label, city);
+
+    let finalPos = result.pos || markerWorldPos.clone();
+    // 如果找不到合适位置，往经度方向偏移
+    if (!result.pos) {
+      const dir = city.lon >= 113 ? 1 : -1;
+      finalPos.x += dir * 0.03;
+      finalPos.y += 0.01;
+    }
+
+    // 更新标签位置
     label.position.copy(finalPos);
 
+    // 更新连接线
+    const line = markerGroup.children.find(
+      c => c instanceof THREE.Line && c.userData.city && c.userData.city.name === city.name
+    );
+
     if (line) {
-      // 只对可见且被碰撞检测推开的标签拉线（就近原则：能直接放就不拉线）
       const isVisible = label.element.style.opacity !== '0';
-      if (isVisible && usedLine) {
-        line.geometry.setFromPoints([markerPos, finalPos.clone()]);
-        line.material.opacity = 0.85;
+      const lineLength = Math.sqrt(
+        Math.pow(finalPos.x - markerWorldPos.x, 2) +
+        Math.pow(finalPos.y - markerWorldPos.y, 2)
+      );
+
+      // 只有被推开了一定距离才显示线，且线不能太长
+      if (isVisible && result.usedLine && lineLength < 0.05) {
+        line.geometry.setFromPoints([markerWorldPos, finalPos.clone()]);
+        line.material.opacity = 0.7;
       } else {
         line.material.opacity = 0;
       }
@@ -757,6 +789,7 @@ function init() {
   renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   document.getElementById('canvas-container').appendChild(renderer.domElement);
+  renderer.domElement.style.pointerEvents = 'none';
 
   // CSS2D渲染器
   labelRenderer = new CSS2DRenderer();
@@ -822,8 +855,8 @@ function init() {
   // 城市标记
   createCityMarkers();
 
-  // 轨道控制
-  controls = new OrbitControls(camera, renderer.domElement);
+  // 轨道控制 - 使用独立的交互层
+  controls = new OrbitControls(camera, document.getElementById('earth-controls'));
   controls.enableDamping = true;
   controls.dampingFactor = 0.05;
   controls.minDistance = window.innerWidth <= 768 ? 18 : 10;
@@ -1046,23 +1079,6 @@ window.addEventListener('resize', () => {
   renderer.setSize(window.innerWidth, window.innerHeight);
   labelRenderer.setSize(window.innerWidth, window.innerHeight);
 });
-
-// 导航
-function navigateTo(page) {
-  const pages = {
-    groups: '/index.html?tab=groups',
-    energy: '/index.html?tab=energy',
-    helps: '/index.html?tab=helps',
-    industry: '/index.html?tab=industry',
-    publish: '/publish.html',
-    demand: '/publish.html?type=demand',
-    wish: '/publish.html?type=wish',
-    search: '/index.html?search=1'
-  };
-  if (pages[page]) {
-    window.location.href = pages[page];
-  }
-}
 
 // 查看详情
 function viewCityDetail() {

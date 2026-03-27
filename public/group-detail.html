@@ -1,19 +1,372 @@
 <!DOCTYPE html>
-<html>
-<head><title>群码详情</title>
-<style>body{font-family:system-ui;padding:16px;background:#f5f5f7;}.card{background:white;border-radius:20px;padding:20px;}.qr{width:200px;height:200px;background:#e6e6ea;margin:0 auto 20px;border-radius:20px;}</style>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>群码详情 - 资源星河</title>
+  <style>
+    :root {
+      --bg-deep: #01060f;
+      --bg-card: rgba(90, 200, 250, 0.06);
+      --bg-card-hover: rgba(90, 200, 250, 0.12);
+      --border-card: rgba(90, 200, 250, 0.15);
+      --border-card-hover: rgba(90, 200, 250, 0.35);
+      --accent-blue: #5ac8fa;
+      --accent-blue-light: #72d2ff;
+      --text-primary: rgba(228, 240, 252, 0.96);
+      --text-secondary: rgba(180, 200, 220, 0.75);
+      --text-muted: rgba(150, 180, 210, 0.6);
+      --gold: #F59E0B;
+      --success: #34C759;
+      --danger: #FF3B30;
+      --glass-blur: blur(20px);
+      --shadow-card: 0 12px 40px rgba(0, 0, 0, 0.4), 0 0 30px rgba(90, 200, 250, 0.08);
+      --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'PingFang SC', 'Microsoft YaHei', 'Helvetica Neue', sans-serif;
+      background: var(--bg-deep);
+      color: var(--text-primary);
+      min-height: 100vh;
+    }
+
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      padding: 12px 24px;
+      background: rgba(1, 6, 15, 0.8);
+      backdrop-filter: var(--glass-blur);
+      border-bottom: 1px solid var(--border-card);
+    }
+
+    .navbar-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--text-primary);
+      text-decoration: none;
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+
+    .navbar-brand-icon { font-size: 1.4rem; }
+    .back-btn { margin-left: auto; color: var(--text-secondary); text-decoration: none; font-size: 0.9rem; cursor: pointer; }
+    .back-btn:hover { color: var(--accent-blue); }
+
+    .container { max-width: 640px; margin: 0 auto; padding: 84px 20px 40px; }
+
+    .loading {
+      text-align: center;
+      padding: 80px 20px;
+      color: var(--text-muted);
+    }
+
+    .error-state {
+      text-align: center;
+      padding: 80px 20px;
+      color: var(--danger);
+    }
+
+    /* 群码头部信息 */
+    .group-header {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+
+    .group-name {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .card-tags {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      margin-bottom: 16px;
+    }
+
+    .tag {
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-weight: 500;
+    }
+
+    .tag-supply { background: rgba(52, 199, 89, 0.2); color: var(--success); }
+    .tag-demand { background: rgba(245, 158, 11, 0.2); color: var(--gold); }
+    .tag-normal { background: rgba(90, 200, 250, 0.15); color: var(--accent-blue); }
+    .tag-premium { background: rgba(214, 178, 110, 0.2); color: var(--gold); border: 1px solid var(--gold); }
+
+    .group-meta {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    .group-meta span { display: flex; align-items: center; gap: 6px; }
+
+    /* 二维码卡片 */
+    .qr-section {
+      background: var(--bg-card);
+      border: 1px solid var(--border-card);
+      border-radius: 20px;
+      padding: 24px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .qr-card {
+      margin-bottom: 20px;
+    }
+
+    .qr-card:last-child { margin-bottom: 0; }
+
+    .qr-title {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .qr-box {
+      display: inline-block;
+      padding: 16px;
+      background: white;
+      border-radius: 16px;
+    }
+
+    .qr-box img {
+      width: 180px;
+      height: 180px;
+      display: block;
+    }
+
+    /* 群介绍 */
+    .desc-section {
+      background: var(--bg-card);
+      border: 1px solid var(--border-card);
+      border-radius: 20px;
+      padding: 24px;
+      margin-bottom: 20px;
+    }
+
+    .desc-title {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      margin-bottom: 12px;
+    }
+
+    .desc-text {
+      color: var(--text-primary);
+      line-height: 1.7;
+      font-size: 0.95rem;
+    }
+
+    /* 操作按钮 */
+    .action-btn {
+      width: 100%;
+      padding: 16px;
+      border: none;
+      border-radius: 30px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.25s var(--ease-spring);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .action-btn.primary {
+      background: var(--accent-blue);
+      color: #000;
+    }
+
+    .action-btn.primary:hover { background: var(--accent-blue-light); transform: scale(1.02); }
+    .action-btn:active { transform: scale(0.96); }
+
+    .action-btn.secondary {
+      background: transparent;
+      color: var(--text-secondary);
+      border: 1px solid var(--border-card);
+    }
+
+    .action-btn.secondary:hover { border-color: var(--accent-blue); color: var(--text-primary); }
+
+    /* 隐私提示 */
+    .privacy-tip {
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      margin-top: 16px;
+    }
+
+    /* 有效期 */
+    .expire-info {
+      text-align: center;
+      padding: 16px;
+      background: rgba(90, 200, 250, 0.05);
+      border-radius: 12px;
+      margin-top: 20px;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+
+    .expire-info strong { color: var(--accent-blue); }
+  </style>
 </head>
 <body>
-    <h2>深圳互联网交流群</h2>
-    <p>👥 234人 · 📍 深圳 · ⏳ 剩余5天</p>
-    <div class="card">
-        <div class="qr"></div>
-        <p>扫码加入群聊</p>
-    </div>
-    <div class="card">
-        <h4>群主个人微信</h4>
-        <div class="qr"></div>
-    </div>
-    <button style="width:100%;padding:16px;background:#0071E3;color:white;border:none;border-radius:30px;">🤝 推荐给朋友</button>
+  <nav class="navbar">
+    <a href="groups.html" class="navbar-brand">
+      <span class="navbar-brand-icon">🌌</span>
+      <span>资源星河</span>
+    </a>
+    <a href="groups.html" class="back-btn">← 返回列表</a>
+  </nav>
+
+  <div class="container" id="content">
+    <div class="loading">加载中...</div>
+  </div>
+
+  <script>
+    const industryNames = {
+      1: 'IT互联网', 2: '教育培训', 3: '金融投资', 4: '医疗健康',
+      5: '智能制造', 6: '房地产', 7: '法律咨询', 8: '政府园区',
+      9: '创业孵化', 10: '消费零售'
+    };
+
+    async function loadGroup() {
+      const params = new URLSearchParams(location.search);
+      const id = params.get('id');
+
+      if (!id) {
+        document.getElementById('content').innerHTML = '<div class="error-state">缺少群码ID</div>';
+        return;
+      }
+
+      try {
+        const res = await fetch('/api/groups/' + id);
+        if (!res.ok) throw new Error('加载失败');
+
+        const group = await res.json();
+        renderGroup(group);
+      } catch (err) {
+        document.getElementById('content').innerHTML = '<div class="error-state">' + err.message + '</div>';
+      }
+    }
+
+    function getTags(tags) {
+      if (!tags) return '<span class="tag tag-normal">普通</span>';
+      return tags.split(',').map(t => {
+        t = t.trim();
+        if (t === '供') return '<span class="tag tag-supply">供</span>';
+        if (t === '需') return '<span class="tag tag-demand">需</span>';
+        if (t === '高级') return '<span class="tag tag-premium">高级</span>';
+        return '<span class="tag tag-normal">' + t + '</span>';
+      }).join('');
+    }
+
+    function getTimeLeft(expireTime) {
+      if (!expireTime) return '长期有效';
+      const diff = new Date(expireTime).getTime() - Date.now();
+      if (diff <= 0) return '已过期';
+      const days = Math.ceil(diff / 86400000);
+      return '剩余 ' + days + ' 天';
+    }
+
+    function renderGroup(g) {
+      const html = `
+        <div class="group-header">
+          <h1 class="group-name">${g.name}</h1>
+          <div class="card-tags">${getTags(g.tags)}</div>
+          <div class="group-meta">
+            <span>👥 ${g.member_count || 0} 人</span>
+            <span>📍 ${g.region || '全国'}</span>
+            <span>🏷 ${industryNames[g.industry_id] || '其他'}</span>
+          </div>
+        </div>
+
+        <div class="qr-section">
+          <div class="qr-card">
+            <div class="qr-title">📷 入群二维码</div>
+            <div class="qr-box">
+              <img src="${g.qrcode || '/img/qr-placeholder.png'}" alt="入群二维码" onerror="this.src='/img/qr-placeholder.png'">
+            </div>
+          </div>
+        </div>
+
+        ${g.owner_qrcode ? `
+        <div class="qr-section">
+          <div class="qr-card">
+            <div class="qr-title">👤 群主微信（联系请备注"资源对接"）</div>
+            <div class="qr-box">
+              <img src="${g.owner_qrcode}" alt="群主微信" onerror="this.style.display='none'">
+            </div>
+          </div>
+        </div>
+        ` : ''}
+
+        ${g.description ? `
+        <div class="desc-section">
+          <div class="desc-title">📝 群介绍</div>
+          <div class="desc-text">${g.description}</div>
+        </div>
+        ` : ''}
+
+        <button class="action-btn primary" onclick="shareGroup()">
+          🤝 推荐给朋友
+        </button>
+        <button class="action-btn secondary" onclick="location.href='groups.html'">
+          ← 返回列表
+        </button>
+
+        <div class="expire-info">
+          🔒 信息脱敏展示 · 扫码后联系群主 · ${getTimeLeft(g.expire_time)}
+        </div>
+
+        <div class="privacy-tip">
+          所有沟通请通过平台进行，以保障双方权益
+        </div>
+      `;
+
+      document.getElementById('content').innerHTML = html;
+    }
+
+    function shareGroup() {
+      const params = new URLSearchParams(location.search);
+      const id = params.get('id');
+      const url = location.origin + '/group-detail.html?id=' + id;
+
+      if (navigator.share) {
+        navigator.share({
+          title: '行业群码',
+          text: '发现一个优质行业群，邀请你加入',
+          url: url
+        });
+      } else {
+        navigator.clipboard.writeText(url).then(() => {
+          alert('链接已复制到剪贴板');
+        });
+      }
+    }
+
+    loadGroup();
+  </script>
 </body>
 </html>

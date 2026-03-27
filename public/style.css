@@ -38,6 +38,24 @@ body {
   width: 100%;
   height: 100%;
   z-index: 1;
+  pointer-events: none;
+  background-color: var(--bg-deep);
+}
+
+/* 地球交互层 - 透明但可接收鼠标事件 */
+#earth-controls {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 5;
+  pointer-events: auto;
+  cursor: grab;
+}
+
+#earth-controls:active {
+  cursor: grabbing;
 }
 
 /* ==================== Loading ==================== */
@@ -1017,6 +1035,13 @@ body {
     top: 0; left: 0;
     width: 100%; height: 100%;
     z-index: 1;
+    pointer-events: none;
+    background-color: var(--bg-deep);
+  }
+
+  /* 地球交互层 */
+  #earth-controls {
+    z-index: 5;
   }
 
   .ui-overlay {

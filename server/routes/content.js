@@ -28,6 +28,35 @@ router.post('/groups', async (req, res) => {
   }
 });
 
+// ===== 获取我的群码 =====
+
+router.get('/groups', async (req, res) => {
+  try {
+    const groups = await Group.findAll({
+      where: { user_id: req.user.id },
+      order: [['created_at', 'DESC']]
+    });
+    res.json(groups);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ===== 删除群码 =====
+
+router.delete('/groups/:id', async (req, res) => {
+  try {
+    const group = await Group.findOne({
+      where: { id: req.params.id, user_id: req.user.id }
+    });
+    if (!group) return res.status(404).json({ error: '群码不存在或无权删除' });
+    await group.destroy();
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // ===== 发布企业资源 =====
 
 router.post('/enterprise-likes', async (req, res) => {

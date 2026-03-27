@@ -1,18 +1,329 @@
 <!DOCTYPE html>
-<html>
-<head><title>我的群码</title>
-<style>body{font-family:system-ui;padding:16px;background:#f5f5f7;}.card{background:white;border-radius:16px;padding:12px;margin-bottom:12px;display:flex;gap:12px;}.status{display:inline-block;padding:2px 8px;border-radius:12px;font-size:0.6rem;}.status.active{background:#e0f2e0;color:#1e7e34;}</style>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>我的群码 - 资源星河</title>
+  <style>
+    :root {
+      --bg-deep: #01060f;
+      --bg-card: rgba(90, 200, 250, 0.06);
+      --bg-card-hover: rgba(90, 200, 250, 0.12);
+      --border-card: rgba(90, 200, 250, 0.15);
+      --border-card-hover: rgba(90, 200, 250, 0.35);
+      --accent-blue: #5ac8fa;
+      --accent-blue-light: #72d2ff;
+      --text-primary: rgba(228, 240, 252, 0.96);
+      --text-secondary: rgba(180, 200, 220, 0.75);
+      --text-muted: rgba(150, 180, 210, 0.6);
+      --gold: #F59E0B;
+      --success: #34C759;
+      --danger: #FF3B30;
+      --warning: #FF9500;
+      --glass-blur: blur(20px);
+      --shadow-card: 0 12px 40px rgba(0, 0, 0, 0.4), 0 0 30px rgba(90, 200, 250, 0.08);
+      --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'PingFang SC', 'Microsoft YaHei', 'Helvetica Neue', sans-serif;
+      background: var(--bg-deep);
+      color: var(--text-primary);
+      min-height: 100vh;
+    }
+
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      padding: 12px 24px;
+      background: rgba(1, 6, 15, 0.8);
+      backdrop-filter: var(--glass-blur);
+      border-bottom: 1px solid var(--border-card);
+    }
+
+    .navbar-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--text-primary);
+      text-decoration: none;
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+
+    .navbar-brand-icon { font-size: 1.4rem; }
+    .back-btn { margin-left: auto; color: var(--text-secondary); text-decoration: none; font-size: 0.9rem; cursor: pointer; }
+    .back-btn:hover { color: var(--accent-blue); }
+
+    .container { max-width: 800px; margin: 0 auto; padding: 84px 20px 40px; }
+
+    .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+    .page-title { font-size: 1.4rem; font-weight: 600; }
+
+    .btn {
+      padding: 10px 20px;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.25s var(--ease-spring);
+      border: none;
+      text-decoration: none;
+    }
+
+    .btn-primary { background: var(--accent-blue); color: #000; font-weight: 600; }
+    .btn-primary:hover { background: var(--accent-blue-light); transform: scale(1.02); }
+    .btn-primary:active { transform: scale(0.96); }
+
+    .group-list { display: flex; flex-direction: column; gap: 16px; }
+
+    .group-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-card);
+      border-radius: 16px;
+      padding: 16px;
+      display: flex;
+      gap: 16px;
+      transition: all 0.25s var(--ease-spring);
+    }
+
+    .group-card:hover { border-color: var(--border-card-hover); transform: translateY(-2px); }
+
+    .group-qr {
+      width: 80px;
+      height: 80px;
+      flex-shrink: 0;
+      border-radius: 12px;
+      overflow: hidden;
+      background: rgba(90, 200, 250, 0.1);
+    }
+
+    .group-qr img { width: 100%; height: 100%; object-fit: cover; }
+    .group-info { flex: 1; min-width: 0; }
+    .group-name { font-size: 1rem; font-weight: 600; margin-bottom: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .group-meta { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 8px; display: flex; gap: 12px; flex-wrap: wrap; }
+    .group-meta span { display: flex; align-items: center; gap: 4px; }
+    .group-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+    .action-btn {
+      padding: 6px 12px;
+      border-radius: 16px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: 1px solid var(--border-card);
+      background: transparent;
+      color: var(--text-secondary);
+    }
+
+    .action-btn:hover { border-color: var(--accent-blue); color: var(--accent-blue); }
+    .action-btn.danger:hover { border-color: var(--danger); color: var(--danger); }
+
+    .status {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-weight: 500;
+    }
+
+    .status.pending { background: rgba(255, 149, 0, 0.15); color: var(--warning); }
+    .status.approved { background: rgba(52, 199, 89, 0.15); color: var(--success); }
+    .status.rejected { background: rgba(255, 59, 48, 0.15); color: var(--danger); }
+    .status.expired { background: rgba(150, 180, 210, 0.15); color: var(--text-muted); }
+
+    .empty-state { text-align: center; padding: 80px 20px; color: var(--text-muted); }
+    .empty-state-icon { font-size: 3rem; margin-bottom: 16px; }
+    .login-tip { text-align: center; padding: 80px 20px; color: var(--text-muted); }
+    .login-tip a { color: var(--accent-blue); text-decoration: none; }
+
+    .toast {
+      position: fixed;
+      top: 80px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-20px);
+      padding: 12px 24px;
+      background: rgba(0, 0, 0, 0.9);
+      border: 1px solid var(--border-card);
+      border-radius: 30px;
+      font-size: 0.9rem;
+      color: var(--text-primary);
+      opacity: 0;
+      transition: all 0.3s;
+      z-index: 200;
+    }
+
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+    .toast.success { border-color: var(--success); color: var(--success); }
+    .toast.error { border-color: var(--danger); color: var(--danger); }
+
+    .loading { text-align: center; padding: 60px; color: var(--text-muted); }
+  </style>
 </head>
 <body>
-    <h2>我的群码</h2>
-    <div class="card">
-        <div style="width:60px;height:60px;background:#e6e6ea;border-radius:12px;"></div>
-        <div style="flex:1">
-            <div style="font-weight:600;">深圳互联网交流群</div>
-            <div style="font-size:0.8rem;color:#999;">👥234人 · 📍深圳</div>
-            <div><span class="status active">有效</span> 剩余5天</div>
-            <div style="margin-top:8px;"><button>编辑</button> <button>下架</button> <button>续期</button></div>
-        </div>
+  <nav class="navbar">
+    <a href="index.html" class="navbar-brand">
+      <span class="navbar-brand-icon">🌌</span>
+      <span>资源星河</span>
+    </a>
+    <a href="index.html" class="back-btn">← 返回首页</a>
+  </nav>
+
+  <div class="container" id="loginTip" style="display:none;">
+    <div class="login-tip">
+      <p>请先 <a href="login.html">登录</a> 查看您的群码</p>
     </div>
+  </div>
+
+  <div class="container" id="mainContent" style="display:none;">
+    <div class="page-header">
+      <h1 class="page-title">我的群码</h1>
+      <a href="publish-group.html" class="btn btn-primary">+ 发布群码</a>
+    </div>
+
+    <div class="group-list" id="groupList">
+      <div class="loading">加载中...</div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const industryNames = {
+      1: 'IT互联网', 2: '教育培训', 3: '金融投资', 4: '医疗健康',
+      5: '智能制造', 6: '房地产', 7: '法律咨询', 8: '政府园区',
+      9: '创业孵化', 10: '消费零售'
+    };
+
+    const token = localStorage.getItem('token');
+
+    if (!token) {
+      document.getElementById('loginTip').style.display = 'block';
+    } else {
+      document.getElementById('mainContent').style.display = 'block';
+      loadMyGroups();
+    }
+
+    async function loadMyGroups() {
+      try {
+        const res = await fetch('/api/content/groups', {
+          headers: { 'Authorization': 'Bearer ' + token }
+        });
+
+        if (!res.ok) throw new Error('加载失败');
+        const groups = await res.json();
+        renderGroups(groups);
+      } catch (err) {
+        document.getElementById('groupList').innerHTML = '<div class="empty-state">加载失败</div>';
+      }
+    }
+
+    function getStatusInfo(status, expireTime) {
+      if (expireTime && new Date(expireTime).getTime() < Date.now()) {
+        return { class: 'expired', text: '已过期' };
+      }
+      switch (status) {
+        case 0: return { class: 'pending', text: '待审核' };
+        case 1: return { class: 'approved', text: '已发布' };
+        case 2: return { class: 'rejected', text: '已拒绝' };
+        default: return { class: 'pending', text: '未知' };
+      }
+    }
+
+    function getTimeLeft(expireTime) {
+      if (!expireTime) return '';
+      const diff = new Date(expireTime).getTime() - Date.now();
+      if (diff <= 0) return '已过期';
+      const days = Math.ceil(diff / 86400000);
+      return '剩余 ' + days + ' 天';
+    }
+
+    function renderGroups(groups) {
+      const list = document.getElementById('groupList');
+
+      if (groups.length === 0) {
+        list.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-state-icon">📭</div>
+            <div>还没有发布群码</div>
+            <div style="margin-top:8px;font-size:0.85rem;">
+              <a href="publish-group.html" style="color:var(--accent-blue);">立即发布</a>
+            </div>
+          </div>
+        `;
+        return;
+      }
+
+      list.innerHTML = groups.map(g => {
+        const statusInfo = getStatusInfo(g.status, g.expire_time);
+        const timeLeft = getTimeLeft(g.expire_time);
+
+        return `
+          <div class="group-card">
+            <div class="group-qr">
+              <img src="${g.qrcode || '/img/qr-placeholder.png'}" alt="群二维码" onerror="this.src='/img/qr-placeholder.png'">
+            </div>
+            <div class="group-info">
+              <div class="group-name">${g.name}</div>
+              <div class="group-meta">
+                <span>👥 ${g.member_count || 0}人</span>
+                <span>📍 ${g.region || '全国'}</span>
+                <span>🏷 ${industryNames[g.industry_id] || '其他'}</span>
+                <span class="status ${statusInfo.class}">${statusInfo.text}</span>
+              </div>
+              <div class="group-meta">
+                ${timeLeft ? '<span>⏰ ' + timeLeft + '</span>' : ''}
+                <span>📅 ${g.created_at ? new Date(g.created_at).toLocaleDateString() : ''}</span>
+              </div>
+              <div class="group-actions">
+                ${g.status === 1 ? '<button class="action-btn" onclick="viewGroup(' + g.id + ')">查看</button>' : ''}
+                ${g.status === 0 ? '<button class="action-btn" disabled>审核中</button>' : ''}
+                ${g.status === 2 ? '<button class="action-btn" onclick="editGroup(' + g.id + ')">重新编辑</button>' : ''}
+                <button class="action-btn danger" onclick="deleteGroup(' + g.id + ')">删除</button>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function viewGroup(id) {
+      location.href = 'group-detail.html?id=' + id;
+    }
+
+    function editGroup(id) {
+      location.href = 'publish-group.html?edit=' + id;
+    }
+
+    async function deleteGroup(id) {
+      if (!confirm('确定要删除这个群码吗？删除后无法恢复。')) return;
+
+      try {
+        const res = await fetch('/api/content/groups/' + id, {
+          method: 'DELETE',
+          headers: { 'Authorization': 'Bearer ' + token }
+        });
+
+        if (!res.ok) throw new Error('删除失败');
+        showToast('删除成功', 'success');
+        loadMyGroups();
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
+    }
+
+    function showToast(msg, type = '') {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.className = 'toast ' + type + ' show';
+      setTimeout(() => { toast.className = 'toast'; }, 3000);
+    }
+  </script>
 </body>
 </html>

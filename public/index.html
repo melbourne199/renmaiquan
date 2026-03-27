@@ -9,6 +9,9 @@
 <body>
   <div id="canvas-container"></div>
 
+  <!-- 地球交互层 - 用于接收旋转事件 -->
+  <div id="earth-controls"></div>
+
   <div class="ui-overlay">
     <!-- 顶部导航 -->
     <div class="navbar">
@@ -195,8 +198,24 @@
   }
 
   function navigateTo(page) {
-    // 临时提示，后续完善路由
-    console.log('Navigate to:', page);
+    const pages = {
+      'groups': 'groups.html',
+      'group-detail': 'group-detail.html',
+      'publish-group': 'publish-group.html',
+      'publish-resource': 'publish-enterprise-supply.html',
+      'publish-org': 'publish-gov.html',
+      'publish-project': 'project-detail.html',
+      'energy': 'gov-list.html',
+      'helps': 'help-detail.html',
+      'finance': 'finance.html',
+      'escort': 'escort.html',
+      'cases': 'case-list.html'
+    };
+    if (pages[page]) {
+      location.href = pages[page];
+    } else {
+      console.log('Navigate to:', page);
+    }
   }
   </script>
   <script type="importmap">

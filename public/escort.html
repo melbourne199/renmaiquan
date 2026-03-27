@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>居间护航 - 资源星河</title>
+  <style>
+    :root {
+      --bg-deep: #01060f;
+      --bg-card: rgba(90, 200, 250, 0.06);
+      --bg-card-hover: rgba(90, 200, 250, 0.12);
+      --border-card: rgba(90, 200, 250, 0.15);
+      --border-card-hover: rgba(90, 200, 250, 0.35);
+      --accent-blue: #5ac8fa;
+      --accent-blue-light: #72d2ff;
+      --text-primary: rgba(228, 240, 252, 0.96);
+      --text-secondary: rgba(180, 200, 220, 0.75);
+      --text-muted: rgba(150, 180, 210, 0.6);
+      --gold: #F59E0B;
+      --gold-light: #FCD34D;
+      --success: #34C759;
+      --danger: #FF3B30;
+      --glass-blur: blur(20px);
+      --shadow-card: 0 12px 40px rgba(0, 0, 0, 0.4), 0 0 30px rgba(90, 200, 250, 0.08);
+      --shadow-card-hover: 0 20px 50px rgba(0, 0, 0, 0.5), 0 0 40px rgba(90, 200, 250, 0.15);
+      --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif; background: var(--bg-deep); color: var(--text-primary); min-height: 100vh; }
+    .navbar { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 12px 24px; background: rgba(1, 6, 15, 0.8); backdrop-filter: var(--glass-blur); border-bottom: 1px solid var(--border-card); }
+    .navbar-brand { display: flex; align-items: center; gap: 10px; color: var(--text-primary); text-decoration: none; font-size: 1.1rem; font-weight: 600; }
+    .navbar-links { display: flex; gap: 24px; }
+    .nav-link { color: var(--text-secondary); text-decoration: none; font-size: 0.9rem; cursor: pointer; }
+    .nav-link:hover, .nav-link.active { color: var(--accent-blue); }
+    .navbar-actions { display: flex; gap: 12px; }
+    .btn { padding: 8px 18px; border-radius: 20px; font-size: 0.85rem; cursor: pointer; transition: all 0.25s var(--ease-spring); border: none; text-decoration: none; }
+    .btn-primary { background: var(--accent-blue); color: #000; font-weight: 600; }
+    .btn-primary:hover { background: var(--accent-blue-light); transform: scale(1.02); }
+    .btn-outline { background: transparent; color: var(--accent-blue); border: 1px solid var(--border-card); }
+    .btn-outline:hover { border-color: var(--accent-blue); background: var(--bg-card); }
+    .btn-gold { background: var(--gold); color: #000; font-weight: 600; }
+    .btn-gold:hover { background: var(--gold-light); transform: scale(1.02); }
+    .container { max-width: 1200px; margin: 0 auto; padding: 84px 20px 40px; }
+
+    /* 核心说明区 */
+    .intro-section { background: linear-gradient(135deg, rgba(90, 200, 250, 0.1) 0%, rgba(90, 200, 250, 0.03) 100%); border: 1px solid var(--border-card); border-radius: 24px; padding: 32px; margin-bottom: 32px; }
+    .intro-title { font-size: 1.3rem; font-weight: 700; text-align: center; margin-bottom: 24px; }
+    .intro-title span { color: var(--gold); }
+    .intro-content { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; }
+    .intro-card { background: var(--bg-card); border: 1px solid var(--border-card); border-radius: 16px; padding: 20px; }
+    .intro-card-icon { font-size: 1.5rem; margin-bottom: 12px; }
+    .intro-card-title { font-size: 1rem; font-weight: 600; margin-bottom: 8px; }
+    .intro-card-desc { font-size: 0.85rem; color: var(--text-secondary); line-height: 1.5; }
+
+    /* 分润规则 */
+    .profit-section { background: var(--bg-card); border: 1px solid var(--border-card); border-radius: 20px; padding: 24px; margin-bottom: 32px; }
+    .section-title { font-size: 1.1rem; font-weight: 600; text-align: center; margin-bottom: 24px; }
+    .profit-rules { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+    .rule-card { background: var(--bg-card-hover); border: 1px solid var(--border-card); border-radius: 16px; padding: 20px; text-align: center; }
+    .rule-percent { font-size: 2rem; font-weight: 700; color: var(--gold); margin-bottom: 8px; }
+    .rule-title { font-size: 0.95rem; font-weight: 600; margin-bottom: 4px; }
+    .rule-desc { font-size: 0.8rem; color: var(--text-muted); }
+
+    /* U型链路可视化 */
+    .链路-section { background: var(--bg-card); border: 1px solid var(--border-card); border-radius: 20px; padding: 24px; margin-bottom: 32px; }
+    .链路可视化 { position: relative; height: 300px; margin: 20px 0; }
+    .链路-side { position: absolute; width: 120px; padding: 16px; background: var(--bg-card-hover); border: 1px solid var(--border-card); border-radius: 12px; text-align: center; }
+    .链路-side.left { left: 20px; top: 50%; transform: translateY(-50%); }
+    .链路-side.right { right: 20px; top: 50%; transform: translateY(-50%); }
+    .链路-side-title { font-size: 0.9rem; font-weight: 600; margin-bottom: 4px; }
+    .链路-side-role { font-size: 0.8rem; color: var(--accent-blue); }
+    .链路-center { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: 200px; padding: 20px; background: linear-gradient(135deg, rgba(245, 158, 11, 0.2) 0%, rgba(245, 158, 11, 0.1) 100%); border: 2px solid var(--gold); border-radius: 16px; text-align: center; }
+    .链路-center-title { font-size: 1rem; font-weight: 700; margin-bottom: 8px; color: var(--gold); }
+    .链路-center-percent { font-size: 1.5rem; font-weight: 700; color: var(--text-primary); }
+    .链路-arrow { position: absolute; font-size: 2rem; color: var(--accent-blue); opacity: 0.6; }
+    .链路-arrow.left { left: 150px; top: 50%; transform: translateY(-50%); }
+    .链路-arrow.right { right: 150px; top: 50%; transform: translateY(-50%); }
+
+    /* 规则提示 */
+    .rules-section { margin-bottom: 32px; }
+    .rules-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+    .rule-item { display: flex; align-items: flex-start; gap: 12px; padding: 16px; background: var(--bg-card); border: 1px solid var(--border-card); border-radius: 12px; }
+    .rule-icon { font-size: 1.2rem; flex-shrink: 0; }
+    .rule-text { font-size: 0.85rem; color: var(--text-secondary); line-height: 1.5; }
+    .rule-text strong { color: var(--text-primary); }
+
+    /* 底部CTA */
+    .cta-section { text-align: center; padding: 32px; background: linear-gradient(135deg, rgba(245, 158, 11, 0.15) 0%, rgba(245, 158, 11, 0.05) 100%); border: 1px solid rgba(245, 158, 11, 0.3); border-radius: 24px; }
+    .cta-title { font-size: 1.2rem; font-weight: 600; margin-bottom: 8px; }
+    .cta-desc { font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 20px; }
+    .cta-buttons { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+
+    @media (max-width: 800px) { .intro-content, .profit-rules, .rules-grid { grid-template-columns: 1fr; } .navbar-links { display: none; } }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <a href="index.html" class="navbar-brand"><span>🌌</span><span>资源星河</span></a>
+    <div class="navbar-links">
+      <a href="index.html" class="nav-link">首页</a>
+      <a href="groups.html" class="nav-link">行业群码</a>
+      <a href="gov-list.html" class="nav-link">政企资源</a>
+      <span class="nav-link active">居间护航</span>
+    </div>
+    <div class="navbar-actions">
+      <a href="login.html" class="btn btn-outline">登录</a>
+      <a href="register.html" class="btn btn-primary">注册</a>
+    </div>
+  </nav>
+
+  <div class="container">
+    <!-- 核心说明 -->
+    <div class="intro-section">
+      <div class="intro-title">🤝 居间护航 · 明牌规则</div>
+      <div class="intro-content">
+        <div class="intro-card">
+          <div class="intro-card-icon">💪</div>
+          <div class="intro-card-title">好人不吃亏</div>
+          <div class="intro-card-desc">帮忙牵线搭桥是有价值的事，你的引荐本身就是信息资产的变现</div>
+        </div>
+        <div class="intro-card">
+          <div class="intro-card-icon">🔒</div>
+          <div class="intro-card-title">信息资产被保护</div>
+          <div class="intro-card-desc">你的关系链不被泄露，跳单绕开你，全程平台担保</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 分润规则 -->
+    <div class="profit-section">
+      <div class="section-title">💰 分润规则 · 明牌透明</div>
+      <div class="profit-rules">
+        <div class="rule-card">
+          <div class="rule-percent">60%</div>
+          <div class="rule-title">一级引荐人</div>
+          <div class="rule-desc">离拍板人最近，承担最多协同对接工作，每岸最多1人</div>
+        </div>
+        <div class="rule-card">
+          <div class="rule-percent">40%</div>
+          <div class="rule-title">二级引荐人</div>
+          <div class="rule-desc">只负责引荐，不参与协同对接，每岸0-N人，按实际人数均分</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- U型链路可视化 -->
+    <div class="链路-section">
+      <div class="section-title">🔗 U型链路可视化</div>
+      <div class="链路可视化">
+        <!-- 左侧 -->
+        <div class="链路-side left">
+          <div class="链路-side-title">甲方</div>
+          <div class="链路-side-role">⭐ 一级引荐人</div>
+        </div>
+
+        <!-- 中间 -->
+        <div class="链路-center">
+          <div class="链路-center-title">居间费分配</div>
+          <div class="链路-center-percent">一级60% · 二级40%</div>
+        </div>
+
+        <!-- 右侧 -->
+        <div class="链路-side right">
+          <div class="链路-side-title">乙方</div>
+          <div class="链路-side-role">⭐ 一级引荐人</div>
+        </div>
+
+        <!-- 箭头 -->
+        <div class="链路-arrow left">←</div>
+        <div class="链路-arrow right">→</div>
+      </div>
+    </div>
+
+    <!-- 规则提示 -->
+    <div class="rules-section">
+      <div class="section-title">📋 明牌规则</div>
+      <div class="rules-grid">
+        <div class="rule-item">
+          <div class="rule-icon">✅</div>
+          <div class="rule-text"><strong>正确做法：</strong>明牌、留痕、按规则分配</div>
+        </div>
+        <div class="rule-item">
+          <div class="rule-icon">❌</div>
+          <div class="rule-text"><strong>禁止行为：</strong>跳单、瞎传话、泄露信息</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CTA -->
+    <div class="cta-section">
+      <div class="cta-title">🚀 开始你的居间之旅</div>
+      <div class="cta-desc">双一级居间人共拿60%、二级居间人分40%，规则透明无克扣</div>
+      <div class="cta-buttons">
+        <button class="btn btn-gold" onclick="alert('功能开发中，敬请期待')">创建项目</button>
+        <button class="btn btn-primary" onclick="alert('功能开发中，敬请期待')">加入项目</button>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

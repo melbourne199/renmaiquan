@@ -1,28 +1,158 @@
 <!DOCTYPE html>
-<html>
-<head><title>企业资源列表</title>
-<style>body { font-family: system-ui; padding:16px; background:#f5f5f7; }
-.search { background:white; border-radius:30px; padding:10px; margin-bottom:16px; }
-.card { background:white; border-radius:16px; padding:12px; margin-bottom:12px; }
-.tag.supply { background:#1e7e34; color:white; padding:2px 8px; border-radius:12px; display:inline-block; }
-.tag.demand { background:#d70015; color:white; padding:2px 8px; border-radius:12px; display:inline-block; }
-.meta { display:flex; justify-content:space-between; font-size:0.7rem; color:#999; margin-top:8px; }
-</style>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>企业资源 - 资源星河</title>
+  <style>
+    :root {
+      --bg-deep: #01060f;
+      --bg-card: rgba(90, 200, 250, 0.06);
+      --bg-card-hover: rgba(90, 200, 250, 0.12);
+      --border-card: rgba(90, 200, 250, 0.15);
+      --border-card-hover: rgba(90, 200, 250, 0.35);
+      --accent-blue: #5ac8fa;
+      --accent-blue-light: #72d2ff;
+      --text-primary: rgba(228, 240, 252, 0.96);
+      --text-secondary: rgba(180, 200, 220, 0.75);
+      --text-muted: rgba(150, 180, 210, 0.6);
+      --gold: #F59E0B;
+      --success: #34C759;
+      --glass-blur: blur(20px);
+      --shadow-card: 0 12px 40px rgba(0, 0, 0, 0.4), 0 0 30px rgba(90, 200, 250, 0.08);
+      --shadow-card-hover: 0 20px 50px rgba(0, 0, 0, 0.5), 0 0 40px rgba(90, 200, 250, 0.15);
+      --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif; background: var(--bg-deep); color: var(--text-primary); min-height: 100vh; }
+    .navbar { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 12px 24px; background: rgba(1, 6, 15, 0.8); backdrop-filter: var(--glass-blur); border-bottom: 1px solid var(--border-card); }
+    .navbar-brand { display: flex; align-items: center; gap: 10px; color: var(--text-primary); text-decoration: none; font-size: 1.1rem; font-weight: 600; }
+    .navbar-links { display: flex; gap: 24px; }
+    .nav-link { color: var(--text-secondary); text-decoration: none; font-size: 0.9rem; cursor: pointer; }
+    .nav-link:hover, .nav-link.active { color: var(--accent-blue); }
+    .navbar-actions { display: flex; gap: 12px; }
+    .btn { padding: 8px 18px; border-radius: 20px; font-size: 0.85rem; cursor: pointer; transition: all 0.25s var(--ease-spring); border: none; text-decoration: none; }
+    .btn-primary { background: var(--accent-blue); color: #000; font-weight: 600; }
+    .btn-primary:hover { background: var(--accent-blue-light); transform: scale(1.02); }
+    .btn-outline { background: transparent; color: var(--accent-blue); border: 1px solid var(--border-card); }
+    .btn-outline:hover { border-color: var(--accent-blue); background: var(--bg-card); }
+    .container { max-width: 1200px; margin: 0 auto; padding: 84px 20px 40px; }
+    .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 16px; }
+    .page-title { font-size: 1.4rem; font-weight: 600; }
+    .tabs { display: flex; gap: 8px; background: var(--bg-card); padding: 4px; border-radius: 24px; border: 1px solid var(--border-card); }
+    .tab { padding: 6px 16px; border-radius: 20px; font-size: 0.85rem; cursor: pointer; transition: all 0.2s; color: var(--text-secondary); }
+    .tab:hover { color: var(--text-primary); }
+    .tab.active { background: var(--accent-blue); color: #000; font-weight: 600; }
+    .cards-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+    .resource-card { background: var(--bg-card); border: 1px solid var(--border-card); border-radius: 16px; padding: 20px; cursor: pointer; transition: all 0.3s var(--ease-spring); }
+    .resource-card:hover { transform: translateY(-4px); border-color: var(--border-card-hover); box-shadow: var(--shadow-card-hover); }
+    .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
+    .company-name { font-size: 1rem; font-weight: 600; flex: 1; }
+    .stars { color: var(--gold); font-size: 0.9rem; }
+    .card-tags { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+    .tag { padding: 3px 10px; border-radius: 10px; font-size: 0.7rem; font-weight: 500; }
+    .tag-dept { background: rgba(90, 200, 250, 0.15); color: var(--accent-blue); }
+    .tag-industry { background: rgba(245, 158, 11, 0.15); color: var(--gold); }
+    .card-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border-card); }
+    .time-ago { font-size: 0.75rem; color: var(--text-muted); }
+    .action-btn { padding: 6px 14px; border-radius: 16px; font-size: 0.8rem; background: var(--accent-blue); color: #000; font-weight: 600; border: none; cursor: pointer; }
+    .empty-state { grid-column: 1 / -1; text-align: center; padding: 80px 20px; color: var(--text-muted); }
+    .loading { grid-column: 1 / -1; text-align: center; padding: 60px; color: var(--text-muted); }
+    .publish-fab { position: fixed; bottom: 32px; right: 32px; width: 56px; height: 56px; border-radius: 50%; background: var(--accent-blue); color: #000; font-size: 1.5rem; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 8px 30px rgba(90, 200, 250, 0.4); transition: all 0.3s var(--ease-spring); border: none; z-index: 50; }
+    .publish-fab:hover { transform: scale(1.1); }
+    @media (max-width: 800px) { .cards-grid { grid-template-columns: 1fr; } .navbar-links { display: none; } }
+  </style>
 </head>
 <body>
-    <h2>企业资源</h2>
-    <div class="search">🔍 搜索...</div>
-    <div class="card">
-        <span class="tag supply">供</span>
-        <div style="font-weight:600;">某科技公司</div>
-        <div style="font-size:0.8rem; color:#666;">技术部 · 北京</div>
-        <div class="meta"><span>2026-03-10</span></div>
+  <nav class="navbar">
+    <a href="index.html" class="navbar-brand"><span>🌌</span><span>资源星河</span></a>
+    <div class="navbar-links">
+      <a href="index.html" class="nav-link">首页</a>
+      <a href="groups.html" class="nav-link">行业群码</a>
+      <span class="nav-link active">政企资源</span>
+      <a href="help-detail.html" class="nav-link">最新求助</a>
+      <a href="finance.html" class="nav-link">民企金融</a>
     </div>
-    <div class="card">
-        <span class="tag demand">需</span>
-        <div style="font-weight:600;">高端制造融资</div>
-        <div style="font-size:0.8rem; color:#666;">需资500万 · 深圳</div>
-        <div class="meta"><span>2026-03-08</span></div>
+    <div class="navbar-actions">
+      <a href="login.html" class="btn btn-outline">登录</a>
+      <a href="register.html" class="btn btn-primary">注册</a>
     </div>
+  </nav>
+
+  <div class="container">
+    <div class="page-header">
+      <h1 class="page-title">企业资源</h1>
+      <div class="tabs">
+        <span class="tab active" data-filter="all">全部</span>
+        <span class="tab" data-filter="招商部">招商部</span>
+        <span class="tab" data-filter="项目部">项目部</span>
+        <span class="tab" data-filter="采购部">采购部</span>
+        <span class="tab" data-filter="其他">其他</span>
+      </div>
+    </div>
+    <div class="cards-grid" id="cardsGrid"><div class="loading">加载中...</div></div>
+  </div>
+
+  <button class="publish-fab" onclick="location.href='publish-enterprise-supply.html'" title="发布资源">+</button>
+
+  <script>
+    const industryNames = ['', 'IT互联网', '教育培训', '金融投资', '医疗健康', '智能制造', '房地产', '法律咨询', '政府园区', '创业孵化', '消费零售'];
+    let currentFilter = 'all';
+    let resources = [];
+
+    async function loadResources() {
+      try {
+        const res = await fetch('/api/enterprise-likes');
+        if (!res.ok) throw new Error('加载失败');
+        resources = await res.json();
+        renderCards();
+      } catch (e) {
+        document.getElementById('cardsGrid').innerHTML = '<div class="empty-state">暂无数据</div>';
+      }
+    }
+
+    function getTimeAgo(dateStr) {
+      if (!dateStr) return '';
+      const diff = Date.now() - new Date(dateStr).getTime();
+      const days = Math.floor(diff / 86400000);
+      if (days === 0) return '今天';
+      if (days === 1) return '昨天';
+      if (days < 30) return days + '天前';
+      return Math.floor(days / 30) + '月前';
+    }
+
+    function renderCards() {
+      const grid = document.getElementById('cardsGrid');
+      const filtered = currentFilter === 'all' ? resources : resources.filter(r => r.department === currentFilter);
+      if (filtered.length === 0) { grid.innerHTML = '<div class="empty-state">暂无资源</div>'; return; }
+      grid.innerHTML = filtered.map(r => `
+        <div class="resource-card" onclick="location.href='enterprise-like-detail.html?id=${r.id}'">
+          <div class="card-header">
+            <div class="company-name">${r.company_name || '某企业'}</div>
+            <div class="stars">${r.familiarity === '非常熟悉' ? '★★' : r.familiarity === '比较熟悉' ? '★' : ''}</div>
+          </div>
+          <div class="card-tags">
+            <span class="tag tag-dept">${r.department || '其他部门'}</span>
+            <span class="tag tag-industry">${industryNames[r.industry] || r.industry || '综合'}</span>
+          </div>
+          <div class="card-footer">
+            <span class="time-ago">${getTimeAgo(r.created_at)}</span>
+            <button class="action-btn">立即对接</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    document.querySelectorAll('.tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        currentFilter = tab.dataset.filter;
+        renderCards();
+      });
+    });
+
+    loadResources();
+  </script>
 </body>
 </html>

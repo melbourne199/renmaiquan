@@ -1,15 +1,357 @@
 <!DOCTYPE html>
-<html>
-<head><title>注册</title>
-<style>body{font-family:system-ui;padding:40px 20px;background:#f5f5f7;text-align:center;}.logo{width:80px;height:80px;background:#e0e0e0;border-radius:20px;margin:0 auto 20px;}input{width:100%;padding:14px;border:1px solid #eee;border-radius:14px;margin-bottom:16px;}.btn{background:#0071E3;color:white;border:none;border-radius:30px;padding:14px;width:100%;}</style>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>注册 - 资源星河</title>
+  <style>
+    :root {
+      --bg-deep: #01060f;
+      --bg-card: rgba(90, 200, 250, 0.06);
+      --bg-card-hover: rgba(90, 200, 250, 0.12);
+      --border-card: rgba(90, 200, 250, 0.15);
+      --border-card-hover: rgba(90, 200, 250, 0.35);
+      --accent-blue: #5ac8fa;
+      --accent-blue-light: #72d2ff;
+      --accent-blue-dark: #0071E3;
+      --text-primary: rgba(228, 240, 252, 0.96);
+      --text-secondary: rgba(180, 200, 220, 0.75);
+      --text-muted: rgba(150, 180, 210, 0.6);
+      --gold: #F59E0B;
+      --success: #34C759;
+      --danger: #FF3B30;
+      --glass-blur: blur(20px);
+      --shadow-card: 0 12px 40px rgba(0, 0, 0, 0.4), 0 0 30px rgba(90, 200, 250, 0.08);
+      --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'PingFang SC', 'Microsoft YaHei', 'Helvetica Neue', sans-serif;
+      background: var(--bg-deep);
+      color: var(--text-primary);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: radial-gradient(ellipse at 50% 0%, rgba(90, 200, 250, 0.08) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 400px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .logo-section {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .logo-icon {
+      font-size: 3rem;
+      margin-bottom: 12px;
+    }
+
+    .logo-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+    }
+
+    .logo-subtitle {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-card);
+      border-radius: 24px;
+      padding: 32px 24px;
+      backdrop-filter: var(--glass-blur);
+    }
+
+    .card-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+      text-align: center;
+      margin-bottom: 24px;
+      color: var(--text-primary);
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 14px 16px;
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid var(--border-card);
+      border-radius: 12px;
+      color: var(--text-primary);
+      font-size: 1rem;
+      transition: all 0.2s;
+      outline: none;
+    }
+
+    .form-input:focus {
+      border-color: var(--accent-blue);
+      box-shadow: 0 0 0 3px rgba(90, 200, 250, 0.15);
+    }
+
+    .form-input::placeholder {
+      color: var(--text-muted);
+    }
+
+    .btn {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 30px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.25s var(--ease-spring);
+    }
+
+    .btn-primary {
+      background: var(--accent-blue);
+      color: #000;
+    }
+
+    .btn-primary:hover { background: var(--accent-blue-light); transform: scale(1.02); }
+    .btn-primary:active { transform: scale(0.96); }
+    .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--accent-blue);
+      border: 1px solid var(--border-card);
+    }
+
+    .btn-outline:hover { border-color: var(--accent-blue); background: var(--bg-card); }
+
+    .error-msg {
+      background: rgba(255, 59, 48, 0.1);
+      border: 1px solid rgba(255, 59, 48, 0.3);
+      border-radius: 12px;
+      padding: 12px;
+      margin-bottom: 16px;
+      color: var(--danger);
+      font-size: 0.85rem;
+      text-align: center;
+      display: none;
+    }
+
+    .error-msg.show { display: block; }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin: 24px 0;
+      color: var(--text-muted);
+      font-size: 0.8rem;
+    }
+
+    .divider::before,
+    .divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border-card);
+    }
+
+    .link {
+      color: var(--accent-blue);
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .link:hover { text-decoration: underline; }
+
+    .privacy-tip {
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      margin-top: 16px;
+      line-height: 1.5;
+    }
+
+    .back-home {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      margin-top: 16px;
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.85rem;
+      cursor: pointer;
+    }
+
+    .back-home:hover { color: var(--accent-blue); }
+
+    .toast {
+      position: fixed;
+      top: 80px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-20px);
+      padding: 12px 24px;
+      background: rgba(0, 0, 0, 0.9);
+      border: 1px solid var(--border-card);
+      border-radius: 30px;
+      font-size: 0.9rem;
+      color: var(--text-primary);
+      opacity: 0;
+      transition: all 0.3s;
+      z-index: 200;
+    }
+
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+    .toast.success { border-color: var(--success); color: var(--success); }
+    .toast.error { border-color: var(--danger); color: var(--danger); }
+  </style>
 </head>
 <body>
-    <div class="logo"></div>
-    <h2>注册新账号</h2>
-    <input type="text" placeholder="用户名">
-    <input type="password" placeholder="密码">
-    <input type="password" placeholder="确认密码">
-    <button class="btn">注册</button>
-    <p style="margin-top:16px;">已有账号？ <a href="/login.html" style="color:#0071E3;">登录</a></p>
+  <div class="container">
+    <div class="logo-section">
+      <div class="logo-icon">🌌</div>
+      <div class="logo-title">资源星河</div>
+      <div class="logo-subtitle">让连接更有价值</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">注册账号</div>
+
+      <div class="error-msg" id="errorMsg"></div>
+
+      <form id="registerForm">
+        <div class="form-group">
+          <label class="form-label">用户名</label>
+          <input type="text" class="form-input" id="username" placeholder="请输入用户名（6位以上）" required minlength="6">
+        </div>
+        <div class="form-group">
+          <label class="form-label">密码</label>
+          <input type="password" class="form-input" id="password" placeholder="请输入密码（6位以上）" required minlength="6">
+        </div>
+        <div class="form-group">
+          <label class="form-label">确认密码</label>
+          <input type="password" class="form-input" id="passwordConfirm" placeholder="请再次输入密码" required>
+        </div>
+        <button type="submit" class="btn btn-primary" id="registerBtn">注册</button>
+      </form>
+
+      <div class="divider">已有账号？</div>
+
+      <button class="btn btn-outline" onclick="location.href='login.html'">返回登录</button>
+
+      <div class="privacy-tip">
+        注册即表示同意平台协议<br>
+        平台仅为信息展示，不参与任何交易
+      </div>
+    </div>
+
+    <a href="index.html" class="back-home">← 返回首页</a>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const form = document.getElementById('registerForm');
+    const registerBtn = document.getElementById('registerBtn');
+    const errorMsg = document.getElementById('errorMsg');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value;
+      const passwordConfirm = document.getElementById('passwordConfirm').value;
+
+      if (!username || username.length < 6) {
+        showError('用户名至少6位');
+        return;
+      }
+
+      if (!password || password.length < 6) {
+        showError('密码至少6位');
+        return;
+      }
+
+      if (password !== passwordConfirm) {
+        showError('两次密码输入不一致');
+        return;
+      }
+
+      registerBtn.disabled = true;
+      registerBtn.textContent = '注册中...';
+      hideError();
+
+      try {
+        const res = await fetch('/api/auth/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password })
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+          throw new Error(data.error || '注册失败');
+        }
+
+        showToast('注册成功，请登录！', 'success');
+        setTimeout(() => { location.href = 'login.html'; }, 1500);
+      } catch (err) {
+        showError(err.message);
+        registerBtn.disabled = false;
+        registerBtn.textContent = '注册';
+      }
+    });
+
+    function showError(msg) {
+      errorMsg.textContent = msg;
+      errorMsg.classList.add('show');
+    }
+
+    function hideError() {
+      errorMsg.classList.remove('show');
+    }
+
+    function showToast(msg, type = '') {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.className = 'toast ' + type + ' show';
+      setTimeout(() => { toast.className = 'toast'; }, 3000);
+    }
+
+    // 检查是否已登录
+    if (localStorage.getItem('token')) {
+      location.href = 'index.html';
+    }
+  </script>
 </body>
 </html>

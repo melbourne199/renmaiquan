@@ -1,5 +1,5 @@
 const express = require('express');
-const { Group, EnterpriseLike, Project, HelpRequest, GovernmentResource, Referral } = require('../models');
+const { sequelize, Group, EnterpriseLike, Project, HelpRequest, GovernmentResource, Referral } = require('../models');
 
 const router = express.Router();
 
@@ -8,17 +8,46 @@ const router = express.Router();
 // 获取已通过的群码
 router.get('/groups', async (req, res) => {
   try {
-    const { industry_id, sort } = req.query;
+    const { industry_id, sort, id } = req.query;
     const where = { status: 1 };
     if (industry_id && industry_id !== 'all') {
       where.industry_id = industry_id;
     }
-    const order = sort === 'hot'
-      ? [['view_count', 'DESC'], ['created_at', 'DESC']]
-      : [['created_at', 'DESC']];
+    if (id) {
+      where.id = id;
+    }
 
-    const groups = await Group.findAll({ where, order });
+    let groups;
+    if (sort === 'hot') {
+      groups = await Group.findAll({
+        where,
+        order: [['view_count', 'DESC']]
+      });
+      // 按创建时间二次排序（在JS中处理）
+      groups.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+    } else {
+      groups = await Group.findAll({
+        where,
+        order: [['id', 'DESC']]
+      });
+    }
     res.json(groups);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// 获取单个群码详情
+router.get('/groups/:id', async (req, res) => {
+  try {
+    const group = await Group.findByPk(req.params.id);
+    if (!group || group.status !== 1) {
+      return res.status(404).json({ error: '群码不存在或已下架' });
+    }
+    // 增加浏览次数
+    group.view_count = (group.view_count || 0) + 1;
+    await group.save();
+    res.json(group);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

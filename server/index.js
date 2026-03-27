@@ -40,7 +40,7 @@ app.get('*', (req, res) => {
   try {
     await sequelize.authenticate();
     console.log('数据库连接成功');
-    await sequelize.sync();
+    await sequelize.sync({ alter: true });
     console.log('数据库同步完成');
   } catch (err) {
     console.error('数据库连接失败:', err);
