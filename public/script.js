@@ -1073,6 +1073,15 @@ function fixLabelCollisionForOne(label) {
 // 初始化
 init();
 
+// 飘带10秒后自动消失
+setTimeout(() => {
+  const toast = document.getElementById('toastBanner');
+  if (toast) {
+    toast.classList.add('fade-out');
+    setTimeout(() => { toast.style.display = 'none'; }, 1200);
+  }
+}, 10000);
+
 // 【调试】← → 微调（动画完成后可用）
 window.addEventListener('keydown', (e) => {
   if (e.key === 'ArrowLeft') {
