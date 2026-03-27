@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>U型链路示意图 - 居间护航</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px 20px;
+  color: #fff;
+}
+
+h1 {
+  font-size: 28px;
+  margin-bottom: 10px;
+  background: linear-gradient(90deg, #6366F1, #14B8A6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.subtitle {
+  color: #94A3B8;
+  margin-bottom: 12px;
+  font-size: 14px;
+}
+
+.why {
+  color: #FCD34D;
+  margin-bottom: 40px;
+  font-size: 14px;
+  font-weight: 300;
+  letter-spacing: 1px;
+}
+
+/* 主容器 */
+.u-container {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 60px;
+  position: relative;
+  width: 100%;
+  max-width: 900px;
+}
+
+/* 两岸 */
+.side {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 140px;
+}
+
+.side-label {
+  font-size: 16px;
+  font-weight: 600;
+  padding: 6px 20px;
+  border-radius: 20px;
+  margin-bottom: 20px;
+}
+
+.side-资金方 .side-label { background: linear-gradient(135deg, #F59E0B, #F97316); }
+.side-项目方 .side-label { background: linear-gradient(135deg, #6366F1, #818CF8); }
+
+/* 每岸的人员堆叠 */
+.people-stack {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+/* 头像通用 */
+.avatar {
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-weight: 600;
+  position: relative;
+  cursor: pointer;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.avatar:hover {
+  transform: scale(1.1);
+}
+
+.avatar::after {
+  content: attr(data-role);
+  position: absolute;
+  bottom: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 10px;
+  color: #94A3B8;
+  white-space: nowrap;
+  background: rgba(0,0,0,0.7);
+  padding: 2px 8px;
+  border-radius: 8px;
+  font-weight: 400;
+}
+
+/* 拍板人 */
+.boss {
+  width: 64px;
+  height: 64px;
+  font-size: 24px;
+  border: 3px solid;
+}
+
+.boss.gold { border-color: #F59E0B; box-shadow: 0 0 20px rgba(245, 158, 11, 0.4); }
+.boss.purple { border-color: #818CF8; box-shadow: 0 0 20px rgba(129, 140, 248, 0.4); }
+
+/* 一级引荐人 */
+.level1 {
+  width: 52px;
+  height: 52px;
+  font-size: 20px;
+  border: 2px solid #10B981;
+  box-shadow: 0 0 15px rgba(16, 185, 129, 0.3);
+}
+
+/* 二级引荐人 */
+.level2 {
+  width: 42px;
+  height: 42px;
+  font-size: 16px;
+  border: 2px solid #64748B;
+}
+
+/* 斜向错开 - 二级 */
+.level2:nth-child(1) { margin-left: -20px; }
+.level2:nth-child(2) { margin-left: 0px; }
+.level2:nth-child(3) { margin-left: 20px; }
+.level2:nth-child(4) { margin-left: -10px; }
+.level2:nth-child(5) { margin-left: 10px; }
+
+/* 中间U型区域 */
+.u-middle {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 20px;
+}
+
+/* U型曲线SVG */
+.u-curve-svg {
+  width: 280px;
+  height: 250px;
+}
+
+/* 分润展示 */
+.fee-pool {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(99, 102, 241, 0.4);
+  border-radius: 16px;
+  padding: 20px 28px;
+  text-align: center;
+  z-index: 10;
+}
+
+.fee-pool h3 {
+  font-size: 13px;
+  color: #94A3B8;
+  margin-bottom: 14px;
+  font-weight: 400;
+}
+
+.fee-ring {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  background: conic-gradient(
+    #F59E0B 0deg 108deg,
+    #10B981 108deg 216deg,
+    #64748B 216deg 360deg
+  );
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 14px;
+  position: relative;
+  animation: rotate 20s linear infinite;
+}
+
+@keyframes rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.fee-ring::before {
+  content: '';
+  width: 90px;
+  height: 90px;
+  background: linear-gradient(135deg, #1a1a2e, #16213e);
+  border-radius: 50%;
+  position: absolute;
+}
+
+.fee-center {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+}
+
+.fee-center .percent {
+  font-size: 26px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.fee-center .label {
+  font-size: 10px;
+  color: #94A3B8;
+}
+
+.fee-legend {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 12px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.legend-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.legend-dot.gold { background: #F59E0B; }
+.legend-dot.green { background: #10B981; }
+.legend-dot.gray { background: #64748B; }
+
+/* 底部规则标签 */
+.bottom-tags {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  margin-top: 40px;
+}
+
+.tag {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 12px;
+  font-size: 12px;
+  color: #94A3B8;
+}
+
+.tag-icon {
+  font-size: 16px;
+}
+
+.tag.red { border-color: rgba(239, 68, 68, 0.3); }
+.tag.red .tag-icon { color: #EF4444; }
+
+.tag.green { border-color: rgba(16, 185, 129, 0.3); }
+.tag.green .tag-icon { color: #10B981; }
+
+/* 流动动画 */
+@keyframes flowRight {
+  0% { stroke-dashoffset: 100; }
+  100% { stroke-dashoffset: 0; }
+}
+
+.flow-path {
+  stroke-dasharray: 8 4;
+  animation: flowRight 1.5s linear infinite;
+}
+
+/* 空状态 */
+.empty-tip {
+  color: #64748B;
+  font-size: 11px;
+  padding: 6px 12px;
+  background: rgba(255,255,255,0.03);
+  border-radius: 8px;
+  margin-top: 10px;
+  border: 1px dashed rgba(255,255,255,0.1);
+}
+</style>
+</head>
+<body>
+
+<h1>U型居间链路</h1>
+<p class="subtitle">明牌规则 · 层层引荐 · 阳光分润</p>
+<p class="why">帮忙牵线搭桥，是有价值的事 · 好人不该白忙 · 信息资产需要保护</p>
+
+<!-- 动态数据驱动 -->
+<script>
+// ============================================
+// 模拟链路数据 - 真实场景由后端传入
+// 人数不固定，根据实际加入的人来显示
+// ============================================
+const chainData = {
+  资金方: {
+    boss: { name: '张', role: '拍板人' },
+    level1: [],                                          // 0-1个一级引荐人
+    level2: [ { name: '王' }, { name: '赵' } ]           // 0-N个二级引荐人
+  },
+  项目方: {
+    boss: { name: '孙', role: '拍板人' },
+    level1: [ { name: '周', role: '一级引荐人' } ],       // 0-1个一级引荐人
+    level2: [ { name: '吴' }, { name: '郑' }, { name: '冯' } ] // 0-N个二级引荐人
+  }
+};
+
+function renderChain(data) {
+  // 计算分润比例 - 根据实际人数动态计算
+  const level1甲方 = data.资金方.level1 ? data.资金方.level1.length : 0;
+  const level1乙方 = data.项目方.level1 ? data.项目方.level1.length : 0;
+  const level1Total = level1甲方 + level1乙方;
+
+  const level2甲方 = data.资金方.level2 ? data.资金方.level2.length : 0;
+  const level2乙方 = data.项目方.level2 ? data.项目方.level2.length : 0;
+  const level2Total = level2甲方 + level2乙方;
+
+  // 动态调整U型曲线高度
+  const maxPeopleSide = Math.max(
+    1 + level1甲方 + level2甲方,
+    1 + level1乙方 + level2乙方
+  );
+  const uHeight = 120 + maxPeopleSide * 40;
+  document.getElementById('uCurveSvg').style.height = uHeight + 'px';
+
+  // 渲染资金方
+  let 甲方HTML = `
+    <div class="side side-资金方">
+      <div class="side-label">资金方</div>
+      <div class="people-stack">
+        <div class="avatar boss gold" data-role="${data.资金方.boss.role}">${data.资金方.boss.name}</div>
+  `;
+
+  if (level1甲方 > 0) {
+    data.资金方.level1.forEach(p => {
+      甲方HTML += `<div class="avatar level1" data-role="${p.role || '一级引荐人'}">${p.name}</div>`;
+    });
+  }
+
+  if (level2甲方 > 0) {
+    data.资金方.level2.forEach((p, i) => {
+      甲方HTML += `<div class="avatar level2" data-role="二级引荐人">${p.name}</div>`;
+    });
+  } else if (level1Total === 0) {
+    甲方HTML += `<div class="empty-tip">等待一级引荐</div>`;
+  }
+
+  甲方HTML += `</div></div>`;
+
+  // 渲染项目方
+  let 乙方HTML = `
+    <div class="side side-项目方">
+      <div class="side-label">项目方</div>
+      <div class="people-stack">
+        <div class="avatar boss purple" data-role="${data.项目方.boss.role}">${data.项目方.boss.name}</div>
+  `;
+
+  if (level1乙方 > 0) {
+    data.项目方.level1.forEach(p => {
+      乙方HTML += `<div class="avatar level1" data-role="${p.role || '一级引荐人'}">${p.name}</div>`;
+    });
+  }
+
+  if (level2乙方 > 0) {
+    data.项目方.level2.forEach((p, i) => {
+      乙方HTML += `<div class="avatar level2" data-role="二级引荐人">${p.name}</div>`;
+    });
+  } else if (level1Total === 0) {
+    乙方HTML += `<div class="empty-tip">等待一级引荐</div>`;
+  }
+
+  乙方HTML += `</div></div>`;
+
+  // 动态分润说明
+  let feeLegend = '';
+  if (level1Total > 0) {
+    const level1Pct = level1Total * 30;
+    feeLegend += `
+      <div class="legend-item">
+        <div class="legend-dot gold"></div>
+        <span>一级×${level1Total} = ${level1Pct}%</span>
+      </div>
+    `;
+  }
+  if (level2Total > 0) {
+    const perLevel2 = (40 / level2Total).toFixed(1);
+    feeLegend += `
+      <div class="legend-item">
+        <div class="legend-dot gray"></div>
+        <span>二级×${level2Total} = ${perLevel2}%/人</span>
+      </div>
+    `;
+  }
+  if (level1Total === 0 && level2Total === 0) {
+    feeLegend += `
+      <div class="legend-item">
+        <div class="legend-dot gold"></div>
+        <span>一级×0 = 待加入</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-dot gray"></div>
+        <span>二级×0 = 待加入</span>
+      </div>
+    `;
+  }
+
+  document.getElementById('甲方Side').outerHTML = 甲方HTML;
+  document.getElementById('乙方Side').outerHTML = 乙方HTML;
+  document.getElementById('feeLegend').innerHTML = feeLegend;
+
+  // 更新U型曲线
+  updateUCurve(uHeight);
+}
+
+function updateUCurve(maxHeight) {
+  const svg = document.getElementById('uCurveSvg');
+  const h = Math.max(180, maxHeight + 30);
+  svg.setAttribute('viewBox', `0 0 280 ${h}`);
+  svg.innerHTML = `
+    <defs>
+      <linearGradient id="uGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" style="stop-color:#F59E0B;stop-opacity:0.4" />
+        <stop offset="50%" style="stop-color:#6366F1;stop-opacity:0.6" />
+        <stop offset="100%" style="stop-color:#818CF8;stop-opacity:0.4" />
+      </linearGradient>
+    </defs>
+    <!-- U型槽主体 -->
+    <path d="M 10 20 Q 10 ${h*0.5}, 140 ${h*0.78} Q 270 ${h*0.5}, 270 20"
+          fill="none"
+          stroke="url(#uGrad)"
+          stroke-width="50"
+          stroke-linecap="round"/>
+    <!-- 流动光线 -->
+    <path class="flow-path"
+          d="M 30 40 Q 30 ${h*0.45}, 140 ${h*0.72} Q 250 ${h*0.45}, 250 40"
+          fill="none"
+          stroke="rgba(255,255,255,0.25)"
+          stroke-width="2"
+          stroke-dasharray="8 4"/>
+  `;
+}
+
+// 初始化渲染
+renderChain(chainData);
+</script>
+
+<div class="u-container" id="uContainer">
+  <!-- 甲方（资金方） -->
+  <div class="side side-资金方" id="甲方Side"></div>
+
+  <!-- 中间U型 -->
+  <div class="u-middle">
+    <svg class="u-curve-svg" id="uCurveSvg" viewBox="0 0 280 250"></svg>
+
+    <div class="fee-pool">
+      <h3>居间费分配</h3>
+      <div class="fee-ring">
+        <div class="fee-center">
+          <div class="percent">100%</div>
+          <div class="label">总费用</div>
+        </div>
+      </div>
+      <div class="fee-legend" id="feeLegend"></div>
+    </div>
+  </div>
+
+  <!-- 乙方（项目方） -->
+  <div class="side side-项目方" id="乙方Side"></div>
+</div>
+
+<!-- 底部规则标签 -->
+<div class="bottom-tags">
+  <div class="tag red">
+    <span class="tag-icon">✕</span>
+    <span>禁止跳单 · 禁止瞎传话 · 禁止泄露</span>
+  </div>
+  <div class="tag green">
+    <span class="tag-icon">✓</span>
+    <span>明牌规则 · 层层留痕 · 阳光分润</span>
+  </div>
+</div>
+
+</body>
+</html>

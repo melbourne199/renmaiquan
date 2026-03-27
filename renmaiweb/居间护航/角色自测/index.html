@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>角色自测 - 居间护航</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px 20px;
+  color: #fff;
+}
+
+.container {
+  max-width: 700px;
+  width: 100%;
+}
+
+h1 {
+  font-size: 28px;
+  text-align: center;
+  margin-bottom: 8px;
+  background: linear-gradient(90deg, #6366F1, #14B8A6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.subtitle {
+  text-align: center;
+  color: #94A3B8;
+  margin-bottom: 30px;
+  font-size: 14px;
+}
+
+.why-banner {
+  background: rgba(252, 211, 77, 0.1);
+  border: 1px solid rgba(252, 211, 77, 0.3);
+  border-radius: 12px;
+  padding: 16px 20px;
+  margin-bottom: 30px;
+  font-size: 13px;
+  color: #FCD34D;
+  line-height: 1.8;
+}
+
+.why-banner strong {
+  color: #fff;
+}
+
+/* 步骤卡片 */
+.step {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 20px;
+  position: relative;
+  transition: all 0.3s;
+}
+
+.step.active {
+  border-color: rgba(99, 102, 241, 0.5);
+  background: rgba(99, 102, 241, 0.05);
+}
+
+.step.completed {
+  border-color: rgba(16, 185, 129, 0.5);
+}
+
+.step-num {
+  position: absolute;
+  top: -12px;
+  left: 20px;
+  background: linear-gradient(135deg, #6366F1, #818CF8);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 12px;
+}
+
+.step.completed .step-num {
+  background: linear-gradient(135deg, #10B981, #34D399);
+}
+
+.step-question {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  margin-top: 8px;
+}
+
+/* 引导提示框 */
+.guide-box {
+  background: rgba(99, 102, 241, 0.1);
+  border-left: 3px solid #6366F1;
+  padding: 14px 16px;
+  margin-bottom: 16px;
+  border-radius: 0 8px 8px 0;
+  font-size: 13px;
+  color: #CBD5E1;
+  line-height: 1.8;
+}
+
+.guide-box .guide-title {
+  color: #818CF8;
+  font-weight: 600;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.guide-box .guide-why {
+  color: #94A3B8;
+  margin-bottom: 8px;
+}
+
+.guide-box .guide-effect {
+  color: #10B981;
+  margin-bottom: 8px;
+}
+
+.guide-box .guide-tip {
+  color: #FCD34D;
+  font-size: 12px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(255,255,255,0.1);
+}
+
+/* 选项按钮 */
+.options {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.option-btn {
+  flex: 1;
+  min-width: 140px;
+  padding: 14px 20px;
+  background: rgba(255,255,255,0.05);
+  border: 2px solid rgba(255,255,255,0.1);
+  border-radius: 12px;
+  color: #fff;
+  font-size: 15px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: left;
+}
+
+.option-btn:hover {
+  border-color: #6366F1;
+  background: rgba(99, 102, 241, 0.1);
+  transform: translateY(-2px);
+}
+
+.option-btn.selected {
+  border-color: #10B981;
+  background: rgba(16, 185, 129, 0.15);
+}
+
+.option-btn .option-label {
+  font-weight: 600;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.option-btn .option-desc {
+  font-size: 12px;
+  color: #94A3B8;
+}
+
+/* 鼓励语 */
+.encourage {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(99, 102, 241, 0.1));
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  border-radius: 12px;
+  padding: 16px;
+  margin: 20px 0;
+  text-align: center;
+  font-size: 14px;
+  color: #34D399;
+  display: none;
+}
+
+.encourage.show {
+  display: block;
+  animation: fadeIn 0.5s;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* 结果卡片 */
+.result {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(99, 102, 241, 0.15));
+  border: 2px solid #10B981;
+  border-radius: 20px;
+  padding: 30px;
+  text-align: center;
+  margin-top: 20px;
+  display: none;
+}
+
+.result.show {
+  display: block;
+  animation: fadeIn 0.5s;
+}
+
+.result-badge {
+  display: inline-block;
+  background: linear-gradient(135deg, #10B981, #34D399);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 8px 20px;
+  border-radius: 20px;
+  margin-bottom: 16px;
+}
+
+.result-title {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+.result-desc {
+  color: #CBD5E1;
+  font-size: 14px;
+  line-height: 1.8;
+  margin-bottom: 20px;
+}
+
+.result-perc {
+  display: inline-block;
+  background: rgba(245, 158, 11, 0.2);
+  border: 1px solid rgba(245, 158, 11, 0.4);
+  color: #F59E0B;
+  padding: 8px 20px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* 真诚提示 */
+.sincerity-tip {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  border-radius: 12px;
+  padding: 16px;
+  margin-top: 30px;
+  font-size: 13px;
+  color: #FCA5A5;
+  text-align: center;
+}
+
+.sincerity-tip strong {
+  color: #EF4444;
+}
+
+/* 底部按钮 */
+.action-row {
+  display: flex;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.btn {
+  flex: 1;
+  padding: 14px 24px;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #6366F1, #818CF8);
+  color: #fff;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(99, 102, 241, 0.3);
+}
+
+.btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.btn-secondary {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.2);
+  color: #94A3B8;
+}
+
+.btn-secondary:hover {
+  background: rgba(255,255,255,0.1);
+}
+
+/* 进度指示 */
+.progress {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 30px;
+}
+
+.progress-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.2);
+  transition: all 0.3s;
+}
+
+.progress-dot.active {
+  background: #6366F1;
+  width: 24px;
+  border-radius: 5px;
+}
+
+.progress-dot.completed {
+  background: #10B981;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h1>角色自测</h1>
+  <p class="subtitle">3个问题，帮你确定你在居间链路中的位置</p>
+
+  <!-- 为什么做这个模块 -->
+  <div class="why-banner">
+    <strong>帮你牵线搭桥，是有价值的事。</strong><br>
+    好人不该白忙，信息资产需要保护。<br>
+    通过这3个问题，你可以清楚地知道自己能扮演什么角色、应得多少回报。
+  </div>
+
+  <!-- 进度 -->
+  <div class="progress">
+    <div class="progress-dot active" id="dot1"></div>
+    <div class="progress-dot" id="dot2"></div>
+    <div class="progress-dot" id="dot3"></div>
+  </div>
+
+  <!-- 问题1 -->
+  <div class="step active" id="step1">
+    <div class="step-num">问题 1</div>
+    <div class="guide-box">
+      <div class="guide-title">💡 为什么要问这个</div>
+      <div class="guide-why">确定你是不是资源的源头方。拍板人是最终决策人，属于甲乙双方之一端。</div>
+      <div class="guide-effect">🎯 回答后你就知道自己是不是这个链路的"岸"</div>
+      <div class="guide-tip">✨ 建议：如果你能决定这件事、说了算，就选"是"</div>
+    </div>
+    <div class="step-question">你是这项业务的<span style="color:#F59E0B">总拍板人</span>吗？</div>
+    <div class="options">
+      <button class="option-btn" onclick="selectOption(1, 'yes')">
+        <span class="option-label">✓ 是</span>
+        <span class="option-desc">我是最终说了算的人</span>
+      </button>
+      <button class="option-btn" onclick="selectOption(1, 'no')">
+        <span class="option-label">✗ 不是</span>
+        <span class="option-desc">我只是来帮忙引荐的</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- 问题2 -->
+  <div class="step" id="step2">
+    <div class="step-num">问题 2</div>
+    <div class="guide-box">
+      <div class="guide-title">💡 为什么要问这个</div>
+      <div class="guide-why">确定你和拍板人的距离。一级引荐人是离拍板人最近的人，能直接沟通、代表拍板人行事。</div>
+      <div class="guide-effect">🎯 回答后你知道自己是不是"最靠近核心"的那个人</div>
+      <div class="guide-tip">✨ 建议：如果你认识拍板人、能说上话、能把事情推动起来，你就是</div>
+    </div>
+    <div class="step-question">你能<span style="color:#10B981">直接与拍板人沟通</span>，做他的代言人吗？</div>
+    <div class="options">
+      <button class="option-btn" onclick="selectOption(2, 'yes')">
+        <span class="option-label">✓ 可以</span>
+        <span class="option-desc">我能直接找到他、说动他</span>
+      </button>
+      <button class="option-btn" onclick="selectOption(2, 'no')">
+        <span class="option-label">✗ 不行</span>
+        <span class="option-desc">我需要别人帮我转介绍</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- 问题3 -->
+  <div class="step" id="step3">
+    <div class="step-num">问题 3</div>
+    <div class="guide-box">
+      <div class="guide-title">💡 为什么要问这个</div>
+      <div class="guide-why">确定你是不是在帮朋友牵线。即使是二级引荐人，引荐也有价值，依然可以分得回报。</div>
+      <div class="guide-effect">🎯 回答后你知道自己属于"深几度"的关系</div>
+      <div class="guide-tip">✨ 建议：只要你是通过朋友认识拍板人的，你的引荐就有价值</div>
+    </div>
+    <div class="step-question">你的朋友（中间人）<span style="color:#818CF8">是拍板人</span>吗？</div>
+    <div class="options">
+      <button class="option-btn" onclick="selectOption(3, 'yes')">
+        <span class="option-label">✓ 是</span>
+        <span class="option-desc">我朋友就是最终决策人</span>
+      </button>
+      <button class="option-btn" onclick="selectOption(3, 'no')">
+        <span class="option-label">✗ 不是</span>
+        <span class="option-desc">我朋友也只是帮忙牵线的</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- 鼓励语 -->
+  <div class="encourage" id="encourage"></div>
+
+  <!-- 结果 -->
+  <div class="result" id="result">
+    <div class="result-badge">测算结果</div>
+    <div class="result-title" id="resultTitle"></div>
+    <div class="result-desc" id="resultDesc"></div>
+    <div class="result-perc" id="resultPerc"></div>
+  </div>
+
+  <!-- 真诚提示 -->
+  <div class="sincerity-tip">
+    <strong>⚠️ 真诚是保护你名声的护城河</strong><br>
+    你的朋友链条很多人都能看到，请慎重、真实地选择。
+  </div>
+
+  <!-- 按钮 -->
+  <div class="action-row">
+    <button class="btn btn-secondary" id="prevBtn" onclick="prevStep()" style="display:none">上一步</button>
+    <button class="btn btn-primary" id="nextBtn" onclick="nextStep()" disabled>下一步</button>
+  </div>
+</div>
+
+<script>
+let currentStep = 1;
+const answers = {};
+
+const encouragements = {
+  1: {
+    yes: "👍 好的！你是资源的源头方，是这个交易的核心一方！",
+    no: "🌟 没问题！帮忙引荐是一种能力，也能获得应有的回报！"
+  },
+  2: {
+    yes: "💪 你能直接推动事情进展，是整个链路中最关键的角色！",
+    no: "🤝 没关系！通过朋友牵线也是很有价值的，你依然可以分得回报！"
+  },
+  3: {
+    yes: "🎉 很好！你的朋友就是最终决策人，引荐成功率高！",
+    no: "✨ 即使是深一度关系，引荐也有价值！你的关系网很广！"
+  }
+};
+
+function selectOption(step, value) {
+  answers[step] = value;
+
+  // 高亮选中
+  const stepEl = document.getElementById('step' + step);
+  stepEl.querySelectorAll('.option-btn').forEach(btn => btn.classList.remove('selected'));
+  event.target.closest('.option-btn').classList.add('selected');
+
+  // 显示鼓励语
+  const encEl = document.getElementById('encourage');
+  encEl.textContent = encouragements[step][value];
+  encEl.classList.add('show');
+
+  // 标记完成
+  stepEl.classList.remove('active');
+  stepEl.classList.add('completed');
+
+  // 下一步
+  setTimeout(() => {
+    if (step < 3) {
+      currentStep = step + 1;
+      showStep(currentStep);
+    } else {
+      showResult();
+    }
+    updateProgress();
+  }, 600);
+}
+
+function showStep(n) {
+  document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+  document.getElementById('step' + n).classList.add('active');
+  document.getElementById('encourage').classList.remove('show');
+
+  document.getElementById('prevBtn').style.display = 'block';
+  document.getElementById('nextBtn').disabled = true;
+}
+
+function updateProgress() {
+  for (let i = 1; i <= 3; i++) {
+    const dot = document.getElementById('dot' + i);
+    dot.classList.remove('active', 'completed');
+    if (i < currentStep) {
+      dot.classList.add('completed');
+    } else if (i === currentStep) {
+      dot.classList.add('active');
+    }
+  }
+}
+
+function showResult() {
+  let role, desc, perc;
+  let encouragement = '';
+
+  // 逻辑判断
+  if (answers[1] === 'yes') {
+    // 自己是拍板人
+    role = '你是「拍板人」';
+    desc = '你是资源的一端，属于甲乙双方的其中一方。你的项目/资金会在平台上展示，等待对方岸的人来对接。';
+    perc = '居间分润：0%（你是收益方，不是居间方）';
+    encouragement = '🏆 期待你的项目/资金上线！';
+  } else if (answers[2] === 'yes') {
+    // 能直接与拍板人沟通
+    role = '你是「一级引荐人」';
+    desc = '你是离拍板人最近的人，能直接推动事情进展，是整个链路中最关键的角色。你将承担居间协同的主要对接工作。';
+    perc = '居间分润：30%（因为你承担了最重要的协同工作）';
+    encouragement = '💪 你是整个链路的核心！';
+  } else if (answers[3] === 'yes') {
+    // 朋友是拍板人
+    role = '你是「二级引荐人」';
+    desc = '你通过朋友认识拍板人，属于"深一度"的关系。只负责引荐，不参与后续的对接协同工作。';
+    perc = '居间分润：40% ÷ 二级总人数（引荐即可，无需后续跟进）';
+    encouragement = '🌟 引荐成功你就赢了！';
+  } else {
+    // 朋友也不是拍板人
+    role = '你是「二级引荐人」（深二度）';
+    desc = '你通过多层关系找到拍板人，属于"深二度"。同样是引荐角色，不直接参与协同对接。';
+    perc = '居间分润：40% ÷ 二级总人数（你的引荐链路较长，但依然有价值）';
+    encouragement = '✨ 你的关系网很广！';
+  }
+
+  document.getElementById('resultTitle').textContent = role;
+  document.getElementById('resultDesc').textContent = desc;
+  document.getElementById('resultPerc').textContent = perc;
+
+  // 结果页鼓励
+  const encEl = document.getElementById('encourage');
+  encEl.textContent = encouragement;
+  encEl.classList.add('show');
+
+  document.getElementById('result').classList.add('show');
+
+  document.getElementById('nextBtn').textContent = '重新测试';
+  document.getElementById('nextBtn').disabled = false;
+  document.getElementById('nextBtn').onclick = resetTest;
+  document.getElementById('prevBtn').style.display = 'none';
+}
+
+function nextStep() {
+  if (currentStep < 3) {
+    currentStep++;
+    showStep(currentStep);
+    updateProgress();
+  }
+}
+
+function prevStep() {
+  if (currentStep > 1) {
+    const prevEl = document.getElementById('step' + currentStep);
+    prevEl.classList.remove('active');
+    prevEl.classList.remove('completed');
+    if (answers[currentStep]) {
+      prevEl.querySelectorAll('.option-btn').forEach(btn => btn.classList.remove('selected'));
+    }
+
+    currentStep--;
+    showStep(currentStep);
+    updateProgress();
+
+    if (currentStep === 1) {
+      document.getElementById('prevBtn').style.display = 'none';
+    }
+  }
+}
+
+function resetTest() {
+  currentStep = 1;
+  answers[1] = null;
+  answers[2] = null;
+  answers[3] = null;
+
+  document.querySelectorAll('.step').forEach(s => {
+    s.classList.remove('active', 'completed');
+    s.querySelectorAll('.option-btn').forEach(btn => btn.classList.remove('selected'));
+  });
+  document.getElementById('step1').classList.add('active');
+
+  document.getElementById('result').classList.remove('show');
+  document.getElementById('encourage').classList.remove('show');
+  document.getElementById('nextBtn').textContent = '下一步';
+  document.getElementById('nextBtn').disabled = true;
+  document.getElementById('nextBtn').onclick = nextStep;
+  document.getElementById('prevBtn').style.display = 'none';
+
+  updateProgress();
+}
+</script>
+
+</body>
+</html>

@@ -262,16 +262,16 @@ function createCityMarkers() {
       // 只显示中国固有领土（含争议）：其他国家的岛直接跳过不渲染
       if (city.controlledBy && city.controlledBy !== 'cn') return;
 
-      // 扇形展开：把球面3D空间按地理方位角展开，每个岛往不同方向走
-      // 计算岛屿簇中心（中国南海岛礁群）
+      // 扇形展开：南海簇内岛屿数量多，半径加大避免挤压
       const clusterCenterLat = 10.5, clusterCenterLon = 114.0;
       const dLon = city.lon - clusterCenterLon;
       const dLat = city.lat - clusterCenterLat;
-      const angle = Math.atan2(dLon, dLat); // 弧度：东为0，西为±π
-      const spreadR = 0.18; // 扇形半径
+      const angle = Math.atan2(dLon, dLat);
+      // 南海簇岛屿多，半径从0.18加大到0.9；远距离岛礁（钓鱼岛/苏岩礁/班公湖）单独大半径
+      const isSouthChinaSea = Math.abs(dLat) < 15 && Math.abs(dLon) < 15;
+      const spreadR = isSouthChinaSea ? 0.9 : 1.4;
 
       const flagPos = pos.clone();
-      // 计算切线方向
       const normal = flagPos.clone().normalize();
       const tangentX = new THREE.Vector3(0, 1, 0).cross(normal).normalize();
       const tangentZ = normal.clone().cross(tangentX);
@@ -956,7 +956,7 @@ function fixLabelCollisionForOne(label) {
 
   function getAllCityLabels() {
     return cityLabels.filter(l =>
-      l.userData.city && !l.userData.isFlag && !l.userData.city.isBeijing && !l.userData.city.offset
+      l.userData.city && !l.userData.city.isBeijing && !l.userData.city.offset
     );
   }
 
