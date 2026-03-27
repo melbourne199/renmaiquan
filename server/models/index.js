@@ -23,7 +23,10 @@ const Group = sequelize.define('Group', {
   owner_qrcode: DataTypes.STRING,
   industry_id: DataTypes.INTEGER,
   region: DataTypes.STRING,
+  description: DataTypes.TEXT,
+  tags: DataTypes.STRING,
   member_count: { type: DataTypes.INTEGER, defaultValue: 0 },
+  view_count: { type: DataTypes.INTEGER, defaultValue: 0 },
   expire_time: DataTypes.DATE,
   status: { type: DataTypes.TINYINT, defaultValue: 0 }
 }, { tableName: 'groups', timestamps: false, createdAt: 'created_at' });

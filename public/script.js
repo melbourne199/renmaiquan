@@ -15,7 +15,7 @@ const tooltip = document.getElementById('cityTooltip');
 const cityCard = document.getElementById('cityCard');
 const searchInput = document.getElementById('citySearch');
 const searchBtn = document.getElementById('searchBtn');
-const loadingEl = document.getElementById('loading');
+
 
 // 城市数据 - 全国省会及主要城市
 const cityData = [
@@ -731,7 +731,7 @@ function init() {
   camera.updateMatrixWorld();
   camera.updateProjectionMatrix();
   fixLabelCollision();
-  loadingEl.style.display = 'none';
+
   animate();
 }
 
@@ -1072,15 +1072,6 @@ function fixLabelCollisionForOne(label) {
 
 // 初始化
 init();
-
-// 飘带10秒后自动消失
-setTimeout(() => {
-  const toast = document.getElementById('toastBanner');
-  if (toast) {
-    toast.classList.add('fade-out');
-    setTimeout(() => { toast.style.display = 'none'; }, 1200);
-  }
-}, 10000);
 
 // 【调试】← → 微调（动画完成后可用）
 window.addEventListener('keydown', (e) => {
