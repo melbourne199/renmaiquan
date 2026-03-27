@@ -8,6 +8,181 @@ let cityLabels = [];
 let beijingStar = null;
 let markerGroup;
 let animationComplete = false;
+let lastAnimateTime = 0;
+
+// ============================================================
+// Intro 状态机：太空来客粒子动画
+// ============================================================
+let introState = 'idle'; // idle -> flyIn -> orbit -> explode -> text -> fadeout -> done
+let introT = 0; // 时间累计
+let introShooter = null, introShooterGlow = null, introTrail = null, introParticles = null;
+let introGroup = null;
+const INTRO_CONFIG = {
+  flyInDur: 1.5, orbitDur: 2.8, orbitCount: 2, explodeDur: 0.6, textDur: 10000, fadeDur: 1.2,
+  orbitR: 12, shootAngle: Math.PI * 0.7, trailLen: 22
+};
+const INTRO_TEXT = ['欢迎老弟，你来了', '阅历丰富的老江湖，看吧，变现吧'];
+
+function startIntroEffect() {
+  introGroup = new THREE.Group();
+  scene.add(introGroup);
+  introState = 'flyIn';
+  introT = 0;
+
+  introShooter = new THREE.Mesh(
+    new THREE.SphereGeometry(0.18, 10, 10),
+    new THREE.MeshBasicMaterial({ color: 0xddaaff, transparent: true, opacity: 1 })
+  );
+  introShooterGlow = new THREE.Mesh(
+    new THREE.SphereGeometry(0.36, 10, 10),
+    new THREE.MeshBasicMaterial({ color: 0xaa55ff, transparent: true, opacity: 0.3 })
+  );
+  introGroup.add(introShooter, introShooterGlow);
+
+  const tGeo = new THREE.BufferGeometry();
+  const tPos = new Float32Array(INTRO_CONFIG.trailLen * 3);
+  tGeo.setAttribute('position', new THREE.BufferAttribute(tPos, 3));
+  introTrail = new THREE.Points(tGeo, new THREE.PointsMaterial({ color: 0xcc88ff, size: 0.08, transparent: true, opacity: 0.5 }));
+  introGroup.add(introTrail);
+}
+
+function tickIntro(dt) {
+  if (introState === 'idle' || introState === 'done') return;
+  introT += dt;
+  const cfg = INTRO_CONFIG;
+
+  if (introState === 'flyIn') {
+    const p = Math.min(introT / cfg.flyInDur, 1);
+    const ease = 1 - Math.pow(1 - p, 2);
+    const sa = cfg.shootAngle;
+    const sv = new THREE.Vector3(cfg.orbitR * Math.cos(sa), 25, cfg.orbitR * Math.sin(sa));
+    const ev = new THREE.Vector3(cfg.orbitR * Math.cos(sa), 0, cfg.orbitR * Math.sin(sa));
+    const pos = sv.clone().lerp(ev, ease);
+    introShooter.position.copy(pos);
+    introShooterGlow.position.copy(pos);
+    updateTrail(pos);
+    if (p >= 1) { introState = 'orbit'; introT = 0; }
+  }
+  else if (introState === 'orbit') {
+    const orbitTotal = cfg.orbitDur * cfg.orbitCount;
+    const p = Math.min(introT / orbitTotal, 1);
+    const speed = (Math.PI * 2) / cfg.orbitDur;
+    const angle = cfg.shootAngle + speed * introT;
+    const px = cfg.orbitR * Math.cos(angle);
+    const py = Math.sin(angle) * 2.5;
+    const pz = cfg.orbitR * Math.sin(angle);
+    introShooter.position.set(px, py, pz);
+    introShooterGlow.position.set(px, py, pz);
+    updateTrail(new THREE.Vector3(px, py, pz));
+    if (p >= 1) {
+      introState = 'explode';
+      introT = 0;
+      introShooter.visible = false;
+      introShooterGlow.visible = false;
+      introTrail.visible = false;
+      buildIntroParticles();
+    }
+  }
+  else if (introState === 'explode') {
+    const p = Math.min(introT / cfg.explodeDur, 1);
+    const ease = 1 - Math.pow(1 - p, 3);
+    const arr = introParticles.geometry.attributes.position.array;
+    for (let i = 0; i < arr.length / 3; i++) {
+      const i3 = i * 3;
+      arr[i3] += (introTargets[i3] - arr[i3]) * ease * 0.1;
+      arr[i3 + 1] += (introTargets[i3 + 1] - arr[i3 + 1]) * ease * 0.1;
+      arr[i3 + 2] += (introTargets[i3 + 2] - arr[i3 + 2]) * ease * 0.1;
+    }
+    introParticles.geometry.attributes.position.needsUpdate = true;
+    introParticles.material.opacity = p;
+    if (p >= 1) {
+      introState = 'text';
+      introT = 0;
+      introParticles.material.opacity = 1;
+    }
+  }
+  else if (introState === 'text') {
+    if (introT >= cfg.textDur / 1000) {
+      introState = 'fadeout';
+      introT = 0;
+    }
+  }
+  else if (introState === 'fadeout') {
+    const p = Math.min(introT / cfg.fadeDur, 1);
+    introParticles.material.opacity = 1 - p;
+    introGroup.traverse(c => {
+      if (c.material && c.material.transparent && c !== introParticles) {
+        c.material.opacity = Math.max(0, (c.material.opacity || 1) - p * 2);
+      }
+    });
+    if (p >= 1) {
+      introState = 'done';
+      scene.remove(introGroup);
+      introGroup.traverse(c => { if (c.geometry) c.geometry.dispose(); if (c.material) c.material.dispose(); });
+      introGroup = null;
+    }
+  }
+}
+
+let introTrailHist = [];
+function updateTrail(pos) {
+  introTrailHist.unshift(pos.clone());
+  if (introTrailHist.length > INTRO_CONFIG.trailLen) introTrailHist.pop();
+  const arr = introTrail.geometry.attributes.position.array;
+  for (let i = 0; i < introTrailHist.length; i++) {
+    arr[i * 3] = introTrailHist[i].x; arr[i * 3 + 1] = introTrailHist[i].y; arr[i * 3 + 2] = introTrailHist[i].z;
+  }
+  introTrail.geometry.attributes.position.needsUpdate = true;
+}
+
+let introTargets = null;
+function buildIntroParticles() {
+  // 用文字点阵生成目标坐标
+  const particles = [];
+  const fontSize = 0.42;
+  const spacing = fontSize * 0.65 * 1.15;
+  const rows = 5, cols = 4;
+
+  INTRO_TEXT.forEach((line, li) => {
+    const yOff = li === 0 ? 0.55 : -0.55;
+    const lineW = (line.length - 1) * spacing;
+    for (let ci = 0; ci < line.length; ci++) {
+      const cx = ci * spacing - lineW / 2;
+      const pW = spacing * 0.5 / cols, pH = fontSize * 0.7 / rows;
+      for (let r = 0; r < rows; r++) {
+        for (let col = 0; col < cols; col++) {
+          particles.push(
+            cx + (col - cols / 2 + 0.5) * pW,
+            yOff + (rows / 2 - r - 0.5) * pH,
+            0
+          );
+        }
+      }
+    }
+  });
+
+  const N = 500;
+  introTargets = new Float32Array(N * 3);
+  const pGeo = new THREE.BufferGeometry();
+  const pCur = new Float32Array(N * 3);
+  const lastP = introShooter.position.clone();
+  for (let i = 0; i < N; i++) {
+    const i3 = i * 3;
+    pCur[i3] = lastP.x; pCur[i3 + 1] = lastP.y; pCur[i3 + 2] = lastP.z;
+    if (i * 3 < particles.length) {
+      introTargets[i3] = particles[i * 3];
+      introTargets[i3 + 1] = particles[i * 3 + 1];
+      introTargets[i3 + 2] = particles[i * 3 + 2];
+    } else {
+      introTargets[i3] = (Math.random() - 0.5) * 5;
+      introTargets[i3 + 1] = (Math.random() - 0.5) * 2;
+      introTargets[i3 + 2] = (Math.random() - 0.5) * 3;
+    }
+  }
+  pGeo.setAttribute('position', new THREE.BufferAttribute(pCur, 3));
+  introParticles = new THREE.Points(pGeo, new THREE.PointsMaterial({ color: 0xffd700, size: 0.13, transparent: true, opacity: 0 }));
+  introGroup.add(introParticles);
+}
 let initStarted = false;
 let targetRotation = 2.28; // 地球目标旋转角度，默认中国
 
@@ -727,6 +902,7 @@ function init() {
   });
 
   // 聚焦中国动画
+  startIntroEffect();
   focusChinaAnimation();
   camera.updateMatrixWorld();
   camera.updateProjectionMatrix();
@@ -800,6 +976,11 @@ function animate() {
 
   controls.update(); // ensure camera matrix is fresh for worldToScreen
   const time = Date.now() * 0.001;
+  const dt = Math.min(time - lastAnimateTime, 0.05);
+  lastAnimateTime = time;
+
+  // Intro 粒子动画 tick
+  if (introState !== 'idle' && introState !== 'done') tickIntro(dt);
 
   // 地球自转（动画完成后才开始，且初始位置正对中国）
   if (animationComplete) {

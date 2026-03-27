@@ -8,7 +8,16 @@ const router = express.Router();
 // 获取已通过的群码
 router.get('/groups', async (req, res) => {
   try {
-    const groups = await Group.findAll({ where: { status: 1 } });
+    const { industry_id, sort } = req.query;
+    const where = { status: 1 };
+    if (industry_id && industry_id !== 'all') {
+      where.industry_id = industry_id;
+    }
+    const order = sort === 'hot'
+      ? [['view_count', 'DESC'], ['created_at', 'DESC']]
+      : [['created_at', 'DESC']];
+
+    const groups = await Group.findAll({ where, order });
     res.json(groups);
   } catch (err) {
     res.status(500).json({ error: err.message });

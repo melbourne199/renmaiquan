@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>行业群码 - 资源星河</title>
+  <style>
+    :root {
+      --bg-deep: #01060f;
+      --bg-card: rgba(90, 200, 250, 0.06);
+      --bg-card-hover: rgba(90, 200, 250, 0.12);
+      --border-card: rgba(90, 200, 250, 0.15);
+      --border-card-hover: rgba(90, 200, 250, 0.35);
+      --accent-blue: #5ac8fa;
+      --accent-blue-light: #72d2ff;
+      --accent-blue-dark: #0071E3;
+      --text-primary: rgba(228, 240, 252, 0.96);
+      --text-secondary: rgba(180, 200, 220, 0.75);
+      --text-muted: rgba(150, 180, 210, 0.6);
+      --gold: #F59E0B;
+      --gold-light: #FCD34D;
+      --success: #34C759;
+      --danger: #FF3B30;
+      --glass-blur: blur(20px);
+      --shadow-card: 0 12px 40px rgba(0, 0, 0, 0.4), 0 0 30px rgba(90, 200, 250, 0.08);
+      --shadow-card-hover: 0 20px 50px rgba(0, 0, 0, 0.5), 0 0 40px rgba(90, 200, 250, 0.15);
+      --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'PingFang SC', 'Microsoft YaHei', 'Helvetica Neue', sans-serif;
+      background: var(--bg-deep);
+      color: var(--text-primary);
+      min-height: 100vh;
+    }
+
+    /* ===== 顶部导航 ===== */
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 24px;
+      background: rgba(1, 6, 15, 0.8);
+      backdrop-filter: var(--glass-blur);
+      border-bottom: 1px solid var(--border-card);
+    }
+
+    .navbar-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--text-primary);
+      text-decoration: none;
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+
+    .navbar-brand-icon { font-size: 1.4rem; }
+
+    .navbar-links {
+      display: flex;
+      gap: 24px;
+    }
+
+    .nav-link {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: color 0.2s;
+      cursor: pointer;
+    }
+
+    .nav-link:hover, .nav-link.active { color: var(--accent-blue); }
+
+    .navbar-actions {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .btn {
+      padding: 8px 18px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.25s var(--ease-spring);
+      border: none;
+      text-decoration: none;
+    }
+
+    .btn-primary {
+      background: var(--accent-blue);
+      color: #000;
+      font-weight: 600;
+    }
+
+    .btn-primary:hover { background: var(--accent-blue-light); transform: scale(1.02); }
+    .btn-primary:active { transform: scale(0.96); }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--accent-blue);
+      border: 1px solid var(--border-card);
+    }
+
+    .btn-outline:hover { border-color: var(--accent-blue); background: var(--bg-card); }
+
+    /* ===== 主布局 ===== */
+    .main-layout {
+      display: flex;
+      padding-top: 64px;
+      min-height: 100vh;
+    }
+
+    /* ===== 左侧行业分类栏 ===== */
+    .sidebar {
+      width: 180px;
+      flex-shrink: 0;
+      position: sticky;
+      top: 64px;
+      height: calc(100vh - 64px);
+      overflow-y: auto;
+      background: rgba(1, 6, 15, 0.6);
+      border-right: 1px solid var(--border-card);
+      padding: 20px 0;
+    }
+
+    .sidebar-title {
+      padding: 0 16px 12px;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .industry-item {
+      padding: 10px 16px;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+    }
+
+    .industry-item:hover { background: var(--bg-card); color: var(--text-primary); }
+    .industry-item.active { background: var(--bg-card-hover); color: var(--accent-blue); border-left: 2px solid var(--accent-blue); }
+    .industry-item .count { margin-left: auto; font-size: 0.75rem; color: var(--text-muted); }
+
+    /* ===== 右侧内容区 ===== */
+    .content {
+      flex: 1;
+      padding: 24px;
+      overflow-x: hidden;
+    }
+
+    /* ===== 页面标题栏 ===== */
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+
+    .page-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+    }
+
+    .page-tabs {
+      display: flex;
+      gap: 8px;
+      background: var(--bg-card);
+      padding: 4px;
+      border-radius: 24px;
+      border: 1px solid var(--border-card);
+    }
+
+    .page-tab {
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      color: var(--text-secondary);
+    }
+
+    .page-tab:hover { color: var(--text-primary); }
+    .page-tab.active { background: var(--accent-blue); color: #000; font-weight: 600; }
+
+    /* ===== 卡片网格 ===== */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+    }
+
+    /* ===== 群码卡片 ===== */
+    .group-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-card);
+      border-radius: 16px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: all 0.3s var(--ease-spring);
+    }
+
+    .group-card:hover {
+      transform: translateY(-4px) scale(1.02);
+      border-color: var(--border-card-hover);
+      box-shadow: var(--shadow-card-hover);
+    }
+
+    .card-qr {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1;
+      background: linear-gradient(135deg, rgba(90, 200, 250, 0.1) 0%, rgba(90, 200, 250, 0.05) 100%);
+      overflow: hidden;
+    }
+
+    .card-qr img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .card-qr-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.7);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 16px;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .group-card:hover .card-qr-overlay { opacity: 1; }
+
+    .card-qr-overlay .desc {
+      font-size: 0.85rem;
+      color: #fff;
+      text-align: center;
+      line-height: 1.5;
+      display: -webkit-box;
+      -webkit-line-clamp: 4;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .card-qr-overlay .view-btn {
+      margin-top: 12px;
+      padding: 6px 16px;
+      background: var(--accent-blue);
+      color: #000;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    /* 模糊预览（未登录/超额） */
+    .card-qr.blurred img { filter: blur(20px); }
+    .card-qr.blurred::after {
+      content: '登录后可查看';
+      position: absolute;
+      inset: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: rgba(0, 0, 0, 0.5);
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+    }
+
+    .card-body {
+      padding: 14px;
+    }
+
+    .card-tags {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+    }
+
+    .tag {
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-size: 0.7rem;
+      font-weight: 500;
+    }
+
+    .tag-supply { background: rgba(52, 199, 89, 0.2); color: var(--success); }
+    .tag-demand { background: rgba(245, 158, 11, 0.2); color: var(--gold); }
+    .tag-normal { background: rgba(90, 200, 250, 0.15); color: var(--accent-blue); }
+    .tag-premium { background: rgba(214, 178, 110, 0.2); color: var(--gold); border: 1px solid var(--gold); }
+
+    .card-name {
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: var(--text-primary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .card-meta {
+      display: flex;
+      gap: 12px;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .card-meta span { display: flex; align-items: center; gap: 4px; }
+
+    /* ===== 空状态 ===== */
+    .empty-state {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 80px 20px;
+      color: var(--text-muted);
+    }
+
+    .empty-state-icon { font-size: 3rem; margin-bottom: 16px; }
+    .empty-state-text { font-size: 1rem; }
+
+    /* ===== 加载状态 ===== */
+    .loading {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 60px;
+      color: var(--text-muted);
+    }
+
+    /* ===== 发布按钮 ===== */
+    .publish-fab {
+      position: fixed;
+      bottom: 32px;
+      right: 32px;
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: var(--accent-blue);
+      color: #000;
+      font-size: 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 8px 30px rgba(90, 200, 250, 0.4);
+      transition: all 0.3s var(--ease-spring);
+      border: none;
+      z-index: 50;
+    }
+
+    .publish-fab:hover { transform: scale(1.1); box-shadow: 0 12px 40px rgba(90, 200, 250, 0.5); }
+    .publish-fab:active { transform: scale(0.95); }
+
+    /* ===== 移动端适配 ===== */
+    @media (max-width: 1100px) {
+      .cards-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+
+    @media (max-width: 800px) {
+      .sidebar {
+        width: 70px;
+        height: auto;
+        position: fixed;
+        top: 64px;
+        left: 0;
+        z-index: 90;
+      }
+
+      .sidebar-title { display: none; }
+      .industry-item { justify-content: center; padding: 12px 8px; }
+      .industry-item span:not(.count) { display: none; }
+      .industry-item .count { display: none; }
+      .industry-item.active { border-left: none; border-bottom: 2px solid var(--accent-blue); }
+
+      .content { padding: 16px; padding-left: 86px; }
+      .cards-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+      .page-header { flex-direction: column; gap: 12px; align-items: flex-start; }
+    }
+
+    @media (max-width: 500px) {
+      .navbar-links { display: none; }
+      .cards-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+      .publish-fab { bottom: 20px; right: 20px; width: 50px; height: 50px; }
+    }
+  </style>
+</head>
+<body>
+  <!-- 顶部导航 -->
+  <nav class="navbar">
+    <a href="index.html" class="navbar-brand">
+      <span class="navbar-brand-icon">🌌</span>
+      <span>资源星河</span>
+    </a>
+    <div class="navbar-links">
+      <a href="index.html" class="nav-link">首页</a>
+      <span class="nav-link active">行业群码</span>
+      <span class="nav-link" onclick="navigateTo('energy')">政企资源</span>
+      <span class="nav-link" onclick="navigateTo('helps')">最新求助</span>
+      <span class="nav-link" onclick="navigateTo('finance')">民企金融</span>
+      <span class="nav-link" onclick="navigateTo('escort')">居间护航</span>
+      <span class="nav-link" onclick="navigateTo('cases')">资源案例</span>
+    </div>
+    <div class="navbar-actions">
+      <a href="login.html" class="btn btn-outline">登录</a>
+      <a href="register.html" class="btn btn-primary">注册</a>
+    </div>
+  </nav>
+
+  <div class="main-layout">
+    <!-- 左侧行业分类栏 -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-title">行业分类</div>
+      <div class="industry-item active" data-id="all">
+        <span>全部</span>
+        <span class="count" id="count-all">0</span>
+      </div>
+      <div class="industry-item" data-id="1">
+        <span>IT互联网</span>
+        <span class="count" id="count-1">0</span>
+      </div>
+      <div class="industry-item" data-id="2">
+        <span>教育培训</span>
+        <span class="count" id="count-2">0</span>
+      </div>
+      <div class="industry-item" data-id="3">
+        <span>金融投资</span>
+        <span class="count" id="count-3">0</span>
+      </div>
+      <div class="industry-item" data-id="4">
+        <span>医疗健康</span>
+        <span class="count" id="count-4">0</span>
+      </div>
+      <div class="industry-item" data-id="5">
+        <span>智能制造</span>
+        <span class="count" id="count-5">0</span>
+      </div>
+      <div class="industry-item" data-id="6">
+        <span>房地产</span>
+        <span class="count" id="count-6">0</span>
+      </div>
+      <div class="industry-item" data-id="7">
+        <span>法律咨询</span>
+        <span class="count" id="count-7">0</span>
+      </div>
+      <div class="industry-item" data-id="8">
+        <span>政府园区</span>
+        <span class="count" id="count-8">0</span>
+      </div>
+      <div class="industry-item" data-id="9">
+        <span>创业孵化</span>
+        <span class="count" id="count-9">0</span>
+      </div>
+      <div class="industry-item" data-id="10">
+        <span>消费零售</span>
+        <span class="count" id="count-10">0</span>
+      </div>
+    </aside>
+
+    <!-- 右侧内容区 -->
+    <main class="content">
+      <div class="page-header">
+        <h1 class="page-title">行业群码</h1>
+        <div class="page-tabs">
+          <span class="page-tab active" data-sort="latest">最新发布</span>
+          <span class="page-tab" data-sort="hot">最热资源</span>
+        </div>
+      </div>
+
+      <div class="cards-grid" id="cardsGrid">
+        <div class="loading">加载中...</div>
+      </div>
+    </main>
+  </div>
+
+  <!-- 发布按钮 -->
+  <button class="publish-fab" onclick="location.href='publish-group.html'" title="发布群码">+</button>
+
+  <script>
+    // ===== 行业名称映射 =====
+    const industryNames = {
+      1: 'IT互联网', 2: '教育培训', 3: '金融投资', 4: '医疗健康',
+      5: '智能制造', 6: '房地产', 7: '法律咨询', 8: '政府园区',
+      9: '创业孵化', 10: '消费零售'
+    };
+
+    // ===== 状态 =====
+    let currentIndustry = 'all';
+    let currentSort = 'latest';
+    let groups = [];
+    let isLoggedIn = false;
+    let userLevel = 0;
+    let viewQuota = 3; // 每日可查看3个
+    let viewCount = 0;
+
+    // ===== 初始化 =====
+    async function init() {
+      await checkLogin();
+      await loadGroups();
+      bindEvents();
+    }
+
+    // ===== 检查登录状态 =====
+    async function checkLogin() {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        isLoggedIn = false;
+        return;
+      }
+      try {
+        const res = await fetch('/api/auth/me', {
+          headers: { 'Authorization': 'Bearer ' + token }
+        });
+        if (res.ok) {
+          const user = await res.json();
+          isLoggedIn = true;
+          userLevel = user.member_level || 0;
+          viewQuota = userLevel > 0 ? 999 : 3;
+        }
+      } catch (e) {
+        console.log('未登录');
+      }
+    }
+
+    // ===== 加载群码数据 =====
+    async function loadGroups() {
+      try {
+        const params = new URLSearchParams();
+        if (currentIndustry !== 'all') params.set('industry_id', currentIndustry);
+        params.set('sort', currentSort);
+
+        const res = await fetch('/api/groups?' + params.toString());
+        if (!res.ok) throw new Error('加载失败');
+        groups = await res.json();
+        viewCount = 0;
+        renderCards();
+        updateCounts();
+      } catch (e) {
+        document.getElementById('cardsGrid').innerHTML = `
+          <div class="empty-state">
+            <div class="empty-state-icon">📭</div>
+            <div class="empty-state-text">暂无群码数据</div>
+          </div>
+        `;
+      }
+    }
+
+    // ===== 渲染卡片 =====
+    function renderCards() {
+      const grid = document.getElementById('cardsGrid');
+
+      if (groups.length === 0) {
+        grid.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-state-icon">📭</div>
+            <div class="empty-state-text">该分类下暂无群码</div>
+          </div>
+        `;
+        return;
+      }
+
+      grid.innerHTML = groups.map(g => {
+        const tags = getTags(g);
+        const timeAgo = getTimeAgo(g.created_at);
+        const blurred = !isLoggedIn || viewCount >= viewQuota;
+        const canView = !blurred;
+
+        return `
+          <div class="group-card" onclick="viewDetail(${g.id}, ${canView})">
+            <div class="card-qr ${blurred ? 'blurred' : ''}">
+              <img src="${g.qrcode || '/img/qr-placeholder.png'}" alt="群二维码" onerror="this.src='/img/qr-placeholder.png'">
+              <div class="card-qr-overlay">
+                <div class="desc">${g.description || '暂无简介'}</div>
+                ${canView ? '<div class="view-btn">查看详情</div>' : '<div class="view-btn">今日额度已用完</div>'}
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="card-tags">${tags}</div>
+              <div class="card-name">${g.name}</div>
+              <div class="card-meta">
+                <span>👥 ${g.member_count || 0}人</span>
+                <span>📍 ${g.region || '全国'}</span>
+                <span>⏰ ${timeAgo}</span>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // ===== 获取标签 =====
+    function getTags(g) {
+      let tags = [];
+      if (g.tags) {
+        g.tags.split(',').forEach(t => {
+          t = t.trim();
+          if (t === '供') tags.push('<span class="tag tag-supply">供</span>');
+          else if (t === '需') tags.push('<span class="tag tag-demand">需</span>');
+          else if (t === '高级') tags.push('<span class="tag tag-premium">高级</span>');
+          else tags.push('<span class="tag tag-normal">' + t + '</span>');
+        });
+      } else {
+        tags.push('<span class="tag tag-normal">普通</span>');
+      }
+      return tags.join('');
+    }
+
+    // ===== 相对时间 =====
+    function getTimeAgo(dateStr) {
+      if (!dateStr) return '未知';
+      const diff = Date.now() - new Date(dateStr).getTime();
+      const days = Math.floor(diff / 86400000);
+      if (days === 0) return '今天';
+      if (days === 1) return '昨天';
+      if (days < 30) return days + '天前';
+      const months = Math.floor(days / 30);
+      if (months < 12) return months + '月前';
+      return Math.floor(months / 12) + '年前';
+    }
+
+    // ===== 更新各分类数量 =====
+    function updateCounts() {
+      document.getElementById('count-all').textContent = groups.length;
+      for (let i = 1; i <= 10; i++) {
+        const count = groups.filter(g => g.industry_id === i).length;
+        const el = document.getElementById('count-' + i);
+        if (el) el.textContent = count;
+      }
+    }
+
+    // ===== 查看详情 =====
+    function viewDetail(id, canView) {
+      if (!canView) {
+        alert('今日查看额度已用完，请明天再来或联系管理员获取更多权限');
+        return;
+      }
+      viewCount++;
+      location.href = 'group-detail.html?id=' + id;
+    }
+
+    // ===== 导航 =====
+    function navigateTo(page) {
+      console.log('Navigate to:', page);
+    }
+
+    // ===== 绑定事件 =====
+    function bindEvents() {
+      // 行业分类切换
+      document.querySelectorAll('.industry-item').forEach(item => {
+        item.addEventListener('click', () => {
+          document.querySelectorAll('.industry-item').forEach(i => i.classList.remove('active'));
+          item.classList.add('active');
+          currentIndustry = item.dataset.id;
+          loadGroups();
+        });
+      });
+
+      // 排序切换
+      document.querySelectorAll('.page-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+          document.querySelectorAll('.page-tab').forEach(t => t.classList.remove('active'));
+          tab.classList.add('active');
+          currentSort = tab.dataset.sort;
+          loadGroups();
+        });
+      });
+    }
+
+    init();
+  </script>
+</body>
+</html>

@@ -11,7 +11,17 @@ router.use(authenticate);
 
 router.post('/groups', async (req, res) => {
   try {
-    const group = await Group.create({ ...req.body, user_id: req.user.id, status: 0 });
+    const { name, qrcode, owner_qrcode, industry_id, region, description, tags, member_count } = req.body;
+    if (!name) return res.status(400).json({ error: '群名称不能为空' });
+    if (!qrcode) return res.status(400).json({ error: '请上传群二维码' });
+
+    const group = await Group.create({
+      name, qrcode, owner_qrcode, industry_id, region,
+      description, tags, member_count,
+      user_id: req.user.id,
+      status: 0,
+      expire_time: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) // 默认30天
+    });
     res.json({ success: true, group });
   } catch (err) {
     res.status(500).json({ error: err.message });
