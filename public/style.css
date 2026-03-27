@@ -248,6 +248,14 @@ body {
   letter-spacing: 0.5px;
 }
 
+.hero-witty {
+  font-size: 0.82rem;
+  color: rgba(120, 180, 220, 0.65);
+  letter-spacing: 1px;
+  font-style: italic;
+  margin-top: 10px;
+}
+
 .banner-trust {
   display: flex;
   justify-content: center;
