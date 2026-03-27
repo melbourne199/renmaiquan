@@ -856,7 +856,7 @@ function init() {
   createCityMarkers();
 
   // 轨道控制
-  controls = new OrbitControls(camera, renderer.domElement);
+  controls = new OrbitControls(camera, document.getElementById('earth-interaction'));
   controls.enableDamping = true;
   controls.dampingFactor = 0.05;
   controls.minDistance = window.innerWidth <= 768 ? 18 : 10;

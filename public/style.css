@@ -43,7 +43,7 @@ body {
 }
 
 /* 地球交互层 - 透明但可接收鼠标事件 */
-#earth-interaction {
+#earth-controls {
   position: fixed;
   top: 0;
   left: 0;
@@ -53,12 +53,12 @@ body {
   pointer-events: none;
 }
 
-#earth-interaction.active {
+#earth-controls.active {
   pointer-events: auto;
   cursor: grab;
 }
 
-#earth-interaction:active {
+#earth-controls:active {
   cursor: grabbing;
 }
 
@@ -1044,12 +1044,12 @@ body {
   }
 
   /* 地球交互层 */
-  #earth-interaction {
+  #earth-controls {
     z-index: 5;
     pointer-events: none;
   }
 
-  #earth-interaction.active {
+  #earth-controls.active {
     pointer-events: auto;
   }
 
