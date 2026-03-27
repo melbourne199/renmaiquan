@@ -257,6 +257,7 @@ function createCityMarkers() {
       glow.userData.city = city;
       glow.userData.isGlow = true;
       markerGroup.add(glow);
+      return;
 
     } else if (city.isIsland) {
       // 只显示中国固有领土（含争议）：其他国家的岛直接跳过不渲染

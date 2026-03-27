@@ -248,6 +248,25 @@ body {
   letter-spacing: 0.5px;
 }
 
+.banner-trust {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+
+.trust-tag {
+  font-size: 0.72rem;
+  color: rgba(90, 200, 250, 0.8);
+  letter-spacing: 1px;
+}
+
+.trust-dot {
+  font-size: 0.72rem;
+  color: rgba(90, 200, 250, 0.4);
+}
+
 /* ==================== 搜索区 ==================== */
 .search-section {
   position: absolute;
