@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
@@ -9,6 +10,8 @@ const authRoutes = require('./routes/auth');
 const adminRoutes = require('./routes/admin');
 const publicRoutes = require('./routes/public');
 const contentRoutes = require('./routes/content');
+const escortRoutes = require('./routes/escort');
+const aiRoutes = require('./routes/ai');
 
 const app = express();
 
@@ -29,6 +32,8 @@ app.use('/api', publicRoutes);           // 公开内容
 app.use('/api/auth', authRoutes);         // 认证相关
 app.use('/api/content', contentRoutes);   // 用户发布内容
 app.use('/api/admin', adminRoutes);       // 后台管理
+app.use('/api/ai', aiRoutes);             // AI解析（Groq）
+app.use('/api/escort', escortRoutes);    // 居间护航
 
 // 404 处理
 app.get('*', (req, res) => {

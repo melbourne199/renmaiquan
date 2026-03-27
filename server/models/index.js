@@ -91,6 +91,40 @@ const Referral = sequelize.define('Referral', {
   commission: DataTypes.DECIMAL(10,2)
 }, { tableName: 'referrals', timestamps: false, createdAt: 'created_at' });
 
+// 居间项目
+const EscortProject = sequelize.define('EscortProject', {
+  creator_id: { type: DataTypes.INTEGER, allowNull: false },
+  title: { type: DataTypes.STRING, allowNull: false },
+  description: DataTypes.TEXT,
+  total_fee: { type: DataTypes.DECIMAL(12,2), allowNull: false }, // 居间费总额
+  party_a_name: DataTypes.STRING, // 甲方简称（脱敏）
+  party_b_name: DataTypes.STRING, // 乙方简称（脱敏）
+  status: { type: DataTypes.TINYINT, defaultValue: 0 }, // 0=招募中 1=执行中 2=已完成 3=已取消
+  a_side_status: { type: DataTypes.TINYINT, defaultValue: 0 }, // 0=等待一级 1=一级已到位 2=链条完成
+  b_side_status: { type: DataTypes.TINYINT, defaultValue: 0 },
+  expire_date: DataTypes.DATE,
+  invite_code: { type: DataTypes.STRING(8), unique: true } // 邀请码
+}, { tableName: 'escort_projects', timestamps: true, createdAt: 'created_at' });
+
+// 居间参与者
+const EscortParticipant = sequelize.define('EscortParticipant', {
+  project_id: { type: DataTypes.INTEGER, allowNull: false },
+  user_id: { type: DataTypes.INTEGER, allowNull: false },
+  side: { type: DataTypes.TINYINT, allowNull: false }, // 0=甲方 1=乙方
+  role: { type: DataTypes.TINYINT, allowNull: false }, // 0=拍板人 1=一级引荐 2=二级引荐
+  parent_id: { type: DataTypes.INTEGER }, // 上级引荐人ID
+  status: { type: DataTypes.TINYINT, defaultValue: 0 }, // 0=待确认 1=已确认 2=已退出
+  fee_percent: { type: DataTypes.DECIMAL(5,2) }, // 分润比例
+  fee_amount: { type: DataTypes.DECIMAL(12,2) }, // 分润金额
+  confirm_time: DataTypes.DATE,
+  join_time: { type: DataTypes.DATE, defaultValue: DataTypes.NOW }
+}, { tableName: 'escort_participants', timestamps: false });
+
+// 关联关系
+EscortProject.hasMany(EscortParticipant, { foreignKey: 'project_id', as: 'participants' });
+EscortParticipant.belongsTo(EscortProject, { foreignKey: 'project_id', as: 'project' });
+EscortParticipant.belongsTo(User, { foreignKey: 'user_id', as: 'user' });
+
 module.exports = {
   sequelize,
   User,
@@ -99,5 +133,7 @@ module.exports = {
   Project,
   HelpRequest,
   GovernmentResource,
-  Referral
+  Referral,
+  EscortProject,
+  EscortParticipant
 };
