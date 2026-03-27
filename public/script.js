@@ -855,8 +855,8 @@ function init() {
   // 城市标记
   createCityMarkers();
 
-  // 轨道控制 - 使用独立的交互层
-  controls = new OrbitControls(camera, document.getElementById('earth-controls'));
+  // 轨道控制
+  controls = new OrbitControls(camera, renderer.domElement);
   controls.enableDamping = true;
   controls.dampingFactor = 0.05;
   controls.minDistance = window.innerWidth <= 768 ? 18 : 10;
