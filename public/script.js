@@ -267,9 +267,9 @@ function createCityMarkers() {
       const dLon = city.lon - clusterCenterLon;
       const dLat = city.lat - clusterCenterLat;
       const angle = Math.atan2(dLon, dLat);
-      // 南海簇岛屿多，半径从0.18加大到0.9；远距离岛礁（钓鱼岛/苏岩礁/班公湖）单独大半径
+      // 南海簇岛屿多，半径需足够小让标签靠近坐标点
       const isSouthChinaSea = Math.abs(dLat) < 15 && Math.abs(dLon) < 15;
-      const spreadR = isSouthChinaSea ? 0.25 : 0.4;
+      const spreadR = isSouthChinaSea ? 0.05 : 0.08;
 
       const flagPos = pos.clone();
       const normal = flagPos.clone().normalize();

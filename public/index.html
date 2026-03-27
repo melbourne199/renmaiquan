@@ -58,11 +58,13 @@
         <div class="banner-desc-wrap">
           <p class="hero-desc">将企业资源、人脉、项目与需求，汇入可搜索、可匹配、可脱敏的资源宇宙，<br>让高质量对接如星链般精准发生</p>
         </div>
-        <div class="banner-search-wrap">
-          <input id="citySearch" type="text" placeholder="搜索城市 / 项目 / 人脉 / 关键词..." />
-          <button id="searchBtn">探索</button>
-        </div>
       </div>
+    </div>
+
+    <!-- 搜索区 -->
+    <div class="search-section">
+      <input id="citySearch" type="text" placeholder="搜索城市 / 项目 / 人脉 / 关键词..." />
+      <button id="searchBtn">探索</button>
     </div>
 
     <!-- 搜索提示 -->
@@ -97,20 +99,20 @@
     <!-- 底部功能卡片（发布入口） -->
     <div class="cards-container">
       <div class="func-card" onclick="showPublishMenu()">
-        <h3>💰 发布企业资源</h3>
-        <p>分享资源技能，让价值在星河中流动。</p>
+        <h3>💼 发布企业资源</h3>
+        <p>我有什么产品、技术或服务？让对方主动找上门。</p>
       </div>
       <div class="func-card" onclick="showPublishMenu()">
-        <h3>📢 发布找群需求</h3>
-        <p>精准对接全国商业资源与核心人脉。</p>
+        <h3>🔍 发起居间需求</h3>
+        <p>我要找某条线、某个人、某份资源，有人能帮我引荐吗？</p>
       </div>
       <div class="func-card" onclick="showPublishMenu()">
-        <h3>⭐ 发布机构能量</h3>
-        <p>让创意、项目、愿景被更多人看见。</p>
+        <h3>🤝 登记机构能量</h3>
+        <p>我对接某局/某部门/某企业，愿意做居间人，资源录进来。</p>
       </div>
       <div class="func-card" onclick="showPublishMenu()">
-        <h3>🔎 发布优质项目</h3>
-        <p>搜索全国城市、人脉、项目与合作机会。</p>
+        <h3>🚀 发布优质项目</h3>
+        <p>我有融资或合作项目，等待合适的人主动对接。</p>
       </div>
     </div>
 
@@ -122,53 +124,31 @@
         <span class="publish-icon">💼</span>
         <div>
           <div class="publish-item-title">发布企业资源</div>
-          <div class="publish-item-desc">企业供需信息</div>
+          <div class="publish-item-desc">我有产品/技术/服务，等对方主动上门</div>
         </div>
       </div>
       <div class="publish-menu-item" onclick="navigateTo('publish-group')">
-        <span class="publish-icon">👥</span>
+        <span class="publish-icon">🔍</span>
         <div>
-          <div class="publish-item-title">发布找群需求</div>
-          <div class="publish-item-desc">找行业群需求</div>
+          <div class="publish-item-title">发起居间需求</div>
+          <div class="publish-item-desc">我要找资源，有人帮我引荐吗？</div>
         </div>
       </div>
       <div class="publish-menu-item" onclick="navigateTo('publish-org')">
-        <span class="publish-icon">🏢</span>
+        <span class="publish-icon">🤝</span>
         <div>
-          <div class="publish-item-title">发布机构能量</div>
-          <div class="publish-item-desc">人脉/机关单位（脱敏）</div>
+          <div class="publish-item-title">登记机构能量</div>
+          <div class="publish-item-desc">我有政府/企业人脉，愿意做居间人</div>
         </div>
       </div>
       <div class="publish-menu-item" onclick="navigateTo('publish-project')">
         <span class="publish-icon">🚀</span>
         <div>
           <div class="publish-item-title">发布优质项目</div>
-          <div class="publish-item-desc">融资/合作项目</div>
+          <div class="publish-item-desc">我有融资/合作项目，等合适的人来</div>
         </div>
       </div>
       <button class="publish-menu-close" onclick="hidePublishMenu()">取消</button>
-    </div>
-
-    <!-- 金融金额版块 -->
-    <div class="finance-banner">
-      <div class="finance-banner-title">💰 金融对接服务</div>
-      <div class="finance-stats">
-        <div class="finance-stat">
-          <div class="finance-stat-value">¥12,580,000</div>
-          <div class="finance-stat-label">已成功对接金额</div>
-        </div>
-        <div class="finance-divider"></div>
-        <div class="finance-stat">
-          <div class="finance-stat-value">2 个</div>
-          <div class="finance-stat-label">在架产品</div>
-        </div>
-        <div class="finance-divider"></div>
-        <div class="finance-stat">
-          <div class="finance-stat-value">5 个</div>
-          <div class="finance-stat-label">今日新增</div>
-        </div>
-      </div>
-      <button class="finance-banner-btn" onclick="navigateTo('finance')">了解更多 →</button>
     </div>
 
     <!-- 右下角平台供需总览 -->
