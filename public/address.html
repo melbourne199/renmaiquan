@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>三级地址库 - 资源夜市</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif; background: #f5f5f7; color: #1d1d1f; min-height: 100vh; }
+    .topbar { position: sticky; top: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 12px 20px; background: rgba(255,255,255,0.92); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(0,0,0,0.06); }
+    .topbar-brand { display: flex; align-items: center; gap: 8px; text-decoration: none; color: #1d1d1f; font-weight: 600; font-size: 1rem; }
+    .topbar-brand-icon { font-size: 1.2rem; }
+    .topbar-nav { display: flex; gap: 20px; align-items: center; }
+    .topbar-nav a { text-decoration: none; color: #86868b; font-size: 0.9rem; transition: color 0.2s; }
+    .topbar-nav a:hover { color: #0071E3; }
+    .topbar-nav a.active { color: #0071E3; font-weight: 600; }
+    .page-content { padding: 20px 16px; max-width: 900px; margin: 0 auto; }
+    .page-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; flex-wrap: wrap; gap: 10px; }
+    .page-title { font-size: 1.2rem; font-weight: 600; }
+    .btn { padding: 8px 18px; border: none; border-radius: 8px; font-size: 0.9rem; cursor: pointer; transition: all 0.2s; }
+    .btn-primary { background: #0071E3; color: white; }
+    .btn-primary:hover { background: #005bb5; }
+    .btn-sm { padding: 5px 12px; font-size: 0.8rem; border-radius: 6px; }
+    .btn-edit { background: #e8e8ed; color: #1d1d1f; }
+    .btn-edit:hover { background: #d1d1d6; }
+    .btn-del { background: #ff3b30; color: white; }
+    .btn-del:hover { background: #d32f2f; }
+    .search-bar { display: flex; gap: 8px; margin-bottom: 16px; }
+    .search-bar input { flex: 1; padding: 10px 14px; border: 1px solid #d1d1d6; border-radius: 8px; font-size: 0.9rem; outline: none; }
+    .search-bar input:focus { border-color: #0071E3; }
+    .filter-row { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+    .filter-row select { padding: 8px 12px; border: 1px solid #d1d1d6; border-radius: 8px; font-size: 0.85rem; outline: none; background: white; }
+    .filter-row select:focus { border-color: #0071E3; }
+    .addr-table { width: 100%; background: white; border-radius: 16px; overflow: hidden; border-collapse: collapse; }
+    .addr-table th { background: #f5f5f7; padding: 12px 16px; text-align: left; font-size: 0.85rem; color: #86868b; font-weight: 500; border-bottom: 1px solid rgba(0,0,0,0.06); }
+    .addr-table td { padding: 12px 16px; font-size: 0.9rem; border-bottom: 1px solid rgba(0,0,0,0.04); }
+    .addr-table tr:last-child td { border-bottom: none; }
+    .addr-table .actions { display: flex; gap: 6px; }
+    .empty-tip { text-align: center; padding: 40px; color: #86868b; font-size: 0.9rem; }
+    /* Modal */
+    .modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.4); z-index: 200; align-items: center; justify-content: center; }
+    .modal-overlay.open { display: flex; }
+    .modal { background: white; border-radius: 16px; padding: 24px; width: 90%; max-width: 420px; }
+    .modal-title { font-size: 1.05rem; font-weight: 600; margin-bottom: 16px; }
+    .form-group { margin-bottom: 14px; }
+    .form-group label { display: block; font-size: 0.85rem; color: #86868b; margin-bottom: 6px; }
+    .form-group input, .form-group select { width: 100%; padding: 10px 12px; border: 1px solid #d1d1d6; border-radius: 8px; font-size: 0.9rem; outline: none; transition: border 0.2s; }
+    .form-group input:focus, .form-group select:focus { border-color: #0071E3; }
+    .modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 18px; }
+    .btn-cancel { background: #e8e8ed; color: #1d1d1f; }
+    .btn-cancel:hover { background: #d1d1d6; }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <a href="index.html" class="topbar-brand">
+      <span class="topbar-brand-icon">🌌</span>
+      资源夜市
+    </a>
+    <div class="topbar-nav">
+      <a href="index.html">首页</a>
+      <a href="settings.html">设置</a>
+      <a href="department.html">部门管理</a>
+      <a href="#" class="active">地址库</a>
+      <a href="messages.html">消息</a>
+    </div>
+  </div>
+
+  <div class="page-content">
+    <div class="page-header">
+      <span class="page-title">三级地址库</span>
+      <button class="btn btn-primary" onclick="openModal()">+ 新增地址</button>
+    </div>
+
+    <div class="search-bar">
+      <input type="text" id="searchInput" placeholder="搜索省份/城市/区县..." oninput="renderTable()">
+    </div>
+
+    <div class="filter-row">
+      <select id="filterProvince" onchange="onFilterProvinceChange(); renderTable()">
+        <option value="">全部省份</option>
+      </select>
+      <select id="filterCity" onchange="renderTable()">
+        <option value="">全部城市</option>
+      </select>
+    </div>
+
+    <table class="addr-table">
+      <thead>
+        <tr>
+          <th>省份</th>
+          <th>城市</th>
+          <th>区县</th>
+          <th>操作</th>
+        </tr>
+      </thead>
+      <tbody id="addrBody">
+        <tr><td colspan="4" class="empty-tip">暂无地址数据</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 新增/编辑弹窗 -->
+  <div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+    <div class="modal" onclick="event.stopPropagation()">
+      <div class="modal-title" id="modalTitle">新增地址</div>
+      <div class="form-group">
+        <label>省份</label>
+        <input type="text" id="addrProvince" list="provinceList" placeholder="输入或选择省份">
+        <datalist id="provinceList"></datalist>
+      </div>
+      <div class="form-group">
+        <label>城市</label>
+        <input type="text" id="addrCity" list="cityList" placeholder="输入或选择城市">
+        <datalist id="cityList"></datalist>
+      </div>
+      <div class="form-group">
+        <label>区县</label>
+        <input type="text" id="addrDistrict" placeholder="输入区县名称">
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-cancel" onclick="closeModal()">取消</button>
+        <button class="btn btn-primary" onclick="saveAddr()">保存</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const STORAGE_KEY = 'threeLevelAddress';
+    let editingId = null;
+
+    function getAddrs() {
+      return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+    }
+
+    function saveAddrs(list) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+    }
+
+    // 从已有数据中提取去重的省份和城市
+    function getProvinces() {
+      return [...new Set(getAddrs().map(a => a.province))].sort();
+    }
+
+    function getCities(province) {
+      return [...new Set(getAddrs().filter(a => !province || a.province === province).map(a => a.city))].sort();
+    }
+
+    function updateFilterOptions() {
+      const provinces = getProvinces();
+      const fpSel = document.getElementById('filterProvince');
+      const curVal = fpSel.value;
+      fpSel.innerHTML = '<option value="">全部省份</option>' + provinces.map(p => `<option value="${p}">${p}</option>`).join('');
+      if (provinces.includes(curVal)) fpSel.value = curVal;
+    }
+
+    function onFilterProvinceChange() {
+      const prov = document.getElementById('filterProvince').value;
+      const fcSel = document.getElementById('filterCity');
+      const cities = getCities(prov);
+      fcSel.innerHTML = '<option value="">全部城市</option>' + cities.map(c => `<option value="${c}">${c}</option>`).join('');
+    }
+
+    function renderTable() {
+      const keyword = document.getElementById('searchInput').value.trim().toLowerCase();
+      const filterProv = document.getElementById('filterProvince').value;
+      const filterCity = document.getElementById('filterCity').value;
+
+      let addrs = getAddrs();
+
+      if (filterProv) addrs = addrs.filter(a => a.province === filterProv);
+      if (filterCity) addrs = addrs.filter(a => a.city === filterCity);
+      if (keyword) addrs = addrs.filter(a =>
+        a.province.toLowerCase().includes(keyword) ||
+        a.city.toLowerCase().includes(keyword) ||
+        a.district.toLowerCase().includes(keyword)
+      );
+
+      addrs.sort((a, b) => a.province.localeCompare(b.province, 'zh') || a.city.localeCompare(b.city, 'zh') || a.district.localeCompare(b.district, 'zh'));
+
+      const tbody = document.getElementById('addrBody');
+      if (addrs.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="4" class="empty-tip">暂无匹配数据</td></tr>';
+        return;
+      }
+      tbody.innerHTML = addrs.map(a => `<tr>
+        <td>${a.province}</td>
+        <td>${a.city}</td>
+        <td>${a.district}</td>
+        <td class="actions">
+          <button class="btn btn-sm btn-edit" onclick="editAddr('${a.id}')">编辑</button>
+          <button class="btn btn-sm btn-del" onclick="delAddr('${a.id}')">删除</button>
+        </td>
+      </tr>`).join('');
+
+      updateFilterOptions();
+    }
+
+    function updateDataLists() {
+      const provinces = getProvinces();
+      document.getElementById('provinceList').innerHTML = provinces.map(p => `<option value="${p}">`).join('');
+    }
+
+    function openModal(id) {
+      editingId = id || null;
+      const overlay = document.getElementById('modalOverlay');
+      const titleEl = document.getElementById('modalTitle');
+      const provEl = document.getElementById('addrProvince');
+      const cityEl = document.getElementById('addrCity');
+      const distEl = document.getElementById('addrDistrict');
+
+      updateDataLists();
+
+      if (id) {
+        const addr = getAddrs().find(a => a.id === id);
+        titleEl.textContent = '编辑地址';
+        provEl.value = addr.province;
+        cityEl.value = addr.city;
+        distEl.value = addr.district;
+        // 更新城市 datalist
+        const cities = getCities(addr.province);
+        document.getElementById('cityList').innerHTML = cities.map(c => `<option value="${c}">`).join('');
+      } else {
+        titleEl.textContent = '新增地址';
+        provEl.value = '';
+        cityEl.value = '';
+        distEl.value = '';
+        document.getElementById('cityList').innerHTML = '';
+      }
+      overlay.classList.add('open');
+    }
+
+    // 省份输入变化时更新城市候选
+    document.getElementById('addrProvince').addEventListener('input', function() {
+      const cities = getCities(this.value);
+      document.getElementById('cityList').innerHTML = cities.map(c => `<option value="${c}">`).join('');
+    });
+
+    function closeModal(e) {
+      if (e && e.target !== e.currentTarget) return;
+      document.getElementById('modalOverlay').classList.remove('open');
+      editingId = null;
+    }
+
+    function saveAddr() {
+      const province = document.getElementById('addrProvince').value.trim();
+      const city = document.getElementById('addrCity').value.trim();
+      const district = document.getElementById('addrDistrict').value.trim();
+
+      if (!province || !city || !district) { alert('请填写完整的省/市/区信息'); return; }
+
+      const addrs = getAddrs();
+      if (editingId) {
+        const idx = addrs.findIndex(a => a.id === editingId);
+        if (idx !== -1) {
+          addrs[idx].province = province;
+          addrs[idx].city = city;
+          addrs[idx].district = district;
+        }
+      } else {
+        addrs.push({ id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6), province, city, district });
+      }
+      saveAddrs(addrs);
+      closeModal();
+      renderTable();
+    }
+
+    function editAddr(id) { openModal(id); }
+
+    function delAddr(id) {
+      if (!confirm('确定删除此地址？')) return;
+      saveAddrs(getAddrs().filter(a => a.id !== id));
+      renderTable();
+    }
+
+    updateFilterOptions();
+    renderTable();
+  </script>
+</body>
+</html>

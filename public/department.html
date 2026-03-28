@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>部门管理 - 资源夜市</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif; background: #f5f5f7; color: #1d1d1f; min-height: 100vh; }
+    .topbar { position: sticky; top: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 12px 20px; background: rgba(255,255,255,0.92); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(0,0,0,0.06); }
+    .topbar-brand { display: flex; align-items: center; gap: 8px; text-decoration: none; color: #1d1d1f; font-weight: 600; font-size: 1rem; }
+    .topbar-brand-icon { font-size: 1.2rem; }
+    .topbar-nav { display: flex; gap: 20px; align-items: center; }
+    .topbar-nav a { text-decoration: none; color: #86868b; font-size: 0.9rem; transition: color 0.2s; }
+    .topbar-nav a:hover { color: #0071E3; }
+    .topbar-nav a.active { color: #0071E3; font-weight: 600; }
+    .page-content { padding: 20px 16px; max-width: 800px; margin: 0 auto; }
+    .page-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+    .page-title { font-size: 1.2rem; font-weight: 600; }
+    .btn { padding: 8px 18px; border: none; border-radius: 8px; font-size: 0.9rem; cursor: pointer; transition: all 0.2s; }
+    .btn-primary { background: #0071E3; color: white; }
+    .btn-primary:hover { background: #005bb5; }
+    .btn-sm { padding: 5px 12px; font-size: 0.8rem; border-radius: 6px; }
+    .btn-edit { background: #e8e8ed; color: #1d1d1f; }
+    .btn-edit:hover { background: #d1d1d6; }
+    .btn-del { background: #ff3b30; color: white; }
+    .btn-del:hover { background: #d32f2f; }
+    .dept-table { width: 100%; background: white; border-radius: 16px; overflow: hidden; border-collapse: collapse; }
+    .dept-table th { background: #f5f5f7; padding: 12px 16px; text-align: left; font-size: 0.85rem; color: #86868b; font-weight: 500; border-bottom: 1px solid rgba(0,0,0,0.06); }
+    .dept-table td { padding: 12px 16px; font-size: 0.9rem; border-bottom: 1px solid rgba(0,0,0,0.04); }
+    .dept-table tr:last-child td { border-bottom: none; }
+    .dept-table .actions { display: flex; gap: 6px; }
+    .empty-tip { text-align: center; padding: 40px; color: #86868b; font-size: 0.9rem; }
+    /* Modal */
+    .modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.4); z-index: 200; align-items: center; justify-content: center; }
+    .modal-overlay.open { display: flex; }
+    .modal { background: white; border-radius: 16px; padding: 24px; width: 90%; max-width: 420px; }
+    .modal-title { font-size: 1.05rem; font-weight: 600; margin-bottom: 16px; }
+    .form-group { margin-bottom: 14px; }
+    .form-group label { display: block; font-size: 0.85rem; color: #86868b; margin-bottom: 6px; }
+    .form-group input, .form-group select { width: 100%; padding: 10px 12px; border: 1px solid #d1d1d6; border-radius: 8px; font-size: 0.9rem; outline: none; transition: border 0.2s; }
+    .form-group input:focus, .form-group select:focus { border-color: #0071E3; }
+    .modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 18px; }
+    .btn-cancel { background: #e8e8ed; color: #1d1d1f; }
+    .btn-cancel:hover { background: #d1d1d6; }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <a href="index.html" class="topbar-brand">
+      <span class="topbar-brand-icon">🌌</span>
+      资源夜市
+    </a>
+    <div class="topbar-nav">
+      <a href="index.html">首页</a>
+      <a href="settings.html">设置</a>
+      <a href="#" class="active">部门管理</a>
+      <a href="address.html">地址库</a>
+      <a href="messages.html">消息</a>
+    </div>
+  </div>
+
+  <div class="page-content">
+    <div class="page-header">
+      <span class="page-title">部门管理</span>
+      <button class="btn btn-primary" onclick="openModal()">+ 新增部门</button>
+    </div>
+
+    <table class="dept-table">
+      <thead>
+        <tr>
+          <th>部门编号</th>
+          <th>部门名称</th>
+          <th>上级部门</th>
+          <th>操作</th>
+        </tr>
+      </thead>
+      <tbody id="deptBody">
+        <tr><td colspan="4" class="empty-tip">暂无部门数据</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 新增/编辑弹窗 -->
+  <div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+    <div class="modal" onclick="event.stopPropagation()">
+      <div class="modal-title" id="modalTitle">新增部门</div>
+      <div class="form-group">
+        <label>部门名称</label>
+        <input type="text" id="deptName" placeholder="请输入部门名称">
+      </div>
+      <div class="form-group">
+        <label>部门编号</label>
+        <input type="text" id="deptCode" placeholder="自动生成" readonly>
+      </div>
+      <div class="form-group">
+        <label>上级部门</label>
+        <select id="deptParent"><option value="">无</option></select>
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-cancel" onclick="closeModal()">取消</button>
+        <button class="btn btn-primary" onclick="saveDept()">保存</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const STORAGE_KEY = 'departments';
+    let editingId = null;
+
+    function getDepts() {
+      return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+    }
+
+    function saveDepts(list) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+    }
+
+    function genCode() {
+      const year = new Date().getFullYear().toString().slice(-2);
+      const depts = getDepts();
+      const codes = depts.map(d => d.code).filter(c => c.startsWith(year));
+      let max = 0;
+      codes.forEach(c => {
+        const seq = parseInt(c.slice(2), 10);
+        if (seq > max) max = seq;
+      });
+      return year + String(max + 1).padStart(3, '0');
+    }
+
+    function renderTable() {
+      const depts = getDepts().sort((a, b) => a.code.localeCompare(b.code));
+      const tbody = document.getElementById('deptBody');
+      if (depts.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="4" class="empty-tip">暂无部门数据</td></tr>';
+        return;
+      }
+      tbody.innerHTML = depts.map(d => {
+        const parent = d.parentId ? (depts.find(p => p.id === d.parentId)?.name || '无') : '无';
+        return `<tr>
+          <td>${d.code}</td>
+          <td>${d.name}</td>
+          <td>${parent}</td>
+          <td class="actions">
+            <button class="btn btn-sm btn-edit" onclick="editDept('${d.id}')">编辑</button>
+            <button class="btn btn-sm btn-del" onclick="delDept('${d.id}')">删除</button>
+          </td>
+        </tr>`;
+      }).join('');
+    }
+
+    function fillParentSelect(excludeId) {
+      const depts = getDepts();
+      const sel = document.getElementById('deptParent');
+      sel.innerHTML = '<option value="">无</option>' + depts
+        .filter(d => d.id !== excludeId)
+        .map(d => `<option value="${d.id}">${d.name} (${d.code})</option>`)
+        .join('');
+    }
+
+    function openModal(id) {
+      editingId = id || null;
+      const overlay = document.getElementById('modalOverlay');
+      const titleEl = document.getElementById('modalTitle');
+      const nameEl = document.getElementById('deptName');
+      const codeEl = document.getElementById('deptCode');
+
+      if (id) {
+        const dept = getDepts().find(d => d.id === id);
+        titleEl.textContent = '编辑部门';
+        nameEl.value = dept.name;
+        codeEl.value = dept.code;
+        fillParentSelect(id);
+        document.getElementById('deptParent').value = dept.parentId || '';
+      } else {
+        titleEl.textContent = '新增部门';
+        nameEl.value = '';
+        codeEl.value = genCode();
+        fillParentSelect();
+      }
+      overlay.classList.add('open');
+    }
+
+    function closeModal(e) {
+      if (e && e.target !== e.currentTarget) return;
+      document.getElementById('modalOverlay').classList.remove('open');
+      editingId = null;
+    }
+
+    function saveDept() {
+      const name = document.getElementById('deptName').value.trim();
+      const code = document.getElementById('deptCode').value.trim();
+      const parentId = document.getElementById('deptParent').value || '';
+      if (!name) { alert('请输入部门名称'); return; }
+
+      const depts = getDepts();
+      if (editingId) {
+        const idx = depts.findIndex(d => d.id === editingId);
+        if (idx !== -1) {
+          depts[idx].name = name;
+          depts[idx].parentId = parentId;
+        }
+      } else {
+        depts.push({ id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6), name, code, parentId });
+      }
+      saveDepts(depts);
+      closeModal();
+      renderTable();
+    }
+
+    function editDept(id) { openModal(id); }
+
+    function delDept(id) {
+      if (!confirm('确定删除此部门？')) return;
+      const depts = getDepts().filter(d => d.id !== id);
+      // 清除子部门的上级引用
+      depts.forEach(d => { if (d.parentId === id) d.parentId = ''; });
+      saveDepts(depts);
+      renderTable();
+    }
+
+    renderTable();
+  </script>
+</body>
+</html>
