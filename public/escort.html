@@ -154,6 +154,68 @@
     .success-title { font-size: 1.2rem; font-weight: 600; margin-bottom: 8px; color: var(--success); }
     .success-desc { font-size: 0.9rem; color: var(--text-secondary); }
 
+    /* ===== 街长立规区 ===== */
+    .街长-section { background: linear-gradient(180deg, rgba(90,200,250,0.08) 0%, transparent 100%); border-bottom: 1px solid var(--border-card); margin-bottom: 32px; }
+
+    /* 标题区 */
+    .街长-header { text-align: center; padding: 48px 20px 32px; position: relative; }
+    .街长-badge { display: inline-block; background: linear-gradient(135deg, var(--gold) 0%, var(--gold-light) 100%); color: #000; font-size: 0.75rem; font-weight: 700; padding: 6px 16px; border-radius: 20px; margin-bottom: 20px; letter-spacing: 1px; }
+    .街长-title { font-size: 2rem; font-weight: 700; color: var(--text-primary); margin-bottom: 16px; line-height: 1.3; }
+    .街长-subtitle { font-size: 1rem; color: var(--text-secondary); max-width: 700px; margin: 0 auto 24px; line-height: 1.7; }
+    .街长-quotes { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-bottom: 16px; }
+    .街长-quote { background: var(--bg-card); border: 1px solid var(--border-card); border-radius: 8px; padding: 10px 18px; font-size: 0.85rem; color: var(--text-secondary); transition: all 0.2s; }
+    .街长-quote:hover { border-color: var(--gold); color: var(--gold); }
+    .街长-stat { display: flex; justify-content: center; gap: 40px; margin-top: 24px; flex-wrap: wrap; }
+    .街长-stat-item { text-align: center; }
+    .街长-stat-num { font-size: 2rem; font-weight: 700; color: var(--danger); }
+    .街长-stat-label { font-size: 0.8rem; color: var(--text-muted); }
+
+    /* 警示区 */
+    .街长-alert { background: linear-gradient(135deg, rgba(255,59,48,0.12) 0%, rgba(255,59,48,0.05) 100%); border: 1px solid rgba(255,59,48,0.3); border-radius: 16px; padding: 24px; margin: 0 20px 32px; }
+    .街长-alert-title { font-size: 1rem; font-weight: 600; color: var(--danger); margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+    .街长-alert-list { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    .街长-alert-item { display: flex; align-items: flex-start; gap: 10px; font-size: 0.85rem; color: var(--text-secondary); }
+
+    /* 铁律区 */
+    .街长-rules { padding: 0 20px 32px; }
+    .街长-rules-title { font-size: 1.1rem; font-weight: 600; color: var(--gold); text-align: center; margin-bottom: 24px; }
+    .街长-rules-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+    .街长-rule { background: var(--bg-card); border: 1px solid var(--border-card); border-radius: 12px; padding: 16px; text-align: center; transition: all 0.2s; }
+    .街长-rule:hover { border-color: var(--accent-blue); transform: translateY(-2px); }
+    .街长-rule-num { display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px; border-radius: 50%; background: var(--accent-blue); color: #000; font-size: 0.75rem; font-weight: 700; margin-bottom: 8px; }
+    .街长-rule-text { font-size: 0.82rem; color: var(--text-secondary); line-height: 1.4; }
+
+    /* 段位自测 */
+    .段位-section { padding: 32px 20px 48px; background: var(--bg-card); border-top: 1px solid var(--border-card); }
+    .段位-header { text-align: center; margin-bottom: 32px; }
+    .段位-title { font-size: 1.3rem; font-weight: 700; color: var(--text-primary); margin-bottom: 8px; }
+    .段位-desc { font-size: 0.9rem; color: var(--text-muted); }
+    .段位-quiz { max-width: 700px; margin: 0 auto; }
+    .段位-q { background: rgba(255,255,255,0.02); border: 1px solid var(--border-card); border-radius: 16px; padding: 20px; margin-bottom: 16px; }
+    .段位-q-title { font-size: 0.95rem; font-weight: 600; color: var(--text-primary); margin-bottom: 14px; display: flex; align-items: flex-start; gap: 10px; }
+    .段位-q-num { display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px; border-radius: 50%; background: var(--accent-blue); color: #000; font-size: 0.75rem; font-weight: 700; flex-shrink: 0; }
+    .段位-options { display: flex; flex-direction: column; gap: 8px; }
+    .段位-opt { display: flex; align-items: center; gap: 12px; padding: 12px 16px; background: rgba(255,255,255,0.02); border: 1px solid var(--border-card); border-radius: 10px; cursor: pointer; transition: all 0.2s; font-size: 0.88rem; color: var(--text-secondary); }
+    .段位-opt:hover { border-color: var(--accent-blue); background: rgba(90,200,250,0.05); }
+    .段位-opt.selected { border-color: var(--gold); background: rgba(245,158,11,0.1); color: var(--gold); }
+    .段位-opt .opt-letter { display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 50%; background: rgba(255,255,255,0.05); font-size: 0.75rem; font-weight: 600; flex-shrink: 0; }
+    .段位-opt.selected .opt-letter { background: var(--gold); color: #000; }
+    .段位-submit { width: 100%; padding: 16px; border-radius: 14px; border: none; background: linear-gradient(135deg, var(--gold) 0%, var(--gold-light) 100%); color: #000; font-size: 1rem; font-weight: 600; cursor: pointer; margin-top: 24px; transition: all 0.25s; }
+    .段位-submit:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(245,158,11,0.35); }
+    .段位-submit:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+    .段位-result { display: none; text-align: center; padding: 32px 20px; }
+    .段位-result.show { display: block; }
+    .段位-result-icon { font-size: 4rem; margin-bottom: 16px; }
+    .段位-result-title { font-size: 1.5rem; font-weight: 700; margin-bottom: 8px; }
+    .段位-result-title.bronze { color: #cd7f32; }
+    .段位-result-title.silver { color: #c0c0c0; }
+    .段位-result-title.gold { color: var(--gold); }
+    .段位-result-sub { font-size: 1rem; color: var(--text-secondary); margin-bottom: 16px; }
+    .段位-result-desc { font-size: 0.88rem; color: var(--text-muted); line-height: 1.6; max-width: 500px; margin: 0 auto 24px; }
+    .段位-result-advice { background: rgba(245,158,11,0.1); border: 1px solid rgba(245,158,11,0.2); border-radius: 12px; padding: 16px; margin-bottom: 24px; font-size: 0.88rem; color: var(--gold); }
+    .段位-result-btn { padding: 14px 32px; border-radius: 12px; border: none; background: linear-gradient(135deg, var(--gold) 0%, var(--gold-light) 100%); color: #000; font-size: 0.95rem; font-weight: 600; cursor: pointer; }
+    .段位-reset { margin-top: 16px; font-size: 0.82rem; color: var(--text-muted); cursor: pointer; text-decoration: underline; }
+
     @media (max-width: 800px) {
       .intro-content, .profit-rules, .rules-grid, .projects-grid { grid-template-columns: 1fr; }
       .navbar-links { display: none; }
@@ -185,20 +247,165 @@
   </nav>
 
   <div class="container">
-    <!-- 核心说明 -->
-    <div class="intro-section">
-      <div class="intro-title">🤝 居间护航 · 明牌规则</div>
-      <div class="intro-content">
-        <div class="intro-card">
-          <div class="intro-card-icon">💪</div>
-          <div class="intro-card-title">好人不吃亏</div>
-          <div class="intro-card-desc">帮忙牵线搭桥是有价值的事，你的引荐本身就是信息资产的变现</div>
+    <!-- 街长立规区 -->
+    <div class="街长-section">
+      <!-- 标题区 -->
+      <div class="街长-header">
+        <div class="街长-badge">🏛️ 资源夜市一条街 · 街长立规</div>
+        <h1 class="街长-title">重新定义居间<br>合格居间人段位自评</h1>
+        <p class="街长-subtitle">居间不是传话，是专业风控<br>居间不是人脉变现，是信任变现</p>
+        <div class="街长-quotes">
+          <span class="街长-quote">居间不是跨界打劫</span>
+          <span class="街长-quote">是价值撮合</span>
+          <span class="街长-quote">不懂规则别做居间</span>
+          <span class="街长-quote">不然必踩牢狱坑</span>
         </div>
-        <div class="intro-card">
-          <div class="intro-card-icon">🔒</div>
-          <div class="intro-card-title">信息资产被保护</div>
-          <div class="intro-card-desc">你的关系链不被泄露，跳单绕开你，全程平台担保</div>
+        <div class="街长-stat">
+          <div class="街长-stat-item">
+            <div class="街长-stat-num">4500+</div>
+            <div class="街长-stat-label">全国每年居间刑案</div>
+          </div>
+          <div class="街长-stat-item">
+            <div class="街长-stat-num">90%</div>
+            <div class="街长-stat-label">市面"居间"不合规</div>
+          </div>
         </div>
+      </div>
+
+      <!-- 警示区 -->
+      <div class="街长-alert">
+        <div class="街长-alert-title">⚠️ 街长重磅警示：居间不是高危，无知才是</div>
+        <div class="街长-alert-list">
+          <div class="街长-alert-item">🚫 不核实项目，乱撮合变共犯</div>
+          <div class="街长-alert-item">🚫 不签合同，口头约定变纠纷</div>
+          <div class="街长-alert-item">🚫 私下收钱，不明收入变涉案</div>
+          <div class="街长-alert-item">🚫 承诺结果，夸大包装变诈骗</div>
+          <div class="街长-alert-item">🚫 触碰擦边，牵线搭桥变帮凶</div>
+          <div class="街长-alert-item">🚫 做一锤子买卖，无口碑无复购</div>
+        </div>
+      </div>
+
+      <!-- 铁律区 -->
+      <div class="街长-rules">
+        <div class="街长-rules-title">📋 资源夜市一条街 · 居间铁律（必须遵守）</div>
+        <div class="街长-rules-grid">
+          <div class="街长-rule">
+            <div class="街长-rule-num">1</div>
+            <div class="街长-rule-text">不核实项目真实性<br绝不接单</div>
+          </div>
+          <div class="街长-rule">
+            <div class="街长-rule-num">2</div>
+            <div class="街长-rule-text">不签居间合同<br绝不推进</div>
+          </div>
+          <div class="街长-rule">
+            <div class="街长-rule-num">3</div>
+            <div class="街长-rule-text">一级二级分润<br必须事前讲清</div>
+          </div>
+          <div class="街长-rule">
+            <div class="街长-rule-num">4</div>
+            <div class="街长-rule-text">违规擦边敏感业务<br一律拒绝</div>
+          </div>
+          <div class="街长-rule">
+            <div class="街长-rule-num">5</div>
+            <div class="街长-rule-text">绝不承诺结果<br绝不包装关系</div>
+          </div>
+          <div class="街长-rule">
+            <div class="街长-rule-num">6</div>
+            <div class="街长-rule-text">资金往来可追溯<br可公开可解释</div>
+          </div>
+          <div class="街长-rule">
+            <div class="街长-rule-num">7</div>
+            <div class="街长-rule-text">出事不甩锅<br不消失不跑路</div>
+          </div>
+          <div class="街长-rule">
+            <div class="街长-rule-num">8</div>
+            <div class="街长-rule-text">做长期口碑<br不做一锤子买卖</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 段位自测 -->
+      <div class="段位-section">
+        <div class="段位-header">
+          <div class="段位-title">🎯 居间人段位自评测试</div>
+          <div class="段位-desc">测一测你在哪个段位，街长帮你定级</div>
+        </div>
+        <div class="段位-quiz" id="段位Quiz">
+          <!-- Q1 -->
+          <div class="段位-q">
+            <div class="段位-q-title"><span class="段位-q-num">1</span>你理解的居间是什么？</div>
+            <div class="段位-options">
+              <div class="段位-opt" onclick="select段位(this, 1, 'A')"><span class="opt-letter">A</span>有人脉就能赚快钱，拉群传话就行</div>
+              <div class="段位-opt" onclick="select段位(this, 1, 'B')"><span class="opt-letter">B</span>信息撮合，尽量靠谱不惹事</div>
+              <div class="段位-opt" onclick="select段位(this, 1, 'C')"><span class="opt-letter">C</span>专业合规服务，有风控、有合同、有底线</div>
+            </div>
+          </div>
+          <!-- Q2 -->
+          <div class="段位-q">
+            <div class="段位-q-title"><span class="段位-q-num">2</span>接单前你会核实项目吗？</div>
+            <div class="段位-options">
+              <div class="段位-opt" onclick="select段位(this, 2, 'A')"><span class="opt-letter">A</span>没必要，成了再说</div>
+              <div class="段位-opt" onclick="select段位(this, 2, 'B')"><span class="opt-letter">B</span>简单问问，感觉靠谱就行</div>
+              <div class="段位-opt" onclick="select段位(this, 2, 'C')"><span class="opt-letter">C</span>必须核实主体、背景、真实性</div>
+            </div>
+          </div>
+          <!-- Q3 -->
+          <div class="段位-q">
+            <div class="段位-q-title"><span class="段位-q-num">3</span>合作前会签合同吗？</div>
+            <div class="段位-options">
+              <div class="段位-opt" onclick="select段位(this, 3, 'A')"><span class="opt-letter">A</span>都是朋友，口头就行</div>
+              <div class="段位-opt" onclick="select段位(this, 3, 'B')"><span class="opt-letter">B</span>大单签，小单不签</div>
+              <div class="段位-opt" onclick="select段位(this, 3, 'C')"><span class="opt-letter">C</span>无论大小，先签合同再服务</div>
+            </div>
+          </div>
+          <!-- Q4 -->
+          <div class="段位-q">
+            <div class="段位-q-title"><span class="段位-q-num">4</span>有人找你"运作关系"，你会？</div>
+            <div class="段位-options">
+              <div class="段位-opt" onclick="select段位(this, 4, 'A')"><span class="opt-letter">A</span>给钱就接</div>
+              <div class="段位-opt" onclick="select段位(this, 4, 'B')"><span class="opt-letter">B</span>不直接参与</div>
+              <div class="段位-opt" onclick="select段位(this, 4, 'C')"><span class="opt-letter">C</span>坚决拒绝</div>
+            </div>
+          </div>
+          <!-- Q5 -->
+          <div class="段位-q">
+            <div class="段位-q-title"><span class="段位-q-num">5</span>佣金怎么收？</div>
+            <div class="段位-options">
+              <div class="段位-opt" onclick="select段位(this, 5, 'A')"><span class="opt-letter">A</span>私下转账，不留痕迹</div>
+              <div class="段位-opt" onclick="select段位(this, 5, 'B')"><span class="opt-letter">B</span>个人收款，留个记录</div>
+              <div class="段位-opt" onclick="select段位(this, 5, 'C')"><span class="opt-letter">C</span>规范路径，可追溯可解释</div>
+            </div>
+          </div>
+          <!-- Q6 -->
+          <div class="段位-q">
+            <div class="段位-q-title"><span class="段位-q-num">6</span>你会承诺"一定办成"吗？</div>
+            <div class="段位-options">
+              <div class="段位-opt" onclick="select段位(this, 6, 'A')"><span class="opt-letter">A</span>必须承诺才能成单</div>
+              <div class="段位-opt" onclick="select段位(this, 6, 'B')"><span class="opt-letter">B</span>委婉暗示，不写纸上</div>
+              <div class="段位-opt" onclick="select段位(this, 6, 'C')"><span class="opt-letter">C</span>绝不承诺结果</div>
+            </div>
+          </div>
+          <!-- Q7 -->
+          <div class="段位-q">
+            <div class="段位-q-title"><span class="段位-q-num">7</span>合作出问题你会？</div>
+            <div class="段位-options">
+              <div class="段位-opt" onclick="select段位(this, 7, 'A')"><span class="opt-letter">A</span>拉黑消失</div>
+              <div class="段位-opt" onclick="select段位(this, 7, 'B')"><span class="opt-letter">B</span>调解一下就算</div>
+              <div class="段位-opt" onclick="select段位(this, 7, 'C')"><span class="opt-letter">C</span>按合同负责协调</div>
+            </div>
+          </div>
+          <!-- Q8 -->
+          <div class="段位-q">
+            <div class="段位-q-title"><span class="段位-q-num">8</span>你做居间为了什么？</div>
+            <div class="段位-options">
+              <div class="段位-opt" onclick="select段位(this, 8, 'A')"><span class="opt-letter">A</span>赚一票是一票</div>
+              <div class="段位-opt" onclick="select段位(this, 8, 'B')"><span class="opt-letter">B</span>稳定赚靠谱钱</div>
+              <div class="段位-opt" onclick="select段位(this, 8, 'C')"><span class="opt-letter">C</span>做长期口碑与信任枢纽</div>
+            </div>
+          </div>
+          <button class="段位-submit" id="段位Submit" onclick="submit段位()" disabled>查看我的段位</button>
+        </div>
+        <div class="段位-result" id="段位Result"></div>
       </div>
     </div>
 
@@ -435,6 +642,54 @@
   </div>
 
   <script>
+    // ===== 段位自评测试 =====
+    let 段位Answers = {};
+
+    function select段位(el, q, answer) {
+      段位Answers[q] = answer;
+      el.parentElement.querySelectorAll('.段位-opt').forEach(o => o.classList.remove('selected'));
+      el.classList.add('selected');
+      check段位Complete();
+    }
+
+    function check段位Complete() {
+      const allAnswered = Object.keys(段位Answers).length === 8;
+      document.getElementById('段位Submit').disabled = !allAnswered;
+    }
+
+    function submit段位() {
+      const countC = Object.values(段位Answers).filter(v => v === 'C').length;
+      const countA = Object.values(段位Answers).filter(v => v === 'A').length;
+      let result = {};
+      if (countA >= 5) {
+        result = { level: 'bronze', icon: '🥉', title: '青铜段位 · 高危踩坑型', sub: '你是每年4500+刑案的高发人群', desc: '心态急、做事乱、无底线、爱甩锅。街长忠告：先学规矩，再谈赚钱。', advice: '建议：先到资源夜市一条街学习居间铁律，了解合规居间标准，再开始做业务。' };
+      } else if (countC >= 5) {
+        result = { level: 'gold', icon: '🏆', title: '黄金段位 · 街长认证专业居间人', sub: '懂风控、懂法律、懂合同、懂长期', desc: '是资源夜市一条街认可的标杆居间、头部居间，可带队、可裂变、可长久做大。', advice: '欢迎入驻资源夜市一条街，街长可为你提供更多高价值项目对接机会。' };
+      } else {
+        result = { level: 'silver', icon: '🥈', title: '白银段位 · 合格稳健型', sub: '有底线、懂分寸，守规则', desc: '不碰红线，做事留痕，能长期稳定发展。已是行业中靠谱的中坚力量。', advice: '继续保持合规操作，建议深入学习街长立规，成为黄金段位居间人。' };
+      }
+      document.getElementById('段位Quiz').style.display = 'none';
+      const resultEl = document.getElementById('段位Result');
+      resultEl.innerHTML = `
+        <div class="段位-result-icon">${result.icon}</div>
+        <div class="段位-result-title ${result.level}">${result.title}</div>
+        <div class="段位-result-sub">${result.sub}</div>
+        <div class="段位-result-desc">${result.desc}</div>
+        <div class="段位-result-advice">💡 ${result.advice}</div>
+        <button class="段位-result-btn" onclick="reset段位()">我知道了</button>
+        <div class="段位-reset" onclick="reset段位()">重新测试</div>
+      `;
+      resultEl.classList.add('show');
+    }
+
+    function reset段位() {
+      段位Answers = {};
+      document.querySelectorAll('.段位-opt').forEach(o => o.classList.remove('selected'));
+      document.getElementById('段位Submit').disabled = true;
+      document.getElementById('段位Quiz').style.display = 'block';
+      document.getElementById('段位Result').classList.remove('show');
+    }
+
     // 状态
     let quizStep = 1;
     let quizAnswers = {};
