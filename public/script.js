@@ -120,6 +120,7 @@ function tickIntro(dt) {
       scene.remove(introGroup);
       introGroup.traverse(c => { if (c.geometry) c.geometry.dispose(); if (c.material) c.material.dispose(); });
       introGroup = null;
+      if (controls) controls.enabled = true;
     }
   }
 }
@@ -855,30 +856,20 @@ function init() {
   // 城市标记
   createCityMarkers();
 
-  // 轨道控制
+  // 轨道控制 - 绑定到 #earth-interaction（覆盖全屏）
   controls = new OrbitControls(camera, document.getElementById('earth-interaction'));
   controls.enableDamping = true;
   controls.dampingFactor = 0.05;
   controls.minDistance = window.innerWidth <= 768 ? 18 : 10;
   controls.maxDistance = window.innerWidth <= 768 ? 84 : 56;
   controls.enablePan = false;
+  controls.enableZoom = true;
+  controls.enableRotate = true;
   controls.target.set(0, 0, 0);
 
-  // UI层不阻止地球交互 - 但点击UI时禁用controls
-  const uiSelectors = '.cards-container, .search-section, .navbar, .city-card, .stats-panel, .navbar-menu-panel, .navbar-menu-overlay';
-  document.addEventListener('mousedown', (e) => {
-    if (e.target.closest(uiSelectors)) {
-      controls.enabled = false;
-    }
-  });
-  document.addEventListener('mouseup', () => { controls.enabled = true; });
-
-  // 射线检测
-  const raycaster = new THREE.Raycaster();
-  const mouse = new THREE.Vector2();
-
-  // 鼠标移动不做tooltip显示，只有点击才显示卡片
-  // window.addEventListener('pointermove', ...); // 已禁用
+  // UI层阻止地球交互
+  const uiOverlay = document.querySelector('.ui-overlay');
+  const uiLayer = uiOverlay ? uiOverlay.querySelectorAll('a, button, .nav-item, .publish-btn, .search-section, .cards-container, .city-card, .stats-panel') : [];
 
   // 城市点击
   window.addEventListener('click', (event) => {
@@ -979,7 +970,7 @@ function focusChinaAnimation() {
   if (markerGroup) markerGroup.rotation.y = targetRotation;
 
   const startPos = { x: 0, y: 10, z: 40 };
-  const endPos = { x: 0, y: 0.8, z: 12 };
+  const endPos = { x: 0, y: 2, z: 18 };
   camera.position.set(startPos.x, startPos.y, startPos.z);
   controls.target.set(0.15, 0.12, 0);
   const duration = 3000;
@@ -1006,6 +997,9 @@ function focusChinaAnimation() {
       requestAnimationFrame(step);
     } else {
       animationComplete = true;
+      // 动画结束，恢复 controls target 到球心，确保旋转/缩放以球心为轴心
+      controls.target.set(0, 0, 0);
+      controls.update();
     }
   }
 
