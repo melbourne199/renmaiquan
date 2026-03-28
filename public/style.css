@@ -49,12 +49,8 @@ body {
   left: 0;
   width: 100%;
   height: 100%;
-  z-index: 5;
-  cursor: grab;
+  z-index: 20;
 }
-
-#earth-interaction:active {
-  cursor: grabbing;
 }
 
 /* ==================== Loading ==================== */
@@ -1034,13 +1030,13 @@ body {
     top: 0; left: 0;
     width: 100%; height: 100%;
     z-index: 1;
-    pointer-events: none;
+    pointer-events: auto;
     background-color: var(--bg-deep);
   }
 
   /* 地球交互层 */
   #earth-interaction {
-    z-index: 5;
+    z-index: 20;
   }
 
   .ui-overlay {
@@ -1048,7 +1044,6 @@ body {
     top: 0; left: 0;
     width: 100%; height: 100%;
     z-index: 10;
-    pointer-events: none;
   }
   .ui-overlay > * { pointer-events: auto; }
 
