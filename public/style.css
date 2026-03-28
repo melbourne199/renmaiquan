@@ -49,8 +49,7 @@ body {
   left: 0;
   width: 100%;
   height: 100%;
-  z-index: 20;
-}
+  z-index: 2;
 }
 
 /* ==================== Loading ==================== */
@@ -1036,7 +1035,7 @@ body {
 
   /* 地球交互层 */
   #earth-interaction {
-    z-index: 20;
+    z-index: 2;
   }
 
   .ui-overlay {
