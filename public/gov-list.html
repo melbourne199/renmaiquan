@@ -99,7 +99,7 @@
       <h1 class="page-title">政企资源</h1>
       <div class="level-tags">
         <span class="level-tag active" data-level="all">全部</span>
-        <span class="level-tag" data-level="国家级">国家级</span>
+        <span class="level-tag" data-level="顶层">顶层</span>
         <span class="level-tag" data-level="省级">省级</span>
         <span class="level-tag" data-level="市级">市级</span>
         <span class="level-tag" data-level="区级">区县级</span>
@@ -127,7 +127,7 @@
     }
 
     function getLevelClass(level) {
-      switch (level) { case '国家级': return 'level-national'; case '省级': return 'level-provincial'; case '市级': return 'level-city'; default: return 'level-district'; }
+      switch (level) { case '顶层': return 'level-national'; case '省级': return 'level-provincial'; case '市级': return 'level-city'; default: return 'level-district'; }
     }
 
     function getTimeAgo(dateStr) {

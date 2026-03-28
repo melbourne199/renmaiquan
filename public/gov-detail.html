@@ -1,19 +1,623 @@
 <!DOCTYPE html>
-<html>
-<head><title>政务信息详情</title>
-<style>body{font-family:system-ui;padding:16px;background:#f5f5f7;}.tag{background:#1e7e34;color:white;padding:2px 8px;border-radius:12px;}.card{background:white;border-radius:20px;padding:20px;}</style>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>政务信息详情 - 资源夜市</title>
+  <style>
+    :root {
+      --bg-deep: #01060f;
+      --bg-card: rgba(90, 200, 250, 0.06);
+      --bg-card-hover: rgba(90, 200, 250, 0.12);
+      --border-card: rgba(90, 200, 250, 0.15);
+      --border-card-hover: rgba(90, 200, 250, 0.35);
+      --accent-blue: #5ac8fa;
+      --accent-blue-light: #72d2ff;
+      --accent-blue-dark: #0071E3;
+      --text-primary: rgba(228, 240, 252, 0.96);
+      --text-secondary: rgba(180, 200, 220, 0.75);
+      --text-muted: rgba(150, 180, 210, 0.6);
+      --gold: #F59E0B;
+      --gold-light: #FCD34D;
+      --success: #34C759;
+      --danger: #FF3B30;
+      --glass-blur: blur(20px);
+      --shadow-card: 0 12px 40px rgba(0, 0, 0, 0.4), 0 0 30px rgba(90, 200, 250, 0.08);
+      --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'PingFang SC', 'Microsoft YaHei', 'Helvetica Neue', sans-serif;
+      background: var(--bg-deep);
+      color: var(--text-primary);
+      min-height: 100vh;
+    }
+
+    /* ==================== 导航 ==================== */
+    .navbar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 12px 24px;
+      background: rgba(1, 6, 15, 0.8);
+      backdrop-filter: var(--glass-blur);
+      border-bottom: 1px solid var(--border-card);
+    }
+    .navbar-brand { display: flex; align-items: center; gap: 10px; color: var(--text-primary); text-decoration: none; font-size: 1.1rem; font-weight: 600; }
+    .navbar-links { display: flex; gap: 24px; }
+    .nav-link { color: var(--text-secondary); text-decoration: none; font-size: 0.9rem; cursor: pointer; transition: color 0.2s; }
+    .nav-link:hover, .nav-link.active { color: var(--accent-blue); }
+    .navbar-actions { display: flex; gap: 12px; }
+    .btn { padding: 8px 18px; border-radius: 20px; font-size: 0.85rem; cursor: pointer; transition: all 0.25s var(--ease-spring); border: none; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; }
+    .btn-primary { background: var(--accent-blue); color: #000; font-weight: 600; }
+    .btn-primary:hover { background: var(--accent-blue-light); transform: scale(1.02); }
+    .btn-outline { background: transparent; color: var(--accent-blue); border: 1px solid var(--border-card); }
+    .btn-outline:hover { border-color: var(--accent-blue); background: var(--bg-card); }
+
+    /* ==================== 容器 ==================== */
+    .container { max-width: 760px; margin: 0 auto; padding: 84px 20px 60px; }
+
+    /* 返回链接 */
+    .back-link {
+      display: inline-flex; align-items: center; gap: 6px;
+      color: var(--text-muted); text-decoration: none; font-size: 0.88rem;
+      margin-bottom: 24px; transition: color 0.2s;
+    }
+    .back-link:hover { color: var(--accent-blue); }
+
+    /* ==================== 头部区域 ==================== */
+    .detail-header {
+      background: var(--bg-card);
+      border: 1px solid var(--border-card);
+      border-radius: 24px;
+      padding: 28px;
+      margin-bottom: 20px;
+      position: relative;
+      overflow: hidden;
+      animation: fadeSlideIn 0.5s ease-out;
+    }
+    .detail-header::before {
+      content: '';
+      position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+      width: 60%; height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(90,200,250,0.3), transparent);
+    }
+
+    .header-top {
+      display: flex; align-items: center; gap: 12px;
+      margin-bottom: 16px; flex-wrap: wrap;
+    }
+
+    .type-badge {
+      padding: 5px 14px; border-radius: 20px;
+      font-size: 0.85rem; font-weight: 600; letter-spacing: 0.5px;
+    }
+    .type-supply { background: rgba(52, 199, 89, 0.18); color: var(--success); border: 1px solid rgba(52, 199, 89, 0.3); }
+    .type-demand { background: rgba(245, 158, 11, 0.18); color: var(--gold); border: 1px solid rgba(245, 158, 11, 0.3); }
+
+    .level-badge {
+      padding: 5px 14px; border-radius: 20px;
+      font-size: 0.82rem; font-weight: 600;
+    }
+    .level-a { background: rgba(214, 178, 110, 0.2); color: var(--gold); border: 1px solid rgba(214, 178, 110, 0.3); }
+    .level-b { background: rgba(90, 200, 250, 0.15); color: var(--accent-blue); border: 1px solid rgba(90, 200, 250, 0.2); }
+    .level-c { background: rgba(150, 180, 210, 0.15); color: var(--text-muted); border: 1px solid rgba(150, 180, 210, 0.2); }
+
+    .detail-title {
+      font-size: 1.5rem; font-weight: 700;
+      margin-bottom: 8px; line-height: 1.4;
+      background: linear-gradient(135deg, #fff 0%, #a8d4f5 100%);
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+    }
+
+    .detail-business {
+      font-size: 1rem; color: var(--accent-blue);
+      font-weight: 500; margin-bottom: 4px;
+    }
+
+    .detail-meta {
+      font-size: 0.85rem; color: var(--text-muted);
+      display: flex; gap: 16px; flex-wrap: wrap;
+    }
+
+    /* ==================== 信息卡片组 ==================== */
+    .info-grid {
+      display: grid; grid-template-columns: repeat(2, 1fr);
+      gap: 14px; margin-bottom: 20px;
+    }
+
+    .info-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-card);
+      border-radius: 16px;
+      padding: 18px;
+      transition: all 0.25s;
+      animation: fadeSlideIn 0.5s ease-out both;
+    }
+    .info-card:nth-child(1) { animation-delay: 0.05s; }
+    .info-card:nth-child(2) { animation-delay: 0.1s; }
+    .info-card:nth-child(3) { animation-delay: 0.15s; }
+    .info-card:nth-child(4) { animation-delay: 0.2s; }
+    .info-card:nth-child(5) { animation-delay: 0.25s; }
+    .info-card:nth-child(6) { animation-delay: 0.3s; }
+
+    .info-card:hover { border-color: var(--border-card-hover); }
+
+    .info-label {
+      font-size: 0.82rem; color: var(--text-muted);
+      margin-bottom: 6px; display: flex; align-items: center; gap: 6px;
+    }
+    .info-label-icon { font-size: 0.9rem; }
+
+    .info-value {
+      font-size: 1.05rem; font-weight: 600; color: var(--text-primary);
+    }
+    .info-value.stars { color: var(--gold); letter-spacing: 2px; }
+    .info-value.has { color: var(--success); }
+    .info-value.expired { color: var(--danger); }
+
+    /* ==================== 详细说明 ==================== */
+    .detail-section {
+      background: var(--bg-card);
+      border: 1px solid var(--border-card);
+      border-radius: 20px;
+      padding: 24px;
+      margin-bottom: 20px;
+      animation: fadeSlideIn 0.5s ease-out 0.35s both;
+    }
+    .section-title {
+      font-size: 0.95rem; font-weight: 600; color: var(--text-secondary);
+      margin-bottom: 14px; display: flex; align-items: center; gap: 8px;
+    }
+    .section-content {
+      font-size: 0.95rem; color: var(--text-primary);
+      line-height: 1.8; white-space: pre-wrap;
+    }
+
+    /* ==================== CTA 按钮 ==================== */
+    .cta-section {
+      animation: fadeSlideIn 0.5s ease-out 0.4s both;
+    }
+    .cta-btn {
+      width: 100%; padding: 18px;
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-blue-dark));
+      border: none; border-radius: 16px;
+      color: #fff; font-size: 1.05rem; font-weight: 700;
+      cursor: pointer; letter-spacing: 1px;
+      transition: all 0.3s var(--ease-spring);
+      box-shadow: 0 8px 30px rgba(90, 200, 250, 0.3);
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+    }
+    .cta-btn:hover {
+      transform: translateY(-2px) scale(1.01);
+      box-shadow: 0 12px 40px rgba(90, 200, 250, 0.4);
+    }
+    .cta-btn:active { transform: translateY(0) scale(0.98); }
+
+    .cta-hint {
+      text-align: center; margin-top: 10px;
+      font-size: 0.82rem; color: var(--text-muted);
+    }
+
+    /* ==================== 联系方式弹窗 ==================== */
+    .contact-overlay {
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(8px);
+      z-index: 1000;
+      display: flex; align-items: center; justify-content: center;
+      padding: 20px;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+    .contact-overlay.open { opacity: 1; pointer-events: auto; }
+
+    .contact-card {
+      background: rgba(2, 12, 28, 0.95);
+      border: 1px solid var(--border-card-hover);
+      border-radius: 28px;
+      padding: 0;
+      max-width: 420px;
+      width: 100%;
+      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6), 0 0 60px rgba(90, 200, 250, 0.1);
+      transform: scale(0.9) translateY(20px);
+      transition: transform 0.4s var(--ease-spring);
+      overflow: hidden;
+      position: relative;
+    }
+    .contact-overlay.open .contact-card {
+      transform: scale(1) translateY(0);
+    }
+
+    /* 卡片顶部光效 */
+    .contact-card::before {
+      content: '';
+      position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+      width: 70%; height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(90,200,250,0.5), transparent);
+    }
+
+    .contact-card-header {
+      padding: 24px 24px 0;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .contact-card-title {
+      font-size: 1.1rem; font-weight: 600;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .contact-close {
+      width: 34px; height: 34px; border-radius: 50%;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      color: var(--text-muted); font-size: 1.1rem;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      transition: all 0.25s;
+    }
+    .contact-close:hover {
+      background: rgba(255,255,255,0.12); color: #fff;
+      transform: rotate(90deg);
+    }
+
+    .contact-card-body { padding: 20px 24px 24px; }
+
+    /* 联系人信息行 */
+    .contact-row {
+      display: flex; align-items: center; gap: 14px;
+      padding: 14px 16px;
+      background: rgba(90, 200, 250, 0.04);
+      border: 1px solid rgba(90, 200, 250, 0.08);
+      border-radius: 14px;
+      margin-bottom: 12px;
+      transition: all 0.2s;
+    }
+    .contact-row:hover { border-color: rgba(90, 200, 250, 0.2); background: rgba(90, 200, 250, 0.08); }
+    .contact-row:last-child { margin-bottom: 0; }
+
+    .contact-row-icon {
+      width: 40px; height: 40px; border-radius: 12px;
+      background: linear-gradient(135deg, rgba(90,200,250,0.15), rgba(90,200,250,0.05));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem; flex-shrink: 0;
+    }
+
+    .contact-row-info { flex: 1; min-width: 0; }
+    .contact-row-label {
+      font-size: 0.82rem; color: var(--text-muted); margin-bottom: 2px;
+    }
+    .contact-row-value {
+      font-size: 0.95rem; font-weight: 500; color: var(--text-primary);
+      word-break: break-all;
+    }
+
+    .contact-copy-btn {
+      padding: 6px 14px; border-radius: 10px;
+      background: rgba(90, 200, 250, 0.12); border: 1px solid rgba(90, 200, 250, 0.2);
+      color: var(--accent-blue); font-size: 0.82rem; font-weight: 500;
+      cursor: pointer; transition: all 0.2s; white-space: nowrap;
+    }
+    .contact-copy-btn:hover { background: rgba(90, 200, 250, 0.2); }
+    .contact-copy-btn.copied { background: rgba(52,199,89,0.15); color: var(--success); border-color: rgba(52,199,89,0.3); }
+
+    /* 会员提示 */
+    .contact-login-hint {
+      text-align: center; padding: 32px 20px;
+    }
+    .contact-login-icon { font-size: 2.5rem; margin-bottom: 14px; opacity: 0.6; }
+    .contact-login-text {
+      font-size: 0.95rem; color: var(--text-secondary); margin-bottom: 20px; line-height: 1.6;
+    }
+    .contact-login-actions { display: flex; gap: 12px; justify-content: center; }
+
+    /* 隐私提醒 */
+    .contact-privacy {
+      margin-top: 16px; padding: 12px 16px;
+      background: rgba(90, 200, 250, 0.06);
+      border: 1px solid rgba(90, 200, 250, 0.1);
+      border-radius: 12px;
+      font-size: 0.82rem; color: var(--text-muted); line-height: 1.5;
+      display: flex; align-items: flex-start; gap: 8px;
+    }
+
+    /* ==================== 免责 ==================== */
+    .disclaimer {
+      text-align: center; margin-top: 32px; padding-top: 20px;
+      border-top: 1px solid var(--border-card);
+      font-size: 0.82rem; color: var(--text-muted); line-height: 1.6;
+    }
+
+    /* ==================== Toast ==================== */
+    .toast {
+      position: fixed; top: 80px; left: 50%;
+      transform: translateX(-50%) translateY(-20px);
+      padding: 12px 24px;
+      background: rgba(0, 0, 0, 0.9);
+      border: 1px solid var(--border-card);
+      border-radius: 30px;
+      font-size: 0.9rem; color: var(--text-primary);
+      opacity: 0; transition: all 0.3s; z-index: 2000;
+    }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+    .toast.success { border-color: var(--success); color: var(--success); }
+
+    /* ==================== 动画 ==================== */
+    @keyframes fadeSlideIn {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ==================== 响应式 ==================== */
+    @media (max-width: 800px) {
+      .navbar-links { display: none; }
+      .info-grid { grid-template-columns: 1fr; }
+      .detail-title { font-size: 1.25rem; }
+    }
+  </style>
 </head>
 <body>
-    <h2>广东省-深圳市-南山区</h2>
-    <div class="card">
-        <span class="tag">供</span>
-        <p><strong>业务层面：</strong>税务</p>
-        <p><strong>级别代号：</strong>A级</p>
-        <p><strong>熟悉程度：</strong>★★</p>
-        <p><strong>合作案例：</strong>有</p>
-        <p><strong>有效期：</strong>2025-12-31</p>
-        <p><strong>发布时间：</strong>2026-03-06</p>
+  <nav class="navbar">
+    <a href="index.html" class="navbar-brand"><span>🌌</span><span>资源夜市</span></a>
+    <div class="navbar-links">
+      <a href="index.html" class="nav-link">首页</a>
+      <a href="groups.html" class="nav-link">行业群码</a>
+      <a href="gov-list.html" class="nav-link active">政企资源</a>
+      <a href="help-detail.html" class="nav-link">最新求助</a>
+      <a href="finance.html" class="nav-link">民企金融</a>
+      <a href="escort.html" class="nav-link">居间护航</a>
+      <a href="case-list.html" class="nav-link">资源案例</a>
     </div>
-    <button style="width:100%;padding:16px;background:#0071E3;color:white;border:none;border-radius:30px;">🔑 查看联系方式</button>
+    <div class="navbar-actions">
+      <a href="login.html" class="btn btn-outline">登录</a>
+      <a href="register.html" class="btn btn-primary">注册</a>
+    </div>
+  </nav>
+
+  <div class="container">
+    <a href="gov-list.html" class="back-link">← 返回政企资源</a>
+
+    <!-- 头部 -->
+    <div class="detail-header">
+      <div class="header-top">
+        <span class="type-badge type-supply" id="typeBadge">供</span>
+        <span class="level-badge level-a" id="levelBadge">A级</span>
+      </div>
+      <div class="detail-title" id="detailTitle">广东省 · 深圳市 · 南山区</div>
+      <div class="detail-business" id="detailBusiness">税务</div>
+      <div class="detail-meta">
+        <span id="detailTime">发布于 2026-03-06</span>
+        <span id="detailExpiry">有效期至 2025-12-31</span>
+      </div>
+    </div>
+
+    <!-- 信息卡片 -->
+    <div class="info-grid">
+      <div class="info-card">
+        <div class="info-label"><span class="info-label-icon">📍</span>所在区域</div>
+        <div class="info-value" id="infoRegion">广东省 · 深圳市 · 南山区</div>
+      </div>
+      <div class="info-card">
+        <div class="info-label"><span class="info-label-icon">💼</span>业务层面</div>
+        <div class="info-value" id="infoBusiness">税务</div>
+      </div>
+      <div class="info-card">
+        <div class="info-label"><span class="info-label-icon">🏅</span>级别代号</div>
+        <div class="info-value" id="infoLevel">A级</div>
+      </div>
+      <div class="info-card">
+        <div class="info-label"><span class="info-label-icon">⭐</span>熟悉程度</div>
+        <div class="info-value stars" id="infoFamiliarity">★★</div>
+      </div>
+      <div class="info-card">
+        <div class="info-label"><span class="info-label-icon">🤝</span>合作案例</div>
+        <div class="info-value has" id="infoCooperation">有</div>
+      </div>
+      <div class="info-card">
+        <div class="info-label"><span class="info-label-icon">⏰</span>有效期</div>
+        <div class="info-value" id="infoExpiry">2025-12-31</div>
+      </div>
+    </div>
+
+    <!-- 详细说明 -->
+    <div class="detail-section" id="descSection" style="display:none;">
+      <div class="section-title">📋 详细说明</div>
+      <div class="section-content" id="descContent"></div>
+    </div>
+
+    <!-- CTA -->
+    <div class="cta-section">
+      <button class="cta-btn" onclick="showContact()">
+        🔑 查看联系方式
+      </button>
+      <div class="cta-hint">仅认证会员可查看完整联系信息</div>
+    </div>
+
+    <div class="disclaimer">
+      平台仅提供信息展示，不参与具体交易<br>
+      内容由发布者自行负责，请自行核实
+    </div>
+  </div>
+
+  <!-- 联系方式弹窗 -->
+  <div class="contact-overlay" id="contactOverlay" onclick="closeContact(event)">
+    <div class="contact-card" onclick="event.stopPropagation()">
+      <div class="contact-card-header">
+        <div class="contact-card-title">🔑 联系方式</div>
+        <button class="contact-close" onclick="closeContactDirect()">×</button>
+      </div>
+      <div class="contact-card-body" id="contactBody">
+        <!-- 已登录状态 -->
+        <div id="contactInfo" style="display:none;">
+          <div class="contact-row">
+            <div class="contact-row-icon">📧</div>
+            <div class="contact-row-info">
+              <div class="contact-row-label">邮箱</div>
+              <div class="contact-row-value" id="contactEmail">请联系管理员获取</div>
+            </div>
+            <button class="contact-copy-btn" onclick="copyText(this, 'contactEmail')">复制</button>
+          </div>
+          <div class="contact-row">
+            <div class="contact-row-icon">💬</div>
+            <div class="contact-row-info">
+              <div class="contact-row-label">微信</div>
+              <div class="contact-row-value" id="contactWechat">请联系管理员获取</div>
+            </div>
+            <button class="contact-copy-btn" onclick="copyText(this, 'contactWechat')">复制</button>
+          </div>
+          <div class="contact-row">
+            <div class="contact-row-icon">👤</div>
+            <div class="contact-row-info">
+              <div class="contact-row-label">对接人</div>
+              <div class="contact-row-value" id="contactName">平台管理员代转</div>
+            </div>
+          </div>
+          <div class="contact-privacy">
+            🔒 联系方式已脱敏处理，仅用于本次对接。请勿外传。
+          </div>
+        </div>
+
+        <!-- 未登录状态 -->
+        <div id="contactLoginHint" style="display:none;">
+          <div class="contact-login-hint">
+            <div class="contact-login-icon">🔐</div>
+            <div class="contact-login-text">
+              登录后即可查看联系方式<br>
+              未注册用户请先注册账号
+            </div>
+            <div class="contact-login-actions">
+              <a href="login.html" class="btn btn-primary">立即登录</a>
+              <a href="register.html" class="btn btn-outline">免费注册</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const token = localStorage.getItem('token');
+    const params = new URLSearchParams(window.location.search);
+    const resourceId = params.get('id');
+
+    // 加载资源详情
+    async function loadDetail() {
+      if (!resourceId) return;
+      try {
+        const res = await fetch('/api/government');
+        if (!res.ok) return;
+        const list = await res.json();
+        const item = list.find(r => r.id == resourceId);
+        if (!item) return;
+
+        // 填充数据
+        const region = [item.province, item.city, item.district].filter(Boolean).join(' · ');
+        document.getElementById('detailTitle').textContent = region || '政务资源详情';
+        document.getElementById('infoRegion').textContent = region;
+
+        if (item.business_type) {
+          document.getElementById('detailBusiness').textContent = item.business_type;
+          document.getElementById('infoBusiness').textContent = item.business_type;
+        }
+
+        if (item.level_code) {
+          document.getElementById('levelBadge').textContent = item.level_code;
+          document.getElementById('infoLevel').textContent = item.level_code;
+          const lvl = item.level_code.charAt(0).toUpperCase();
+          document.getElementById('levelBadge').className = 'level-badge level-' + (lvl === 'A' ? 'a' : lvl === 'B' ? 'b' : 'c');
+        }
+
+        if (item.familiarity) {
+          const stars = item.familiarity === '非常熟悉' ? '★★★' : item.familiarity === '比较熟悉' ? '★★' : '★';
+          document.getElementById('infoFamiliarity').textContent = stars;
+        }
+
+        if (item.cooperation_examples) {
+          document.getElementById('infoCooperation').textContent = item.cooperation_examples;
+          document.getElementById('infoCooperation').className = 'info-value' + (item.cooperation_examples === '有' ? ' has' : '');
+        }
+
+        if (item.expiry_date) {
+          const exp = item.expiry_date.split('T')[0];
+          document.getElementById('infoExpiry').textContent = exp;
+          document.getElementById('detailExpiry').textContent = '有效期至 ' + exp;
+          if (new Date(exp) < new Date()) {
+            document.getElementById('infoExpiry').classList.add('expired');
+          }
+        }
+
+        if (item.created_at) {
+          document.getElementById('detailTime').textContent = '发布于 ' + item.created_at.split('T')[0];
+        }
+
+        if (item.description) {
+          document.getElementById('descSection').style.display = 'block';
+          document.getElementById('descContent').textContent = item.description;
+        }
+
+        // 联系信息
+        if (item.contact_email) document.getElementById('contactEmail').textContent = item.contact_email;
+        if (item.contact_wechat) document.getElementById('contactWechat').textContent = item.contact_wechat;
+        if (item.contact_name) document.getElementById('contactName').textContent = item.contact_name;
+
+      } catch (e) {
+        // 使用页面默认的示例数据
+      }
+    }
+
+    loadDetail();
+
+    // 显示联系方式弹窗
+    function showContact() {
+      const overlay = document.getElementById('contactOverlay');
+      if (token) {
+        document.getElementById('contactInfo').style.display = 'block';
+        document.getElementById('contactLoginHint').style.display = 'none';
+      } else {
+        document.getElementById('contactInfo').style.display = 'none';
+        document.getElementById('contactLoginHint').style.display = 'block';
+      }
+      overlay.classList.add('open');
+    }
+
+    function closeContact(e) {
+      if (e.target === e.currentTarget) {
+        document.getElementById('contactOverlay').classList.remove('open');
+      }
+    }
+
+    function closeContactDirect() {
+      document.getElementById('contactOverlay').classList.remove('open');
+    }
+
+    // 复制文本
+    function copyText(btn, valueId) {
+      const text = document.getElementById(valueId).textContent;
+      if (text === '请联系管理员获取') {
+        showToast('请联系管理员获取联系方式');
+        return;
+      }
+      navigator.clipboard.writeText(text).then(() => {
+        btn.textContent = '已复制';
+        btn.classList.add('copied');
+        showToast('已复制到剪贴板', 'success');
+        setTimeout(() => { btn.textContent = '复制'; btn.classList.remove('copied'); }, 2000);
+      }).catch(() => {
+        showToast('复制失败，请手动复制');
+      });
+    }
+
+    function showToast(msg, type = '') {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.className = 'toast ' + type + ' show';
+      setTimeout(() => { toast.className = 'toast'; }, 2500);
+    }
+
+    // ESC关闭弹窗
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') closeContactDirect();
+    });
+  </script>
 </body>
 </html>

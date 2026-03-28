@@ -1,19 +1,116 @@
 <!DOCTYPE html>
-<html>
-<head><title>消息中心</title>
-<style>body{font-family:system-ui;padding:16px;background:#f5f5f7;}.msg{background:white;border-radius:16px;padding:12px;margin-bottom:12px;}.unread{background:#f0f7ff;border-left:3px solid #0071E3;}</style>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>消息 - 资源夜市</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif; background: #f5f5f7; color: #1d1d1f; min-height: 100vh; }
+    .topbar { position: sticky; top: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 12px 20px; background: rgba(255,255,255,0.92); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(0,0,0,0.06); }
+    .topbar-brand { display: flex; align-items: center; gap: 8px; text-decoration: none; color: #1d1d1f; font-weight: 600; font-size: 1rem; }
+    .topbar-brand-icon { font-size: 1.2rem; }
+    .topbar-nav { display: flex; gap: 20px; align-items: center; }
+    .topbar-nav a { text-decoration: none; color: #86868b; font-size: 0.9rem; transition: color 0.2s; }
+    .topbar-nav a:hover { color: #0071E3; }
+    .topbar-nav a.active { color: #0071E3; font-weight: 600; }
+    .topbar-more { background: none; border: none; padding: 6px; cursor: pointer; font-size: 1.2rem; color: #86868b; }
+    .tabs { display: flex; background: white; padding: 0 16px; border-bottom: 1px solid rgba(0,0,0,0.06); }
+    .tab { flex: 1; padding: 14px 0; text-align: center; font-size: 0.9rem; color: #86868b; cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.2s; }
+    .tab.active { color: #0071E3; border-bottom-color: #0071E3; font-weight: 600; }
+    .message-list { background: white; }
+    .message-item { display: flex; align-items: flex-start; gap: 12px; padding: 14px 16px; border-bottom: 1px solid rgba(0,0,0,0.04); cursor: pointer; transition: background 0.15s; }
+    .message-item:hover { background: rgba(0,0,0,0.02); }
+    .message-item:last-child { border-bottom: none; }
+    .msg-avatar { width: 44px; height: 44px; border-radius: 50%; background: linear-gradient(135deg, #5ac8fa, #0071E3); display: flex; align-items: center; justify-content: center; font-size: 1rem; color: white; flex-shrink: 0; }
+    .msg-content { flex: 1; min-width: 0; }
+    .msg-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 4px; }
+    .msg-name { font-size: 0.95rem; font-weight: 600; }
+    .msg-time { font-size: 0.75rem; color: #c7c7cc; }
+    .msg-text { font-size: 0.85rem; color: #86868b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .msg-unread { width: 8px; height: 8px; border-radius: 50%; background: #0071E3; flex-shrink: 0; margin-top: 6px; }
+    .empty-state { text-align: center; padding: 60px 20px; color: #c7c7cc; }
+    .empty-icon { font-size: 3rem; margin-bottom: 12px; }
+    .empty-text { font-size: 0.9rem; }
+  </style>
 </head>
 <body>
-    <h2>消息中心</h2>
-    <div class="msg unread">
-        <div style="font-weight:600;">群码审核通过</div>
-        <div style="font-size:0.8rem;color:#999;">您发布的「深圳互联网交流群」已通过审核</div>
-        <div style="font-size:0.7rem;color:#999;margin-top:4px;">10:30</div>
+  <!-- 顶部导航 -->
+  <div class="topbar">
+    <a href="index.html" class="topbar-brand">
+      <span class="topbar-brand-icon">🌌</span>
+      资源夜市
+    </a>
+    <div class="topbar-nav">
+      <a href="index.html">首页</a>
+      <a href="publish-enterprise-supply.html">发布</a>
+      <a href="settings.html">设置</a>
+      <a href="#" class="active">消息</a>
     </div>
-    <div class="msg">
-        <div style="font-weight:600;">引荐成交通知</div>
-        <div style="font-size:0.8rem;color:#999;">您引荐的项目已成交，获得佣金¥15,000</div>
-        <div style="font-size:0.7rem;color:#999;margin-top:4px;">昨天</div>
+    <button class="topbar-more">⋮</button>
+  </div>
+
+  <!-- 消息标签 -->
+  <div class="tabs">
+    <div class="tab active">通知</div>
+    <div class="tab">私信</div>
+    <div class="tab">系统</div>
+  </div>
+
+  <!-- 消息列表 -->
+  <div class="message-list">
+    <div class="message-item">
+      <div class="msg-avatar">🔔</div>
+      <div class="msg-content">
+        <div class="msg-header">
+          <span class="msg-name">系统通知</span>
+          <span class="msg-time">今天 14:32</span>
+        </div>
+        <div class="msg-text">您的居间护航订单已确认，服务费¥2,000已到账</div>
+      </div>
+      <div class="msg-unread"></div>
     </div>
+    <div class="message-item">
+      <div class="msg-avatar">🤝</div>
+      <div class="msg-content">
+        <div class="msg-header">
+          <span class="msg-name">资源匹配通知</span>
+          <span class="msg-time">今天 11:20</span>
+        </div>
+        <div class="msg-text">有3条新资源匹配您的需求：深圳市市场监督管理局、广州市商务局...</div>
+      </div>
+      <div class="msg-unread"></div>
+    </div>
+    <div class="message-item">
+      <div class="msg-avatar">💰</div>
+      <div class="msg-content">
+        <div class="msg-header">
+          <span class="msg-name">收款通知</span>
+          <span class="msg-time">昨天 18:05</span>
+        </div>
+        <div class="msg-text">您的好友通过您引荐，成功对接XX企业，项目服务费¥5,000已转入</div>
+      </div>
+    </div>
+    <div class="message-item">
+      <div class="msg-avatar">⭐</div>
+      <div class="msg-content">
+        <div class="msg-header">
+          <span class="msg-name">会员权益</span>
+          <span class="msg-time">3天前</span>
+        </div>
+        <div class="msg-text">您的会员即将到期，续费可享8折优惠，最高可节省¥800</div>
+      </div>
+    </div>
+    <div class="message-item">
+      <div class="msg-avatar">📋</div>
+      <div class="msg-content">
+        <div class="msg-header">
+          <span class="msg-name">实名认证审核</span>
+          <span class="msg-time">上周</span>
+        </div>
+        <div class="msg-text">恭喜！您的实名认证已通过，认证等级：L2</div>
+      </div>
+    </div>
+  </div>
 </body>
 </html>

@@ -1,21 +1,154 @@
 <!DOCTYPE html>
-<html>
-<head><title>设置</title>
-<style>body{font-family:system-ui;padding:16px;background:#f5f5f7;}.section{background:white;border-radius:16px;margin-bottom:16px;}.item{padding:16px;border-bottom:1px solid #eee;}</style>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>设置 - 资源夜市</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif; background: #f5f5f7; color: #1d1d1f; min-height: 100vh; }
+    .topbar { position: sticky; top: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 12px 20px; background: rgba(255,255,255,0.92); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(0,0,0,0.06); }
+    .topbar-brand { display: flex; align-items: center; gap: 8px; text-decoration: none; color: #1d1d1f; font-weight: 600; font-size: 1rem; }
+    .topbar-brand-icon { font-size: 1.2rem; }
+    .topbar-nav { display: flex; gap: 20px; align-items: center; }
+    .topbar-nav a { text-decoration: none; color: #86868b; font-size: 0.9rem; transition: color 0.2s; }
+    .topbar-nav a:hover { color: #0071E3; }
+    .topbar-nav a.active { color: #0071E3; font-weight: 600; }
+    .topbar-more { background: none; border: none; padding: 6px; cursor: pointer; font-size: 1.2rem; color: #86868b; }
+    .page-content { padding: 20px 16px; max-width: 600px; margin: 0 auto; }
+    .user-card { background: white; border-radius: 16px; padding: 20px; margin-bottom: 16px; display: flex; align-items: center; gap: 14px; }
+    .avatar { width: 56px; height: 56px; border-radius: 50%; background: linear-gradient(135deg, #5ac8fa, #0071E3); display: flex; align-items: center; justify-content: center; font-size: 1.4rem; color: white; font-weight: 600; }
+    .user-info { flex: 1; }
+    .user-name { font-size: 1.05rem; font-weight: 600; margin-bottom: 2px; }
+    .user-id { font-size: 0.8rem; color: #86868b; }
+    .section { background: white; border-radius: 16px; margin-bottom: 16px; overflow: hidden; }
+    .section-title { padding: 14px 18px 8px; font-size: 0.8rem; color: #86868b; font-weight: 500; }
+    .item { display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; border-bottom: 1px solid rgba(0,0,0,0.04); cursor: pointer; transition: background 0.15s; }
+    .item:last-child { border-bottom: none; }
+    .item:hover { background: rgba(0,0,0,0.02); }
+    .item-left { display: flex; align-items: center; gap: 10px; }
+    .item-icon { font-size: 1.1rem; }
+    .item-label { font-size: 0.95rem; }
+    .item-arrow { color: #c7c7cc; font-size: 0.9rem; }
+    .item-value { color: #86868b; font-size: 0.9rem; margin-right: 6px; }
+    .version { text-align: center; padding: 24px; color: #c7c7cc; font-size: 0.8rem; }
+  </style>
 </head>
 <body>
-    <h2>设置</h2>
-    <div class="section">
-        <div class="item">修改密码</div>
-        <div class="item">绑定手机 138****1234</div>
+  <!-- 顶部导航 -->
+  <div class="topbar">
+    <a href="index.html" class="topbar-brand">
+      <span class="topbar-brand-icon">🌌</span>
+      资源夜市
+    </a>
+    <div class="topbar-nav">
+      <a href="index.html">首页</a>
+      <a href="publish-enterprise-supply.html">发布</a>
+      <a href="#" class="active">设置</a>
+      <a href="messages.html">消息</a>
     </div>
-    <div class="section">
-        <div class="item">提现管理 可提现 ¥2,560</div>
-        <div class="item">银行卡管理 2张已绑定</div>
+    <button class="topbar-more">⋮</button>
+  </div>
+
+  <div class="page-content">
+    <!-- 用户卡片 -->
+    <div class="user-card">
+      <div class="avatar">M</div>
+      <div class="user-info">
+        <div class="user-name">Mel Bourne</div>
+        <div class="user-id">ID: 10001</div>
+      </div>
     </div>
+
+    <!-- 账号设置 -->
     <div class="section">
-        <div class="item">会员升级 普通会员</div>
-        <div class="item">权益说明</div>
+      <div class="section-title">账号</div>
+      <div class="item">
+        <div class="item-left">
+          <span class="item-icon">🔐</span>
+          <span class="item-label">修改密码</span>
+        </div>
+        <span class="item-arrow">›</span>
+      </div>
+      <div class="item">
+        <div class="item-left">
+          <span class="item-icon">📱</span>
+          <span class="item-label">绑定手机</span>
+        </div>
+        <span class="item-value">138****1234</span>
+        <span class="item-arrow">›</span>
+      </div>
+      <div class="item">
+        <div class="item-left">
+          <span class="item-icon">✉️</span>
+          <span class="item-label">绑定邮箱</span>
+        </div>
+        <span class="item-value">未绑定</span>
+        <span class="item-arrow">›</span>
+      </div>
     </div>
+
+    <!-- 财务 -->
+    <div class="section">
+      <div class="section-title">财务</div>
+      <div class="item">
+        <div class="item-left">
+          <span class="item-icon">💰</span>
+          <span class="item-label">提现管理</span>
+        </div>
+        <span class="item-value">可提现 ¥2,560</span>
+        <span class="item-arrow">›</span>
+      </div>
+      <div class="item">
+        <div class="item-left">
+          <span class="item-icon">🏦</span>
+          <span class="item-label">银行卡管理</span>
+        </div>
+        <span class="item-value">2张已绑定</span>
+        <span class="item-arrow">›</span>
+      </div>
+    </div>
+
+    <!-- 会员 -->
+    <div class="section">
+      <div class="section-title">会员</div>
+      <div class="item">
+        <div class="item-left">
+          <span class="item-icon">⭐</span>
+          <span class="item-label">会员升级</span>
+        </div>
+        <span class="item-value">普通会员</span>
+        <span class="item-arrow">›</span>
+      </div>
+      <div class="item">
+        <div class="item-left">
+          <span class="item-icon">📋</span>
+          <span class="item-label">权益说明</span>
+        </div>
+        <span class="item-arrow">›</span>
+      </div>
+    </div>
+
+    <!-- 部门管理 (新功能) -->
+    <div class="section">
+      <div class="section-title">系统管理</div>
+      <div class="item" onclick="location.href='dept.html'">
+        <div class="item-left">
+          <span class="item-icon">🏢</span>
+          <span class="item-label">部门管理</span>
+        </div>
+        <span class="item-arrow">›</span>
+      </div>
+      <div class="item" onclick="location.href='address-db.html'">
+        <div class="item-left">
+          <span class="item-icon">📍</span>
+          <span class="item-label">三级地址库</span>
+        </div>
+        <span class="item-arrow">›</span>
+      </div>
+    </div>
+
+    <div class="version">资源夜市 v1.0 · 粤ICP备2026032295号</div>
+  </div>
 </body>
 </html>
