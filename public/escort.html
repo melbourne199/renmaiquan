@@ -287,6 +287,7 @@
           <div class="quiz-dot active" id="dot1"></div>
           <div class="quiz-dot" id="dot2"></div>
           <div class="quiz-dot" id="dot3"></div>
+          <div class="quiz-dot" id="dot4"></div>
         </div>
 
         <!-- 问题1 -->
@@ -339,10 +340,11 @@
 
         <!-- 结果 -->
         <div class="quiz-step" id="stepResult">
+          <div class="tip-box gold">🎉 测完了！根据你的角色，选择下一步行动：</div>
           <div class="quiz-result" id="quizResult"></div>
           <div class="form-actions" style="margin-top:20px;justify-content:center;">
-            <button class="btn btn-primary" onclick="goCreateProject()">创建项目</button>
-            <button class="btn btn-outline" onclick="closeQuiz()">关闭</button>
+            <button class="btn btn-gold" onclick="goCreateProject()">🚀 创建项目发布</button>
+            <button class="btn btn-outline" onclick="closeQuiz()">返回</button>
           </div>
         </div>
       </div>
@@ -472,9 +474,11 @@
 
     function updateQuizUI() {
       document.querySelectorAll('.quiz-step').forEach(s => s.classList.remove('active'));
-      document.getElementById('step' + quizStep).classList.add('active');
+      const stepId = quizStep === 'result' ? 'stepResult' : 'step' + quizStep;
+      document.getElementById(stepId).classList.add('active');
+      const dotCount = quizStep === 'result' ? 4 : quizStep;
       document.querySelectorAll('.quiz-dot').forEach((d, i) => {
-        d.classList.toggle('active', i < quizStep);
+        d.classList.toggle('active', i < dotCount);
       });
     }
 
