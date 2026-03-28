@@ -858,10 +858,10 @@ function init() {
   // 地球
   const earthGeo = new THREE.SphereGeometry(5, 64, 64);
   const earthMat = new THREE.MeshPhongMaterial({
-    map: loader.load('https://unpkg.com/three-globe/example/img/earth-blue-marble.jpg'),
-    bumpMap: loader.load('https://unpkg.com/three-globe/example/img/earth-topology.png'),
+    map: loader.load('textures/earth-blue-marble.jpg'),
+    bumpMap: loader.load('textures/earth-topology.png'),
     bumpScale: 0.22,
-    specularMap: loader.load('https://unpkg.com/three-globe/example/img/earth-waterbodies.png'),
+    specularMap: loader.load('textures/earth-waterbodies.png'),
     specular: new THREE.Color(0x222222),
     shininess: 6,
     emissive: 0x0a1929,
@@ -874,16 +874,16 @@ function init() {
   // 大气层
   createAtmosphere();
 
-  // 云层
-  const cloudMat = new THREE.MeshPhongMaterial({
-    map: loader.load('https://unpkg.com/three-globe/example/img/earth-clouds.png'),
-    transparent: true,
-    opacity: 0.38,
-    blending: THREE.AdditiveBlending
-  });
-  clouds = new THREE.Mesh(new THREE.SphereGeometry(5.08, 64, 64), cloudMat);
-  clouds.rotation.y = CHINA_ROTATION_Y;
-  scene.add(clouds);
+  // 云层 (纹理URL失效，暂禁用)
+  // const cloudMat = new THREE.MeshPhongMaterial({
+  //   map: loader.load('textures/earth-clouds.png'),
+  //   transparent: true,
+  //   opacity: 0.38,
+  //   blending: THREE.AdditiveBlending
+  // });
+  // clouds = new THREE.Mesh(new THREE.SphereGeometry(5.08, 64, 64), cloudMat);
+  // clouds.rotation.y = CHINA_ROTATION_Y;
+  // scene.add(clouds);
 
   // 光源
   const sun = new THREE.DirectionalLight(0xffffff, 1.5);
@@ -1341,3 +1341,6 @@ window.addEventListener('keydown', (e) => {
     atmosphere.rotation.y += 0.1;
   }
 });
+
+// 启动地球
+init();
