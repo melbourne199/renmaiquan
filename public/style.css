@@ -811,6 +811,17 @@ body {
   color: rgba(150, 180, 210, 0.7);
 }
 
+.publish-item-notice {
+  font-size: 0.72rem;
+  color: rgba(90, 200, 250, 0.7);
+  margin-top: 5px;
+  line-height: 1.5;
+  padding: 5px 8px;
+  background: rgba(90, 200, 250, 0.05);
+  border-radius: 6px;
+  border-left: 2px solid rgba(90, 200, 250, 0.3);
+}
+
 .publish-menu-close {
   width: 100%;
   padding: 12px;
