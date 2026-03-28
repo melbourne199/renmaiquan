@@ -1,21 +1,452 @@
 <!DOCTYPE html>
-<html>
-<head><title>发布政务信息</title>
-<style>body{font-family:system-ui;padding:16px;background:#f5f5f7;}select{width:100%;padding:14px;border:1px solid #eee;border-radius:14px;margin-bottom:16px;}.btn{background:#0071E3;color:white;border:none;border-radius:30px;padding:16px;width:100%;}</style>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>发布政务信息 - 资源夜市</title>
+  <style>
+    :root {
+      --bg-deep: #01060f;
+      --bg-card: rgba(90, 200, 250, 0.06);
+      --bg-card-hover: rgba(90, 200, 250, 0.12);
+      --border-card: rgba(90, 200, 250, 0.15);
+      --border-card-hover: rgba(90, 200, 250, 0.35);
+      --accent-blue: #5ac8fa;
+      --accent-blue-light: #72d2ff;
+      --accent-blue-dark: #0071E3;
+      --text-primary: rgba(228, 240, 252, 0.96);
+      --text-secondary: rgba(180, 200, 220, 0.75);
+      --text-muted: rgba(150, 180, 210, 0.6);
+      --gold: #F59E0B;
+      --success: #34C759;
+      --danger: #FF3B30;
+      --glass-blur: blur(20px);
+      --shadow-card: 0 12px 40px rgba(0, 0, 0, 0.4), 0 0 30px rgba(90, 200, 250, 0.08);
+      --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'PingFang SC', 'Microsoft YaHei', 'Helvetica Neue', sans-serif;
+      background: var(--bg-deep);
+      color: var(--text-primary);
+      min-height: 100vh;
+      font-size: 0.95rem;
+    }
+
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      padding: 12px 24px;
+      background: rgba(1, 6, 15, 0.8);
+      backdrop-filter: var(--glass-blur);
+      border-bottom: 1px solid var(--border-card);
+    }
+
+    .navbar-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--text-primary);
+      text-decoration: none;
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+
+    .navbar-brand-icon { font-size: 1.4rem; }
+    .back-btn { margin-left: auto; color: var(--text-secondary); text-decoration: none; font-size: 0.9rem; cursor: pointer; }
+    .back-btn:hover { color: var(--accent-blue); }
+
+    .container { max-width: 640px; margin: 0 auto; padding: 84px 20px 40px; }
+    .page-title { font-size: 1.4rem; font-weight: 600; margin-bottom: 8px; }
+    .page-desc { color: var(--text-muted); font-size: 0.85rem; margin-bottom: 32px; }
+
+    .form-group { margin-bottom: 24px; }
+
+    .form-label {
+      display: block;
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+    }
+
+    .form-label .required { color: var(--danger); margin-left: 2px; }
+
+    .form-input, .form-select, .form-textarea {
+      width: 100%;
+      padding: 14px 16px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-card);
+      border-radius: 12px;
+      color: var(--text-primary);
+      font-size: 1rem;
+      transition: all 0.2s;
+      outline: none;
+    }
+
+    .form-input:focus, .form-select:focus, .form-textarea:focus {
+      border-color: var(--accent-blue);
+      box-shadow: 0 0 0 3px rgba(90, 200, 250, 0.15);
+    }
+
+    .form-textarea { min-height: 120px; resize: vertical; font-family: inherit; }
+
+    .form-select {
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%235ac8fa' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 16px center;
+      padding-right: 40px;
+    }
+
+    .form-select option { background: #0a1628; color: var(--text-primary); }
+    .form-select optgroup { background: #0a1628; color: var(--accent-blue); font-style: normal; font-weight: 600; }
+
+    .char-count {
+      text-align: right;
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      margin-top: 6px;
+    }
+
+    .warning-notice {
+      background: rgba(245, 158, 11, 0.1);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+      border-radius: 12px;
+      padding: 16px;
+      margin: 24px 0;
+      font-size: 0.85rem;
+      color: var(--gold);
+      line-height: 1.7;
+    }
+
+    .privacy-notice {
+      background: rgba(90, 200, 250, 0.08);
+      border: 1px solid rgba(90, 200, 250, 0.15);
+      border-radius: 12px;
+      padding: 16px;
+      margin: 24px 0;
+    }
+
+    .privacy-notice .title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: var(--accent-blue);
+    }
+
+    .privacy-notice .desc { font-size: 0.82rem; color: var(--text-muted); line-height: 1.6; }
+
+    .checkbox-group {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin: 20px 0;
+    }
+
+    .checkbox-group input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      margin-top: 2px;
+      accent-color: var(--accent-blue);
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .checkbox-group label {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      cursor: pointer;
+      line-height: 1.5;
+    }
+
+    .submit-btn {
+      width: 100%;
+      padding: 16px;
+      background: var(--accent-blue);
+      color: #000;
+      border: none;
+      border-radius: 30px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.25s var(--ease-spring);
+      margin-top: 16px;
+    }
+
+    .submit-btn:hover { background: var(--accent-blue-light); transform: scale(1.02); }
+    .submit-btn:active { transform: scale(0.96); }
+    .submit-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+    .login-tip { text-align: center; padding: 60px 20px; color: var(--text-muted); }
+    .login-tip a { color: var(--accent-blue); text-decoration: none; }
+
+    .toast {
+      position: fixed;
+      top: 80px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-20px);
+      padding: 12px 24px;
+      background: rgba(0, 0, 0, 0.9);
+      border: 1px solid var(--border-card);
+      border-radius: 30px;
+      font-size: 0.9rem;
+      color: var(--text-primary);
+      opacity: 0;
+      transition: all 0.3s;
+      z-index: 200;
+      white-space: nowrap;
+    }
+
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+    .toast.success { border-color: var(--success); color: var(--success); }
+    .toast.error { border-color: var(--danger); color: var(--danger); }
+  </style>
 </head>
 <body>
-    <h2>发布政务信息</h2>
-    <select><option>税务</option><option>环保</option></select>
-    <div style="display:flex;gap:8px;margin-bottom:16px;">
-        <select style="flex:1"><option>广东省</option></select>
-        <select style="flex:1"><option>深圳市</option></select>
-        <select style="flex:1"><option>南山区</option></select>
+  <nav class="navbar">
+    <a href="gov-list.html" class="navbar-brand">
+      <span class="navbar-brand-icon">🌌</span>
+      <span>资源夜市</span>
+    </a>
+    <a href="gov-list.html" class="back-btn">&larr; 返回列表</a>
+  </nav>
+
+  <div class="container" id="loginTip" style="display:none;">
+    <div class="login-tip">
+      <p>请先 <a href="login.html">登录</a> 或 <a href="register.html">注册</a> 后再发布政务信息</p>
     </div>
-    <select><option>A级</option><option>B级</option></select>
-    <select><option>一般</option><option>熟悉</option></select>
-    <select><option>有</option><option>无</option></select>
-    <select><option>1个月</option><option>3个月</option></select>
-    <div style="background:#fff3e0;padding:12px;border-radius:12px;margin-bottom:16px;">⚠️ 请勿填写具体部门名称、职务</div>
-    <button class="btn">提交审核</button>
+  </div>
+
+  <div class="container" id="formContainer">
+    <h1 class="page-title">发布政务信息</h1>
+    <p class="page-desc">发布政务资源对接信息，让有需求的人主动找到你</p>
+
+    <form id="publishForm">
+      <!-- 1. 单位行业 -->
+      <div class="form-group">
+        <label class="form-label">单位行业 <span class="required">*</span></label>
+        <select class="form-select" name="department" required>
+          <option value="">请选择单位行业</option>
+          <optgroup label="核心组成部门">
+            <option value="发改-宏观经济调控">发改-宏观经济调控</option>
+            <option value="教育-公共教育管理">教育-公共教育管理</option>
+            <option value="科技-技术创新推进">科技-技术创新推进</option>
+            <option value="工信-产业发展促进">工信-产业发展促进</option>
+            <option value="民宗-民族事务协调">民宗-民族事务协调</option>
+            <option value="公安-公共安全保障">公安-公共安全保障</option>
+            <option value="民政-社会事务管理">民政-社会事务管理</option>
+            <option value="司法-法治建设推进">司法-法治建设推进</option>
+            <option value="财政-财政收支管理">财政-财政收支管理</option>
+            <option value="人社-就业与社保服务">人社-就业与社保服务</option>
+            <option value="自然资源-国土规划利用">自然资源-国土规划利用</option>
+            <option value="生态环境-污染防治监管">生态环境-污染防治监管</option>
+            <option value="住建-城乡建设管理">住建-城乡建设管理</option>
+            <option value="交通-综合运输管理">交通-综合运输管理</option>
+            <option value="水利-水资源管理">水利-水资源管理</option>
+            <option value="农业农村-乡村振兴推进">农业农村-乡村振兴推进</option>
+            <option value="商务-内外贸易促进">商务-内外贸易促进</option>
+            <option value="文旅-文化旅游发展">文旅-文化旅游发展</option>
+            <option value="卫健-公共卫生服务">卫健-公共卫生服务</option>
+            <option value="退役军人-权益保障">退役军人-权益保障</option>
+            <option value="应急-安全生产监管">应急-安全生产监管</option>
+            <option value="审计-经济责任审计">审计-经济责任审计</option>
+            <option value="市场监管-市场秩序维护">市场监管-市场秩序维护</option>
+            <option value="医保-医疗保障管理">医保-医疗保障管理</option>
+          </optgroup>
+          <optgroup label="直属机构和管理部门">
+            <option value="国资-国企资产监管">国资-国企资产监管</option>
+            <option value="林业-森林资源保护">林业-森林资源保护</option>
+            <option value="海洋渔业-海洋经济发展">海洋渔业-海洋经济发展</option>
+            <option value="广电-文化内容监管">广电-文化内容监管</option>
+            <option value="体育-体育事业发展">体育-体育事业发展</option>
+            <option value="粮储-物资储备管理">粮储-物资储备管理</option>
+            <option value="统计-经济数据统计">统计-经济数据统计</option>
+            <option value="数据管理-数字政务推进">数据管理-数字政务推进</option>
+            <option value="档案-档案管理与利用">档案-档案管理与利用</option>
+            <option value="金融监管-金融风险防控">金融监管-金融风险防控</option>
+            <option value="信访-群众诉求办理">信访-群众诉求办理</option>
+          </optgroup>
+          <optgroup label="垂直管理系统">
+            <option value="税务-税费征收管理">税务-税费征收管理</option>
+            <option value="海关-口岸通关监管">海关-口岸通关监管</option>
+            <option value="气象-气象服务与防灾">气象-气象服务与防灾</option>
+            <option value="证监-资本市场监管">证监-资本市场监管</option>
+            <option value="银监-银行业监管">银监-银行业监管</option>
+            <option value="保监-保险业监管">保监-保险业监管</option>
+            <option value="通信管理-电信行业监管">通信管理-电信行业监管</option>
+            <option value="邮政管理-邮政行业监管">邮政管理-邮政行业监管</option>
+            <option value="烟草-烟草专卖管理">烟草-烟草专卖管理</option>
+          </optgroup>
+          <optgroup label="其他">
+            <option value="法院-审判业务服务">法院-审判业务服务</option>
+            <option value="检察院-法律监督服务">检察院-法律监督服务</option>
+            <option value="纪委监委-纪律监察服务">纪委监委-纪律监察服务</option>
+            <option value="公积金-住房公积金管理">公积金-住房公积金管理</option>
+            <option value="供销-农村流通服务">供销-农村流通服务</option>
+            <option value="药监-药品安全监管">药监-药品安全监管</option>
+          </optgroup>
+        </select>
+      </div>
+
+      <!-- 2. 所属区域层级 -->
+      <div class="form-group">
+        <label class="form-label">所属区域层级 <span class="required">*</span></label>
+        <select class="form-select" name="region_level" required>
+          <option value="">请选择区域层级</option>
+          <option value="全国级">全国级</option>
+          <option value="省级">省级</option>
+          <option value="市级">市级</option>
+          <option value="区县级">区县级</option>
+          <option value="街镇级">街镇级</option>
+        </select>
+      </div>
+
+      <!-- 3. 对接部门 -->
+      <div class="form-group">
+        <label class="form-label">对接部门 <span class="required">*</span></label>
+        <input type="text" class="form-input" name="target_department" placeholder="如：招商局、项目科" maxlength="50" required>
+      </div>
+
+      <!-- 4. 对接岗位 -->
+      <div class="form-group">
+        <label class="form-label">对接岗位 <span class="required">*</span></label>
+        <select class="form-select" name="target_position" required>
+          <option value="">请选择对接岗位</option>
+          <option value="负责人">负责人</option>
+          <option value="主管">主管</option>
+          <option value="经理">经理</option>
+          <option value="专员">专员</option>
+          <option value="科员">科员</option>
+        </select>
+      </div>
+
+      <!-- 5. 资源/需求简介 -->
+      <div class="form-group">
+        <label class="form-label">资源/需求简介 <span class="required">*</span></label>
+        <input type="text" class="form-input" name="summary" placeholder="一句话描述您的资源或需求" maxlength="80" required oninput="updateCount(this, 'summaryCount', 80)">
+        <div class="char-count" id="summaryCount">0 / 80</div>
+      </div>
+
+      <!-- 6. 详细说明 -->
+      <div class="form-group">
+        <label class="form-label">详细说明 <span class="required">*</span></label>
+        <textarea class="form-textarea" name="detail" placeholder="详细描述您的资源情况或对接需求，请勿包含个人隐私信息" maxlength="500" required oninput="updateCount(this, 'detailCount', 500)"></textarea>
+        <div class="char-count" id="detailCount">0 / 500</div>
+      </div>
+
+      <!-- 7. 对接有效期 -->
+      <div class="form-group">
+        <label class="form-label">对接有效期 <span class="required">*</span></label>
+        <select class="form-select" name="validity" required>
+          <option value="">请选择有效期</option>
+          <option value="30">30天</option>
+          <option value="60">60天</option>
+          <option value="90">90天</option>
+        </select>
+      </div>
+
+      <!-- 脱敏提醒 -->
+      <div class="warning-notice">
+        ⚠️ 脱敏提醒：请勿填写具体姓名、手机号等个人信息。平台将对所有内容进行脱敏处理后展示。
+      </div>
+
+      <!-- 需求真实性承诺 -->
+      <div class="checkbox-group">
+        <input type="checkbox" id="truthCommit" name="truth_commit">
+        <label for="truthCommit">我承诺所填信息真实有效，不含虚假或夸大内容。如有违规，愿承担相应责任。</label>
+      </div>
+
+      <!-- 隐私保护 -->
+      <div class="privacy-notice">
+        <div class="title">🔒 隐私保护</div>
+        <div class="desc">
+          所有信息仅用于匹配对接需求，不会向第三方展示个人联系方式。<br>
+          平台将对发布内容进行脱敏处理后展示，保护资源方隐私。
+        </div>
+      </div>
+
+      <button type="submit" class="submit-btn" id="submitBtn">提交审核</button>
+    </form>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const token = localStorage.getItem('token');
+    if (!token) {
+      document.getElementById('loginTip').style.display = 'block';
+      document.getElementById('formContainer').style.display = 'none';
+    }
+
+    function updateCount(el, countId, max) {
+      const len = el.value.length;
+      document.getElementById(countId).textContent = len + ' / ' + max;
+    }
+
+    document.getElementById('publishForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const form = e.target;
+      const btn = document.getElementById('submitBtn');
+
+      if (!form.department.value) { showToast('请选择单位行业', 'error'); return; }
+      if (!form.region_level.value) { showToast('请选择所属区域层级', 'error'); return; }
+      if (!form.target_department.value.trim()) { showToast('请填写对接部门', 'error'); return; }
+      if (!form.target_position.value) { showToast('请选择对接岗位', 'error'); return; }
+      if (!form.summary.value.trim()) { showToast('请填写资源/需求简介', 'error'); return; }
+      if (!form.detail.value.trim()) { showToast('请填写详细说明', 'error'); return; }
+      if (!form.validity.value) { showToast('请选择对接有效期', 'error'); return; }
+      if (!form.truth_commit.checked) { showToast('请勾选需求真实性承诺', 'error'); return; }
+
+      btn.disabled = true;
+      btn.textContent = '提交中...';
+
+      try {
+        const res = await fetch('/api/content/government', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token
+          },
+          body: JSON.stringify({
+            department: form.department.value,
+            region_level: form.region_level.value,
+            target_department: form.target_department.value.trim(),
+            target_position: form.target_position.value,
+            summary: form.summary.value.trim(),
+            detail: form.detail.value.trim(),
+            validity: parseInt(form.validity.value),
+            truth_commit: form.truth_commit.checked
+          })
+        });
+
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || '提交失败');
+        showToast('提交成功，等待审核', 'success');
+        setTimeout(() => { location.href = 'user-gov.html'; }, 1500);
+      } catch (err) {
+        showToast(err.message, 'error');
+        btn.disabled = false;
+        btn.textContent = '提交审核';
+      }
+    });
+
+    function showToast(msg, type) {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.className = 'toast ' + (type || '') + ' show';
+      setTimeout(() => { toast.className = 'toast'; }, 3000);
+    }
+  </script>
 </body>
 </html>

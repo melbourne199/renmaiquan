@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>发布群码 - 资源夜市</title>
+  <title>发布成功案例 - 资源夜市</title>
   <style>
     :root {
       --bg-deep: #01060f;
@@ -32,6 +32,7 @@
       background: var(--bg-deep);
       color: var(--text-primary);
       min-height: 100vh;
+      font-size: 0.82rem;
     }
 
     .navbar {
@@ -108,41 +109,41 @@
 
     .form-select option { background: #0a1628; color: var(--text-primary); }
 
-    .upload-area {
-      border: 2px dashed var(--border-card);
-      border-radius: 16px;
-      padding: 32px;
-      text-align: center;
-      cursor: pointer;
-      transition: all 0.25s var(--ease-spring);
-      background: var(--bg-card);
+    .char-count {
+      text-align: right;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin-top: 4px;
     }
 
-    .upload-area:hover { border-color: var(--accent-blue); background: var(--bg-card-hover); }
-    .upload-area.has-file { border-color: var(--success); }
-    .upload-icon { font-size: 2.5rem; margin-bottom: 12px; }
-    .upload-text { color: var(--text-secondary); font-size: 0.9rem; }
-    .upload-hint { color: var(--text-muted); font-size: 0.75rem; margin-top: 8px; }
-    .upload-preview { max-width: 160px; max-height: 160px; margin: 0 auto; border-radius: 12px; display: none; }
-    .upload-area.has-file .upload-preview { display: block; }
-    .upload-area.has-file .upload-icon,
-    .upload-area.has-file .upload-text { display: none; }
-    .upload-input { display: none; }
-
-    .tag-options { display: flex; gap: 10px; flex-wrap: wrap; }
-
-    .tag-option {
-      padding: 8px 16px;
-      border: 1px solid var(--border-card);
-      border-radius: 20px;
+    .checkbox-group {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 16px;
+      background: rgba(90, 200, 250, 0.08);
+      border: 1px solid rgba(90, 200, 250, 0.15);
+      border-radius: 12px;
       cursor: pointer;
-      transition: all 0.2s;
-      font-size: 0.85rem;
+    }
+
+    .checkbox-group input[type="checkbox"] {
+      margin-top: 3px;
+      accent-color: var(--accent-blue);
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+    }
+
+    .checkbox-group .checkbox-text {
+      font-size: 0.88rem;
       color: var(--text-secondary);
+      line-height: 1.6;
     }
 
-    .tag-option:hover { border-color: var(--accent-blue); color: var(--text-primary); }
-    .tag-option.selected { background: var(--accent-blue); color: #000; border-color: var(--accent-blue); font-weight: 600; }
+    .checkbox-group .checkbox-text strong {
+      color: var(--accent-blue);
+    }
 
     .privacy-notice {
       background: rgba(90, 200, 250, 0.08);
@@ -208,48 +209,49 @@
 </head>
 <body>
   <nav class="navbar">
-    <a href="groups.html" class="navbar-brand">
+    <a href="case-list.html" class="navbar-brand">
       <span class="navbar-brand-icon">🌌</span>
       <span>资源夜市</span>
     </a>
-    <a href="groups.html" class="back-btn">← 返回列表</a>
+    <a href="case-list.html" class="back-btn">← 返回列表</a>
   </nav>
 
   <div class="container" id="loginTip" style="display:none;">
     <div class="login-tip">
-      <p>请先 <a href="login.html">登录</a> 或 <a href="register.html">注册</a> 后再发布群码</p>
+      <p>请先 <a href="login.html">登录</a> 或 <a href="register.html">注册</a> 后再发布成功案例</p>
     </div>
   </div>
 
   <div class="container" id="formContainer">
-    <h1 class="page-title">发布行业群码</h1>
-    <p class="page-desc">将你的群码发布到平台，让有需求的人主动找到你</p>
+    <h1 class="page-title">发布成功案例</h1>
+    <p class="page-desc">分享你的真实对接经验，帮助更多人少走弯路</p>
 
     <form id="publishForm">
       <div class="form-group">
-        <label class="form-label">群名称 <span class="required">*</span></label>
-        <input type="text" class="form-input" name="name" placeholder="如：深圳互联网创业交流群" maxlength="50" required>
+        <label class="form-label">脱敏标题 <span class="required">*</span></label>
+        <input type="text" class="form-input" name="title" placeholder="如：某300万设备采购项目成功对接" maxlength="80" required>
+        <div class="char-count"><span id="titleCount">0</span>/80</div>
       </div>
 
       <div class="form-group">
-        <label class="form-label">行业分类 <span class="required">*</span></label>
-        <select class="form-select" name="industry_id" required>
-          <option value="">请选择行业分类</option>
-          <option value="1">IT互联网</option>
-          <option value="2">教育培训</option>
-          <option value="3">金融投资</option>
-          <option value="4">医疗健康</option>
-          <option value="5">智能制造</option>
-          <option value="6">房地产</option>
-          <option value="7">法律咨询</option>
-          <option value="8">政府园区</option>
-          <option value="9">创业孵化</option>
-          <option value="10">消费零售</option>
+        <label class="form-label">项目类型 <span class="required">*</span></label>
+        <select class="form-select" name="project_type" required>
+          <option value="">请选择项目类型</option>
+          <option value="企业资源对接">企业资源对接</option>
+          <option value="政务资源对接">政务资源对接</option>
+          <option value="金融融资">金融融资</option>
+          <option value="居间合作">居间合作</option>
+          <option value="其他">其他</option>
         </select>
       </div>
 
       <div class="form-group">
-        <label class="form-label">所在地区 <span class="required">*</span></label>
+        <label class="form-label">居间费金额 <span class="optional">（选填）</span></label>
+        <input type="number" class="form-input" name="commission" placeholder="如：300000" min="0">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">项目所在地 <span class="required">*</span></label>
         <select class="form-select" name="region" required>
           <option value="">请选择地区</option>
           <option value="全国">全国</option>
@@ -276,55 +278,38 @@
       </div>
 
       <div class="form-group">
-        <label class="form-label">群介绍 <span class="required">*</span></label>
-        <textarea class="form-textarea" name="description" placeholder="简单介绍一下这个群是做什么的，有什么资源或需求..." maxlength="200" required></textarea>
+        <label class="form-label">项目背景 <span class="required">*</span></label>
+        <textarea class="form-textarea" name="background" placeholder="描述项目的基本背景，如行业、规模、甲乙双方基本情况等（请注意脱敏）" maxlength="800" required></textarea>
+        <div class="char-count"><span id="backgroundCount">0</span>/800</div>
       </div>
 
       <div class="form-group">
-        <label class="form-label">群人数 <span class="optional">（选填）</span></label>
-        <input type="number" class="form-input" name="member_count" placeholder="如：234" min="1" max="99999">
+        <label class="form-label">对接过程 <span class="required">*</span></label>
+        <textarea class="form-textarea" name="process" placeholder="描述从初次接触到最终成交的关键节点，如何建立信任、推动合作等" maxlength="800" required></textarea>
+        <div class="char-count"><span id="processCount">0</span>/800</div>
       </div>
 
       <div class="form-group">
-        <label class="form-label">入群二维码 <span class="required">*</span></label>
-        <div class="upload-area" id="qrcodeArea" onclick="document.getElementById('qrcodeInput').click()">
-          <input type="file" class="upload-input" id="qrcodeInput" accept="image/*" onchange="handleUpload(this, 'qrcodeArea', 'qrcodeUrl')">
-          <div class="upload-icon">📷</div>
-          <div class="upload-text">点击上传群二维码</div>
-          <div class="upload-hint">支持 JPG、PNG 格式</div>
-          <img class="upload-preview" id="qrcodePreview" alt="预览">
-          <input type="hidden" name="qrcode" id="qrcodeUrl">
+        <label class="form-label">避坑要点 <span class="optional">（选填）</span></label>
+        <textarea class="form-textarea" name="tips" placeholder="分享在对接过程中遇到的坑和应对方法，帮助他人避免踩坑" maxlength="500"></textarea>
+        <div class="char-count"><span id="tipsCount">0</span>/500</div>
+      </div>
+
+      <div class="form-group">
+        <div class="checkbox-group" onclick="document.getElementById('truthCheck').click()">
+          <input type="checkbox" id="truthCheck" name="truth_commitment" onclick="event.stopPropagation()">
+          <div class="checkbox-text">
+            <strong>真实性承诺</strong><br>
+            我承诺以上内容基于真实经历，已对敏感信息进行脱敏处理，不涉及虚假宣传或误导性信息。如有不实，愿承担相应责任。
+          </div>
         </div>
-      </div>
-
-      <div class="form-group">
-        <label class="form-label">群主微信二维码 <span class="required">*</span></label>
-        <div class="upload-area" id="ownerQrcodeArea" onclick="document.getElementById('ownerQrcodeInput').click()">
-          <input type="file" class="upload-input" id="ownerQrcodeInput" accept="image/*" onchange="handleUpload(this, 'ownerQrcodeArea', 'ownerQrcodeUrl')">
-          <div class="upload-icon">👤</div>
-          <div class="upload-text">点击上传群主微信二维码</div>
-          <div class="upload-hint">用于需求方联系群主</div>
-          <img class="upload-preview" id="ownerQrcodePreview" alt="预览">
-          <input type="hidden" name="owner_qrcode" id="ownerQrcodeUrl">
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label class="form-label">标签 <span class="optional">（选填）</span></label>
-        <div class="tag-options">
-          <div class="tag-option" data-tag="供" onclick="toggleTag(this)">供</div>
-          <div class="tag-option" data-tag="需" onclick="toggleTag(this)">需</div>
-          <div class="tag-option" data-tag="普通" onclick="toggleTag(this)">普通</div>
-          <div class="tag-option" data-tag="高级" onclick="toggleTag(this)">高级</div>
-        </div>
-        <input type="hidden" name="tags" id="selectedTags">
       </div>
 
       <div class="privacy-notice">
-        <div class="title">🔒 隐私保护</div>
+        <div class="title">🔒 内容审核说明</div>
         <div class="desc">
-          所有信息仅用于匹配对接需求，不会向第三方展示个人联系方式。<br>
-          入群二维码和微信二维码仅对认证会员可见。
+          所有案例内容将经过平台审核后再公开展示，请确保信息已脱敏处理。<br>
+          平台不对案例中的商业结果做任何担保，内容仅代表作者个人经验分享。
         </div>
       </div>
 
@@ -341,69 +326,60 @@
       document.getElementById('formContainer').style.display = 'none';
     }
 
-    const selectedTags = new Set();
-    function toggleTag(el) {
-      const tag = el.dataset.tag;
-      el.classList.toggle('selected');
-      if (selectedTags.has(tag)) {
-        selectedTags.delete(tag);
-      } else {
-        selectedTags.add(tag);
+    // Character counters
+    function bindCounter(inputName, counterId, max) {
+      const el = document.querySelector('[name="' + inputName + '"]');
+      const counter = document.getElementById(counterId);
+      if (el && counter) {
+        el.addEventListener('input', function() {
+          counter.textContent = this.value.length;
+        });
       }
-      document.getElementById('selectedTags').value = Array.from(selectedTags).join(',');
     }
 
-    function handleUpload(input, areaId, urlInputId) {
-      const file = input.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const preview = document.getElementById(areaId).querySelector('.upload-preview');
-        preview.src = e.target.result;
-        document.getElementById(areaId).classList.add('has-file');
-        document.getElementById(urlInputId).value = e.target.result;
-      };
-      reader.readAsDataURL(file);
-    }
+    bindCounter('title', 'titleCount', 80);
+    bindCounter('background', 'backgroundCount', 800);
+    bindCounter('process', 'processCount', 800);
+    bindCounter('tips', 'tipsCount', 500);
 
     document.getElementById('publishForm').addEventListener('submit', async (e) => {
       e.preventDefault();
       const form = e.target;
       const btn = document.getElementById('submitBtn');
 
-      if (!form.name.value.trim()) { showToast('请填写群名称', 'error'); return; }
-      if (!form.industry_id.value) { showToast('请选择行业分类', 'error'); return; }
-      if (!form.region.value) { showToast('请选择地区', 'error'); return; }
-      if (!form.description.value.trim()) { showToast('请填写群介绍', 'error'); return; }
-      if (!form.qrcode.value) { showToast('请上传入群二维码', 'error'); return; }
-      if (!form.owner_qrcode.value) { showToast('请上传群主微信二维码', 'error'); return; }
+      if (!form.title.value.trim()) { showToast('请填写脱敏标题', 'error'); return; }
+      if (!form.project_type.value) { showToast('请选择项目类型', 'error'); return; }
+      if (!form.region.value) { showToast('请选择项目所在地', 'error'); return; }
+      if (!form.background.value.trim()) { showToast('请填写项目背景', 'error'); return; }
+      if (!form.process.value.trim()) { showToast('请填写对接过程', 'error'); return; }
+      if (!form.truth_commitment.checked) { showToast('请勾选真实性承诺', 'error'); return; }
 
       btn.disabled = true;
       btn.textContent = '提交中...';
 
       try {
-        const res = await fetch('/api/content/groups', {
+        const res = await fetch('/api/content/cases', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
             'Authorization': 'Bearer ' + token
           },
           body: JSON.stringify({
-            name: form.name.value.trim(),
-            industry_id: form.industry_id.value,
+            title: form.title.value.trim(),
+            project_type: form.project_type.value,
+            commission: form.commission.value ? Number(form.commission.value) : null,
             region: form.region.value,
-            description: form.description.value.trim(),
-            member_count: form.member_count.value || 0,
-            qrcode: form.qrcode.value,
-            owner_qrcode: form.owner_qrcode.value,
-            tags: document.getElementById('selectedTags').value
+            background: form.background.value.trim(),
+            process: form.process.value.trim(),
+            tips: form.tips.value.trim() || null,
+            truth_commitment: form.truth_commitment.checked
           })
         });
 
         const data = await res.json();
         if (!res.ok) throw new Error(data.error || '提交失败');
         showToast('提交成功，等待审核', 'success');
-        setTimeout(() => { location.href = 'user-groups.html'; }, 1500);
+        setTimeout(() => { location.href = 'case-list.html'; }, 1500);
       } catch (err) {
         showToast(err.message, 'error');
         btn.disabled = false;

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>发布企业资源 - 资源夜市</title>
+  <title>发布求助信息 - 资源夜市</title>
   <style>
     :root {
       --bg-deep: #01060f;
@@ -32,6 +32,7 @@
       background: var(--bg-deep);
       color: var(--text-primary);
       min-height: 100vh;
+      font-size: 0.82rem;
     }
 
     .navbar {
@@ -45,6 +46,7 @@
       padding: 12px 24px;
       background: rgba(1, 6, 15, 0.8);
       backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
       border-bottom: 1px solid var(--border-card);
     }
 
@@ -76,6 +78,7 @@
     }
 
     .form-label .required { color: var(--danger); margin-left: 2px; }
+    .form-label .optional { color: var(--text-muted); font-size: 0.82rem; margin-left: 6px; }
 
     .form-input, .form-select, .form-textarea {
       width: 100%;
@@ -94,11 +97,12 @@
       box-shadow: 0 0 0 3px rgba(90, 200, 250, 0.15);
     }
 
-    .form-textarea { min-height: 120px; resize: vertical; font-family: inherit; }
+    .form-textarea { min-height: 140px; resize: vertical; font-family: inherit; }
 
     .form-select {
       cursor: pointer;
       appearance: none;
+      -webkit-appearance: none;
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%235ac8fa' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
       background-repeat: no-repeat;
       background-position: right 16px center;
@@ -107,50 +111,36 @@
 
     .form-select option { background: #0a1628; color: var(--text-primary); }
 
-    .form-hint {
-      font-size: 0.82rem;
-      color: var(--text-muted);
-      margin-top: 6px;
+    .input-with-prefix {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .input-prefix {
+      position: absolute;
+      left: 16px;
+      color: var(--gold);
+      font-size: 1.1rem;
+      font-weight: 700;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .input-with-prefix .form-input {
+      padding-left: 36px;
     }
 
     .char-count {
+      display: block;
       text-align: right;
+      margin-top: 6px;
       font-size: 0.82rem;
       color: var(--text-muted);
-      margin-top: 4px;
     }
 
-    .checkbox-group {
-      display: flex;
-      align-items: flex-start;
-      gap: 10px;
-      padding: 14px 16px;
-      background: var(--bg-card);
-      border: 1px solid var(--border-card);
-      border-radius: 12px;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-
-    .checkbox-group:hover {
-      border-color: var(--border-card-hover);
-      background: var(--bg-card-hover);
-    }
-
-    .checkbox-group input[type="checkbox"] {
-      width: 18px;
-      height: 18px;
-      margin-top: 2px;
-      accent-color: var(--accent-blue);
-      cursor: pointer;
-      flex-shrink: 0;
-    }
-
-    .checkbox-group .checkbox-text {
-      font-size: 0.9rem;
-      color: var(--text-secondary);
-      line-height: 1.5;
-    }
+    .char-count.warn { color: var(--gold); }
+    .char-count.limit { color: var(--danger); }
 
     .privacy-notice {
       background: rgba(90, 200, 250, 0.08);
@@ -207,75 +197,112 @@
       opacity: 0;
       transition: all 0.3s;
       z-index: 200;
+      white-space: nowrap;
     }
 
     .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
     .toast.success { border-color: var(--success); color: var(--success); }
     .toast.error { border-color: var(--danger); color: var(--danger); }
+
+    /* Spring entrance animation */
+    .form-group {
+      opacity: 0;
+      transform: translateY(16px);
+      animation: springIn 0.5s var(--ease-spring) forwards;
+    }
+
+    .form-group:nth-child(1) { animation-delay: 0.05s; }
+    .form-group:nth-child(2) { animation-delay: 0.10s; }
+    .form-group:nth-child(3) { animation-delay: 0.15s; }
+    .form-group:nth-child(4) { animation-delay: 0.20s; }
+    .form-group:nth-child(5) { animation-delay: 0.25s; }
+    .form-group:nth-child(6) { animation-delay: 0.30s; }
+    .form-group:nth-child(7) { animation-delay: 0.35s; }
+
+    .privacy-notice {
+      opacity: 0;
+      transform: translateY(16px);
+      animation: springIn 0.5s var(--ease-spring) 0.40s forwards;
+    }
+
+    .submit-btn {
+      opacity: 0;
+      transform: translateY(16px) scale(1);
+      animation: springIn 0.5s var(--ease-spring) 0.45s forwards;
+    }
+
+    @keyframes springIn {
+      from {
+        opacity: 0;
+        transform: translateY(16px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
   </style>
 </head>
 <body>
   <nav class="navbar">
-    <a href="enterprise-list.html" class="navbar-brand">
+    <a href="help-detail.html" class="navbar-brand">
       <span class="navbar-brand-icon">🌌</span>
       <span>资源夜市</span>
     </a>
-    <a href="enterprise-list.html" class="back-btn">&larr; 返回列表</a>
+    <a href="help-detail.html" class="back-btn">&larr; 返回求助列表</a>
   </nav>
 
   <div class="container" id="loginTip" style="display:none;">
     <div class="login-tip">
-      <p>请先 <a href="login.html">登录</a> 或 <a href="register.html">注册</a> 后再发布企业资源</p>
+      <p>请先 <a href="login.html">登录</a> 或 <a href="register.html">注册</a> 后再发布求助信息</p>
     </div>
   </div>
 
   <div class="container" id="formContainer">
-    <h1 class="page-title">发布企业资源</h1>
-    <p class="page-desc">发布你的企业资源对接信息，让有需求的人主动找到你</p>
+    <h1 class="page-title">发布求助信息</h1>
+    <p class="page-desc">描述你的需求，让有资源的人主动对接你</p>
 
     <form id="publishForm">
-      <!-- 1. 企业名称 -->
+      <!-- 1. 标题 -->
       <div class="form-group">
-        <label class="form-label">企业名称 <span class="required">*</span></label>
-        <input type="text" class="form-input" name="company_name" placeholder="如：华为技术有限公司" maxlength="100" required>
+        <label class="form-label">标题 <span class="required">*</span></label>
+        <input type="text" class="form-input" name="title" placeholder="如：急需对接深圳某部门负责人" maxlength="80" required>
+        <span class="char-count" id="titleCount">0 / 80</span>
       </div>
 
-      <!-- 2. 所属区域层级 -->
+      <!-- 2. 目标地区 -->
       <div class="form-group">
-        <label class="form-label">所属区域层级 <span class="required">*</span></label>
-        <select class="form-select" name="region_level" required>
-          <option value="">请选择区域层级</option>
-          <option value="全国级">全国级</option>
-          <option value="省级">省级</option>
-          <option value="市级">市级</option>
-          <option value="区县级">区县级</option>
-          <option value="街镇级">街镇级</option>
+        <label class="form-label">目标地区 <span class="required">*</span></label>
+        <select class="form-select" name="target_region" required>
+          <option value="">请选择目标地区</option>
+          <option value="全国">全国</option>
+          <option value="北京">北京</option>
+          <option value="上海">上海</option>
+          <option value="深圳">深圳</option>
+          <option value="广州">广州</option>
+          <option value="杭州">杭州</option>
+          <option value="成都">成都</option>
+          <option value="武汉">武汉</option>
+          <option value="西安">西安</option>
+          <option value="南京">南京</option>
+          <option value="苏州">苏州</option>
+          <option value="天津">天津</option>
+          <option value="重庆">重庆</option>
+          <option value="长沙">长沙</option>
+          <option value="郑州">郑州</option>
+          <option value="东莞">东莞</option>
+          <option value="佛山">佛山</option>
+          <option value="宁波">宁波</option>
+          <option value="青岛">青岛</option>
+          <option value="无锡">无锡</option>
         </select>
       </div>
 
-      <!-- 3. 行业分类 -->
+      <!-- 3. 目标部门 -->
       <div class="form-group">
-        <label class="form-label">行业分类 <span class="required">*</span></label>
-        <select class="form-select" name="industry" required>
-          <option value="">请选择行业分类</option>
-          <option value="IT互联网">IT互联网</option>
-          <option value="教育培训">教育培训</option>
-          <option value="金融投资">金融投资</option>
-          <option value="医疗健康">医疗健康</option>
-          <option value="智能制造">智能制造</option>
-          <option value="房地产">房地产</option>
-          <option value="法律咨询">法律咨询</option>
-          <option value="政府园区">政府园区</option>
-          <option value="创业孵化">创业孵化</option>
-          <option value="消费零售">消费零售</option>
-        </select>
-      </div>
-
-      <!-- 4. 对接部门 -->
-      <div class="form-group">
-        <label class="form-label">对接部门 <span class="required">*</span></label>
-        <select class="form-select" name="department" required>
-          <option value="">请选择对接部门</option>
+        <label class="form-label">目标部门 <span class="required">*</span></label>
+        <select class="form-select" name="target_department" required>
+          <option value="">请选择目标部门</option>
           <option value="招商部">招商部</option>
           <option value="项目部">项目部</option>
           <option value="采购部">采购部</option>
@@ -288,11 +315,12 @@
         </select>
       </div>
 
-      <!-- 5. 对接岗位 -->
+      <!-- 4. 目标职级 -->
       <div class="form-group">
-        <label class="form-label">对接岗位 <span class="required">*</span></label>
-        <select class="form-select" name="position" required>
-          <option value="">请选择对接岗位</option>
+        <label class="form-label">目标职级 <span class="required">*</span></label>
+        <select class="form-select" name="target_level" required>
+          <option value="">请选择目标职级</option>
+          <option value="决策人">决策人</option>
           <option value="负责人">负责人</option>
           <option value="总监">总监</option>
           <option value="主管">主管</option>
@@ -301,49 +329,44 @@
         </select>
       </div>
 
-      <!-- 6. 资源/需求简介 -->
+      <!-- 5. 悬赏金额 -->
       <div class="form-group">
-        <label class="form-label">资源/需求简介 <span class="required">*</span></label>
-        <input type="text" class="form-input" name="summary" placeholder="一句话概括可对接的资源或需求" maxlength="80" required oninput="updateCharCount(this, 'summaryCount', 80)">
-        <div class="char-count" id="summaryCount">0 / 80</div>
+        <label class="form-label">悬赏金额 <span class="optional">（选填）</span></label>
+        <div class="input-with-prefix">
+          <span class="input-prefix">&yen;</span>
+          <input type="number" class="form-input" name="reward_amount" placeholder="选填，如：5000" min="0" max="9999999">
+        </div>
+      </div>
+
+      <!-- 6. 有效期 -->
+      <div class="form-group">
+        <label class="form-label">有效期 <span class="required">*</span></label>
+        <select class="form-select" name="valid_days" required>
+          <option value="">请选择有效期</option>
+          <option value="3">3天</option>
+          <option value="7">7天</option>
+          <option value="15">15天</option>
+          <option value="30">30天</option>
+        </select>
       </div>
 
       <!-- 7. 详细说明 -->
       <div class="form-group">
         <label class="form-label">详细说明 <span class="required">*</span></label>
-        <textarea class="form-textarea" name="description" placeholder="详细描述你的企业资源或对接需求，包括合作方式、优势条件等..." maxlength="500" required oninput="updateCharCount(this, 'descCount', 500)"></textarea>
-        <div class="char-count" id="descCount">0 / 500</div>
+        <textarea class="form-textarea" name="description" placeholder="详细描述您的需求，包括行业背景、具体对接目标等..." maxlength="800" required></textarea>
+        <span class="char-count" id="descCount">0 / 800</span>
       </div>
 
-      <!-- 8. 对接有效期 -->
-      <div class="form-group">
-        <label class="form-label">对接有效期 <span class="required">*</span></label>
-        <select class="form-select" name="validity" required>
-          <option value="">请选择有效期</option>
-          <option value="30">30天</option>
-          <option value="60">60天</option>
-          <option value="90">90天</option>
-        </select>
-      </div>
-
-      <!-- 9. 资源真实性承诺 -->
-      <div class="form-group">
-        <label class="checkbox-group" for="truthCheck">
-          <input type="checkbox" id="truthCheck" name="truth_commitment">
-          <span class="checkbox-text">我承诺以上信息真实有效，如有虚假愿承担相应责任</span>
-        </label>
-      </div>
-
-      <!-- 隐私保护提示 -->
       <div class="privacy-notice">
         <div class="title">🔒 隐私保护</div>
         <div class="desc">
-          所有信息仅用于匹配对接需求，不会向第三方展示个人联系方式。<br>
-          企业资源信息经审核后方可展示，个人隐私信息全程脱敏处理。
+          您的求助信息将在审核通过后公开展示，但个人联系方式不会直接显示。<br>
+          有意对接的资源方需通过平台发起联系请求，经您确认后方可建立沟通。<br>
+          所有信息仅用于资源匹配，不会向无关第三方泄露。
         </div>
       </div>
 
-      <button type="submit" class="submit-btn" id="submitBtn">提交审核</button>
+      <button type="submit" class="submit-btn" id="submitBtn">发布求助</button>
     </form>
   </div>
 
@@ -356,57 +379,68 @@
       document.getElementById('formContainer').style.display = 'none';
     }
 
-    function updateCharCount(el, countId, max) {
-      var len = el.value.length;
-      document.getElementById(countId).textContent = len + ' / ' + max;
+    // Character counters
+    const titleInput = document.querySelector('input[name="title"]');
+    const descInput = document.querySelector('textarea[name="description"]');
+    const titleCount = document.getElementById('titleCount');
+    const descCount = document.getElementById('descCount');
+
+    function updateCount(input, counter, max) {
+      const len = input.value.length;
+      counter.textContent = len + ' / ' + max;
+      counter.className = 'char-count';
+      if (len >= max) {
+        counter.classList.add('limit');
+      } else if (len >= max * 0.8) {
+        counter.classList.add('warn');
+      }
     }
 
+    titleInput.addEventListener('input', function() { updateCount(this, titleCount, 80); });
+    descInput.addEventListener('input', function() { updateCount(this, descCount, 800); });
+
+    // Form submission
     document.getElementById('publishForm').addEventListener('submit', async function(e) {
       e.preventDefault();
       var form = e.target;
       var btn = document.getElementById('submitBtn');
 
-      if (!form.company_name.value.trim()) { showToast('请填写企业名称', 'error'); return; }
-      if (!form.region_level.value) { showToast('请选择所属区域层级', 'error'); return; }
-      if (!form.industry.value) { showToast('请选择行业分类', 'error'); return; }
-      if (!form.department.value) { showToast('请选择对接部门', 'error'); return; }
-      if (!form.position.value) { showToast('请选择对接岗位', 'error'); return; }
-      if (!form.summary.value.trim()) { showToast('请填写资源/需求简介', 'error'); return; }
+      if (!form.title.value.trim()) { showToast('请填写标题', 'error'); return; }
+      if (!form.target_region.value) { showToast('请选择目标地区', 'error'); return; }
+      if (!form.target_department.value) { showToast('请选择目标部门', 'error'); return; }
+      if (!form.target_level.value) { showToast('请选择目标职级', 'error'); return; }
+      if (!form.valid_days.value) { showToast('请选择有效期', 'error'); return; }
       if (!form.description.value.trim()) { showToast('请填写详细说明', 'error'); return; }
-      if (!form.validity.value) { showToast('请选择对接有效期', 'error'); return; }
-      if (!form.truth_commitment.checked) { showToast('请勾选资源真实性承诺', 'error'); return; }
 
       btn.disabled = true;
-      btn.textContent = '提交中...';
+      btn.textContent = '发布中...';
 
       try {
-        var res = await fetch('/api/content/enterprise-likes', {
+        var res = await fetch('/api/content/help-requests', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
             'Authorization': 'Bearer ' + token
           },
           body: JSON.stringify({
-            company_name: form.company_name.value.trim(),
-            region_level: form.region_level.value,
-            industry: form.industry.value,
-            department: form.department.value,
-            position: form.position.value,
-            summary: form.summary.value.trim(),
-            description: form.description.value.trim(),
-            validity: parseInt(form.validity.value, 10),
-            truth_commitment: form.truth_commitment.checked
+            title: form.title.value.trim(),
+            target_region: form.target_region.value,
+            target_department: form.target_department.value,
+            target_level: form.target_level.value,
+            reward_amount: form.reward_amount.value ? Number(form.reward_amount.value) : null,
+            valid_days: Number(form.valid_days.value),
+            description: form.description.value.trim()
           })
         });
 
         var data = await res.json();
-        if (!res.ok) throw new Error(data.error || '提交失败');
-        showToast('提交成功，等待审核', 'success');
-        setTimeout(function() { location.href = 'user-likes.html'; }, 1500);
+        if (!res.ok) throw new Error(data.error || '发布失败');
+        showToast('发布成功，等待审核', 'success');
+        setTimeout(function() { location.href = 'help-detail.html'; }, 1500);
       } catch (err) {
         showToast(err.message, 'error');
         btn.disabled = false;
-        btn.textContent = '提交审核';
+        btn.textContent = '发布求助';
       }
     });
 

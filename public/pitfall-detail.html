@@ -1,16 +1,182 @@
 <!DOCTYPE html>
-<html>
-<head><title>避坑详情</title>
-<style>body{font-family:system-ui;padding:16px;background:#f5f5f7;}.card{background:white;border-radius:20px;padding:20px;}</style>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>避坑详情 - 资源夜市</title>
+  <style>
+    :root {
+      --bg-deep: #01060f;
+      --bg-card: rgba(90, 200, 250, 0.06);
+      --bg-card-hover: rgba(90, 200, 250, 0.12);
+      --border-card: rgba(90, 200, 250, 0.15);
+      --border-card-hover: rgba(90, 200, 250, 0.35);
+      --accent-blue: #5ac8fa;
+      --accent-blue-light: #72d2ff;
+      --text-primary: rgba(228, 240, 252, 0.96);
+      --text-secondary: rgba(180, 200, 220, 0.75);
+      --text-muted: rgba(150, 180, 210, 0.6);
+      --gold: #F59E0B;
+      --success: #34C759;
+      --danger: #FF3B30;
+      --warning: #FF9500;
+      --glass-blur: blur(20px);
+      --shadow-card: 0 12px 40px rgba(0, 0, 0, 0.4), 0 0 30px rgba(90, 200, 250, 0.08);
+      --shadow-card-hover: 0 20px 50px rgba(0, 0, 0, 0.5), 0 0 40px rgba(90, 200, 250, 0.15);
+      --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif; background: var(--bg-deep); color: var(--text-primary); min-height: 100vh; }
+    .navbar { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 12px 24px; background: rgba(1, 6, 15, 0.8); backdrop-filter: var(--glass-blur); border-bottom: 1px solid var(--border-card); }
+    .navbar-brand { display: flex; align-items: center; gap: 10px; color: var(--text-primary); text-decoration: none; font-size: 1.1rem; font-weight: 600; }
+    .navbar-links { display: flex; gap: 24px; }
+    .nav-link { color: var(--text-secondary); text-decoration: none; font-size: 0.9rem; cursor: pointer; }
+    .nav-link:hover, .nav-link.active { color: var(--accent-blue); }
+    .navbar-actions { display: flex; gap: 12px; }
+    .btn { padding: 8px 18px; border-radius: 20px; font-size: 0.85rem; cursor: pointer; transition: all 0.25s var(--ease-spring); border: none; text-decoration: none; display: inline-block; }
+    .btn-primary { background: var(--accent-blue); color: #000; font-weight: 600; }
+    .btn-outline { background: transparent; color: var(--accent-blue); border: 1px solid var(--border-card); }
+    .container { max-width: 860px; margin: 0 auto; padding: 84px 20px 60px; }
+
+    .back-link { display: inline-flex; align-items: center; gap: 6px; color: var(--accent-blue); text-decoration: none; font-size: 0.9rem; margin-bottom: 24px; transition: opacity 0.2s; }
+    .back-link:hover { opacity: 0.8; }
+    .back-link svg { width: 16px; height: 16px; }
+
+    .detail-header { margin-bottom: 28px; }
+    .detail-title { font-size: 1.5rem; font-weight: 700; line-height: 1.4; margin-bottom: 16px; }
+    .detail-meta { display: flex; flex-wrap: wrap; gap: 16px; }
+    .meta-item { display: flex; align-items: center; gap: 6px; padding: 6px 14px; border-radius: 12px; background: var(--bg-card); border: 1px solid var(--border-card); font-size: 0.85rem; }
+    .meta-label { color: var(--text-muted); }
+    .meta-value { color: var(--text-primary); font-weight: 600; }
+    .meta-value.danger { color: var(--danger); }
+    .meta-value.warning { color: var(--warning); }
+
+    .detail-section { background: var(--bg-card); border: 1px solid var(--border-card); border-radius: 16px; padding: 24px; margin-bottom: 20px; transition: all 0.3s var(--ease-spring); }
+    .detail-section:hover { border-color: var(--border-card-hover); box-shadow: var(--shadow-card); }
+    .section-title { font-size: 1.05rem; font-weight: 600; color: var(--accent-blue); margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+    .section-title::before { content: ''; display: inline-block; width: 3px; height: 18px; background: var(--accent-blue); border-radius: 2px; }
+    .section-title.warning-title { color: var(--warning); }
+    .section-title.warning-title::before { background: var(--warning); }
+    .section-content { font-size: 0.92rem; line-height: 1.8; color: var(--text-secondary); }
+    .section-content p { margin-bottom: 10px; }
+    .section-content ul { padding-left: 20px; }
+    .section-content li { margin-bottom: 8px; }
+    .section-content strong { color: var(--text-primary); }
+
+    .badge-warning { display: inline-block; padding: 4px 12px; border-radius: 10px; font-size: 0.82rem; font-weight: 600; background: rgba(255, 149, 0, 0.2); color: var(--warning); margin-bottom: 12px; }
+
+    .warning-banner { background: rgba(255, 59, 48, 0.08); border: 1px solid rgba(255, 59, 48, 0.2); border-radius: 12px; padding: 14px 18px; margin-bottom: 24px; display: flex; align-items: center; gap: 10px; font-size: 0.88rem; color: var(--danger); }
+    .warning-banner-icon { font-size: 1.2rem; flex-shrink: 0; }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-in { animation: fadeInUp 0.45s var(--ease-spring) forwards; opacity: 0; }
+    .delay-1 { animation-delay: 0.05s; }
+    .delay-2 { animation-delay: 0.1s; }
+    .delay-3 { animation-delay: 0.15s; }
+    .delay-4 { animation-delay: 0.2s; }
+    .delay-5 { animation-delay: 0.25s; }
+
+    @media (max-width: 800px) {
+      .navbar-links { display: none; }
+      .detail-title { font-size: 1.25rem; }
+      .detail-meta { gap: 10px; }
+      .meta-item { font-size: 0.82rem; padding: 5px 10px; }
+    }
+  </style>
 </head>
 <body>
-    <h2>冒充央企融资诈骗案</h2>
-    <div class="card">
-        <p><strong>地区：</strong>全国</p>
-        <p><strong>时间：</strong>2026-03-02</p>
-        <p>骗子伪造红头文件，以国家项目为名骗取保证金，多地受害者已报警。</p>
-        <h4>避坑建议：</h4>
-        <ul><li>核实身份</li><li>拒绝私账</li><li>线下尽调</li></ul>
+  <nav class="navbar">
+    <a href="index.html" class="navbar-brand"><span>🌌</span><span>资源夜市</span></a>
+    <div class="navbar-links">
+      <a href="index.html" class="nav-link">首页</a>
+      <a href="groups.html" class="nav-link">行业群码</a>
+      <a href="gov-list.html" class="nav-link">政企资源</a>
+      <a href="help-detail.html" class="nav-link">最新求助</a>
+      <a href="finance.html" class="nav-link">民企金融</a>
+      <a href="escort.html" class="nav-link">居间护航</a>
+      <a href="case-list.html" class="nav-link active">资源案例</a>
     </div>
+    <div class="navbar-actions">
+      <a href="login.html" class="btn btn-outline">登录</a>
+      <a href="register.html" class="btn btn-primary">注册</a>
+    </div>
+  </nav>
+
+  <div class="container">
+    <a href="pitfall-list.html" class="back-link animate-in">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+      返回避坑指南
+    </a>
+
+    <div class="warning-banner animate-in delay-1">
+      <span class="warning-banner-icon">🚨</span>
+      <span>以下内容为风险预警信息，请仔细阅读并注意防范。如遇类似情况，请及时向平台举报。</span>
+    </div>
+
+    <div class="detail-header animate-in delay-2">
+      <span class="badge-warning">⚠️ 避坑指南</span>
+      <h1 class="detail-title" id="pitfallTitle">⚠️ 冒充央企诈骗案：伪造红头文件骗取保证金</h1>
+      <div class="detail-meta">
+        <div class="meta-item">
+          <span class="meta-label">警告类型</span>
+          <span class="meta-value danger" id="pitfallType">诈骗预警</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">涉及地区</span>
+          <span class="meta-value" id="pitfallRegion">📍 全国</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">发布时间</span>
+          <span class="meta-value" id="pitfallDate">2026-03-02</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="detail-section animate-in delay-3">
+      <h2 class="section-title">事件描述</h2>
+      <div class="section-content" id="sectionDescription">
+        <p>近期，全国多地出现不法分子伪装成央企或国企代表，以"国家重点项目合作""央企混改"等名义，向中小企业主发出合作邀约的诈骗案件。</p>
+        <p>其典型作案手法如下：</p>
+        <ul>
+          <li><strong>伪造身份：</strong>制作假冒的央企工牌、名片，甚至租用高档写字楼临时办公，营造正规企业氛围。</li>
+          <li><strong>伪造文件：</strong>伪造带有央企公章和红头的"合作意向书""项目立项批复"等文件，使受害企业信以为真。</li>
+          <li><strong>收取保证金：</strong>以"项目保证金""履约担保金""通道费"等名义，要求合作方先行缴纳50-200万元不等的费用。</li>
+          <li><strong>迅速失联：</strong>收到款项后，骗子会以各种理由拖延项目进度，最终失联。受害方报案后才发现对方使用的是虚假信息。</li>
+        </ul>
+        <p>据不完全统计，仅2026年一季度，此类案件已造成超过千万元的经济损失。</p>
+      </div>
+    </div>
+
+    <div class="detail-section animate-in delay-4">
+      <h2 class="section-title warning-title">防范建议</h2>
+      <div class="section-content" id="sectionAdvice">
+        <ul>
+          <li><strong>核实企业身份：</strong>通过国家企业信用信息公示系统（www.gsxt.gov.cn）查询对方企业信息，确认注册信息与对方所称一致。</li>
+          <li><strong>验证联系人身份：</strong>直接拨打央企/国企官方客服电话或总机，确认对方联系人是否为该企业员工。切勿仅凭名片或微信名判断。</li>
+          <li><strong>拒绝私人账户转账：</strong>正规企业项目合作，资金往来必须通过对公账户。任何要求转到个人账户的行为都是重大红旗信号。</li>
+          <li><strong>警惕前置费用：</strong>正规项目合作不会要求合作方先缴纳保证金或通道费。如果对方坚持要求预付费用，应高度警惕。</li>
+          <li><strong>线下实地考察：</strong>对于涉及大额资金的合作，务必前往对方的实际经营场所考察，核实办公场地是否为长期租赁。</li>
+          <li><strong>留存证据及时报案：</strong>保存所有沟通记录、转账凭证、合同文件。一旦发现可疑情况，立即向公安机关报案并通知平台。</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Read id from URL for future API integration
+    const params = new URLSearchParams(window.location.search);
+    const pitfallId = params.get('id');
+
+    // In the future, use pitfallId to fetch data from API:
+    // fetch(`/api/pitfalls/${pitfallId}`).then(...)
+    // For now, sample content is displayed statically above.
+
+    if (pitfallId) {
+      console.log('Pitfall detail page loaded for id:', pitfallId);
+    }
+  </script>
 </body>
 </html>

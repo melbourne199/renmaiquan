@@ -1,17 +1,183 @@
 <!DOCTYPE html>
-<html>
-<head><title>避坑指南</title>
-<style>body{font-family:system-ui;padding:16px;background:#f5f5f7;}.card{background:white;border-radius:16px;padding:12px;margin-bottom:12px;}</style>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>避坑指南 - 资源夜市</title>
+  <style>
+    :root {
+      --bg-deep: #01060f;
+      --bg-card: rgba(90, 200, 250, 0.06);
+      --bg-card-hover: rgba(90, 200, 250, 0.12);
+      --border-card: rgba(90, 200, 250, 0.15);
+      --border-card-hover: rgba(90, 200, 250, 0.35);
+      --accent-blue: #5ac8fa;
+      --accent-blue-light: #72d2ff;
+      --text-primary: rgba(228, 240, 252, 0.96);
+      --text-secondary: rgba(180, 200, 220, 0.75);
+      --text-muted: rgba(150, 180, 210, 0.6);
+      --gold: #F59E0B;
+      --success: #34C759;
+      --danger: #FF3B30;
+      --warning: #FF9500;
+      --glass-blur: blur(20px);
+      --shadow-card: 0 12px 40px rgba(0, 0, 0, 0.4), 0 0 30px rgba(90, 200, 250, 0.08);
+      --shadow-card-hover: 0 20px 50px rgba(0, 0, 0, 0.5), 0 0 40px rgba(90, 200, 250, 0.15);
+      --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif; background: var(--bg-deep); color: var(--text-primary); min-height: 100vh; }
+    .navbar { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 12px 24px; background: rgba(1, 6, 15, 0.8); backdrop-filter: var(--glass-blur); border-bottom: 1px solid var(--border-card); }
+    .navbar-brand { display: flex; align-items: center; gap: 10px; color: var(--text-primary); text-decoration: none; font-size: 1.1rem; font-weight: 600; }
+    .navbar-links { display: flex; gap: 24px; }
+    .nav-link { color: var(--text-secondary); text-decoration: none; font-size: 0.9rem; cursor: pointer; }
+    .nav-link:hover, .nav-link.active { color: var(--accent-blue); }
+    .navbar-actions { display: flex; gap: 12px; }
+    .btn { padding: 8px 18px; border-radius: 20px; font-size: 0.85rem; cursor: pointer; transition: all 0.25s var(--ease-spring); border: none; text-decoration: none; display: inline-block; }
+    .btn:active { transform: scale(0.95); }
+    .btn-primary { background: var(--accent-blue); color: #000; font-weight: 600; }
+    .btn-outline { background: transparent; color: var(--accent-blue); border: 1px solid var(--border-card); }
+    .btn-warning { background: rgba(255, 149, 0, 0.2); color: var(--warning); border: 1px solid rgba(255, 149, 0, 0.3); font-weight: 600; }
+    .btn-warning:hover { background: rgba(255, 149, 0, 0.3); }
+    .container { max-width: 1200px; margin: 0 auto; padding: 84px 20px 40px; }
+
+    .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 16px; }
+    .page-title { font-size: 1.4rem; font-weight: 600; }
+
+    .search-bar { position: relative; margin-bottom: 24px; }
+    .search-input { width: 100%; padding: 12px 20px 12px 44px; border-radius: 14px; border: 1px solid var(--border-card); background: var(--bg-card); color: var(--text-primary); font-size: 0.92rem; outline: none; backdrop-filter: var(--glass-blur); transition: all 0.3s var(--ease-spring); }
+    .search-input::placeholder { color: var(--text-muted); }
+    .search-input:focus { border-color: var(--border-card-hover); box-shadow: 0 0 20px rgba(90, 200, 250, 0.1); }
+    .search-icon { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 1rem; pointer-events: none; }
+
+    .cards-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+
+    .pitfall-card { background: var(--bg-card); border: 1px solid var(--border-card); border-radius: 16px; padding: 20px; cursor: pointer; transition: all 0.3s var(--ease-spring); text-decoration: none; display: block; }
+    .pitfall-card:hover { transform: translateY(-4px); border-color: var(--border-card-hover); box-shadow: var(--shadow-card-hover); }
+    .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
+    .badge-warning { padding: 4px 10px; border-radius: 10px; font-size: 0.75rem; font-weight: 600; background: rgba(255, 149, 0, 0.2); color: var(--warning); }
+    .type-tag { padding: 4px 10px; border-radius: 10px; font-size: 0.75rem; font-weight: 500; background: rgba(255, 59, 48, 0.15); color: var(--danger); }
+    .card-title { font-size: 0.95rem; font-weight: 600; color: var(--text-primary); margin-bottom: 8px; line-height: 1.4; }
+    .card-desc { font-size: 0.85rem; color: var(--text-secondary); line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 12px; }
+    .card-footer { display: flex; justify-content: space-between; align-items: center; padding-top: 12px; border-top: 1px solid var(--border-card); }
+    .card-region { font-size: 0.82rem; color: var(--text-muted); }
+    .card-date { font-size: 0.82rem; color: var(--text-muted); }
+
+    .empty-state { grid-column: 1 / -1; text-align: center; padding: 80px 20px; color: var(--text-muted); }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-in { animation: fadeInUp 0.45s var(--ease-spring) forwards; opacity: 0; }
+    .delay-1 { animation-delay: 0.05s; }
+    .delay-2 { animation-delay: 0.1s; }
+    .delay-3 { animation-delay: 0.15s; }
+    .delay-4 { animation-delay: 0.2s; }
+
+    @media (max-width: 800px) {
+      .cards-grid { grid-template-columns: 1fr; }
+      .navbar-links { display: none; }
+      .page-header { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
 </head>
 <body>
-    <h2>避坑指南</h2>
-    <div class="search">🔍 搜索...</div>
-    <div class="card">
-        <div style="font-weight:600;">冒充央企诈骗案</div>
-        <div style="font-size:0.8rem; color:#666;">伪造红头文件</div>
-        <div style="display:flex; justify-content:space-between; font-size:0.7rem; color:#999;">
-            <span>全国</span><span>2026-03-02</span>
-        </div>
+  <nav class="navbar">
+    <a href="index.html" class="navbar-brand"><span>🌌</span><span>资源夜市</span></a>
+    <div class="navbar-links">
+      <a href="index.html" class="nav-link">首页</a>
+      <a href="groups.html" class="nav-link">行业群码</a>
+      <a href="gov-list.html" class="nav-link">政企资源</a>
+      <a href="help-detail.html" class="nav-link">最新求助</a>
+      <a href="finance.html" class="nav-link">民企金融</a>
+      <a href="escort.html" class="nav-link">居间护航</a>
+      <a href="case-list.html" class="nav-link active">资源案例</a>
     </div>
+    <div class="navbar-actions">
+      <a href="login.html" class="btn btn-outline">登录</a>
+      <a href="register.html" class="btn btn-primary">注册</a>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="page-header animate-in">
+      <h1 class="page-title">避坑指南</h1>
+      <a href="publish-pitfall.html" class="btn btn-warning">发布避坑指南</a>
+    </div>
+
+    <div class="search-bar animate-in delay-1">
+      <span class="search-icon">🔍</span>
+      <input type="text" class="search-input" id="searchInput" placeholder="搜索避坑指南...关键词、地区、类型">
+    </div>
+
+    <div class="cards-grid" id="pitfallGrid">
+      <a href="pitfall-detail.html?id=1" class="pitfall-card animate-in delay-1">
+        <div class="card-header">
+          <span class="badge-warning">⚠️ 避坑指南</span>
+          <span class="type-tag">诈骗预警</span>
+        </div>
+        <div class="card-title">冒充央企诈骗案：伪造红头文件骗取保证金</div>
+        <div class="card-desc">有不法分子伪造央企红头文件，以国家重点项目合作名义，要求企业缴纳"项目保证金"。多地已有企业中招，单笔损失50-200万元不等。</div>
+        <div class="card-footer">
+          <span class="card-region">📍 全国</span>
+          <span class="card-date">2026-03-02</span>
+        </div>
+      </a>
+
+      <a href="pitfall-detail.html?id=2" class="pitfall-card animate-in delay-2">
+        <div class="card-header">
+          <span class="badge-warning">⚠️ 避坑指南</span>
+          <span class="type-tag">虚假信息</span>
+        </div>
+        <div class="card-title">虚假项目资料骗局：包装精美的"一手资源"陷阱</div>
+        <div class="card-desc">部分中介提供精心包装的虚假项目资料，声称是一手资源，骗取前期信息费或咨询费。实际项目并不存在或早已终止。</div>
+        <div class="card-footer">
+          <span class="card-region">📍 长三角</span>
+          <span class="card-date">2026-02-25</span>
+        </div>
+      </a>
+
+      <a href="pitfall-detail.html?id=3" class="pitfall-card animate-in delay-3">
+        <div class="card-header">
+          <span class="badge-warning">⚠️ 避坑指南</span>
+          <span class="type-tag">跳单风险</span>
+        </div>
+        <div class="card-title">居间人跳单案例：口头承诺不可信</div>
+        <div class="card-desc">某居间人成功撮合甲乙双方后，甲方绕过居间人直接与乙方签约，居间人因未签署书面协议导致维权困难，损失居间费15万元。</div>
+        <div class="card-footer">
+          <span class="card-region">📍 珠三角</span>
+          <span class="card-date">2026-02-18</span>
+        </div>
+      </a>
+
+      <a href="pitfall-detail.html?id=4" class="pitfall-card animate-in delay-4">
+        <div class="card-header">
+          <span class="badge-warning">⚠️ 避坑指南</span>
+          <span class="type-tag">资金风险</span>
+        </div>
+        <div class="card-title">融资中介收取高额前置费用：正规机构不收前期费</div>
+        <div class="card-desc">有人冒充银行或金融机构内部人员，声称可以帮助快速获批贷款，但要求先缴纳"通道费""手续费"等前置费用，收钱后失联。</div>
+        <div class="card-footer">
+          <span class="card-region">📍 京津冀</span>
+          <span class="card-date">2026-02-10</span>
+        </div>
+      </a>
+    </div>
+  </div>
+
+  <script>
+    // Search filter
+    const searchInput = document.getElementById('searchInput');
+    const cards = document.querySelectorAll('.pitfall-card');
+
+    searchInput.addEventListener('input', () => {
+      const keyword = searchInput.value.trim().toLowerCase();
+      cards.forEach(card => {
+        const text = card.textContent.toLowerCase();
+        card.style.display = text.includes(keyword) ? '' : 'none';
+      });
+    });
+  </script>
 </body>
 </html>

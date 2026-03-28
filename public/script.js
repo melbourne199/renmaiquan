@@ -243,11 +243,11 @@ const cityData = [
   { name: '株洲', lat: 27.8273, lon: 113.1340, provided: 25, help: 4 },
   { name: '湘潭', lat: 27.8291, lon: 112.9442, provided: 20, help: 3 },
 
-  // 华南
-  { name: '广州', lat: 23.1291, lon: 113.2644, provided: 102, help: 14 },
-  { name: '深圳', lat: 22.5431, lon: 114.0579, provided: 165, help: 27 },
-  { name: '东莞', lat: 23.0469, lon: 113.7633, provided: 58, help: 8 },
-  { name: '佛山', lat: 23.0218, lon: 113.1220, provided: 45, help: 6 },
+  // 华南 - 大湾区城市添加 labelDir 避免重叠
+  { name: '广州', lat: 23.1291, lon: 113.2644, provided: 102, help: 14, labelDir: 'top' },
+  { name: '深圳', lat: 22.5431, lon: 114.0579, provided: 165, help: 27, labelDir: 'right' },
+  { name: '东莞', lat: 23.0469, lon: 113.7633, provided: 58, help: 8, labelDir: 'top-right' },
+  { name: '佛山', lat: 23.0218, lon: 113.1220, provided: 45, help: 6, labelDir: 'left' },
   { name: '南宁', lat: 22.8170, lon: 108.3665, provided: 32, help: 5 },
   { name: '桂林', lat: 25.2736, lon: 110.2900, provided: 25, help: 4 },
   { name: '柳州', lat: 24.3263, lon: 109.3896, provided: 22, help: 3 },
@@ -276,8 +276,8 @@ const cityData = [
   { name: '喀什', lat: 39.4677, lon: 75.9894, provided: 15, help: 2 },
 
   // 港澳台
-  { name: '香港', lat: 22.3193, lon: 114.1694, provided: 95, help: 18, isHK: true },
-  { name: '澳门', lat: 22.1987, lon: 113.5439, provided: 35, help: 6, isMacau: true },
+  { name: '香港', lat: 22.3193, lon: 114.1694, provided: 95, help: 18, isHK: true, labelDir: 'bottom-right' },
+  { name: '澳门', lat: 22.1987, lon: 113.5439, provided: 35, help: 6, isMacau: true, labelDir: 'bottom-left' },
   { name: '台北', lat: 25.0330, lon: 121.5654, provided: 78, help: 15, isTaiwan: true },
   { name: '高雄', lat: 22.6273, lon: 120.2844, provided: 42, help: 6 },
   { name: '台中', lat: 24.1477, lon: 120.6736, provided: 38, help: 5 },
@@ -316,7 +316,6 @@ const cityData = [
 
 const RADIUS = 5.02;
 const CHINA_ROTATION_Y = 2.28; // 从太平洋中心继续向中国推进
-console.log('CURRENT CHINA_ROTATION_Y =', CHINA_ROTATION_Y);
 
 function latLonToVector3(lat, lon, radius) {
   const phi = (90 - lat) * (Math.PI / 180);
@@ -492,10 +491,19 @@ function createCityMarkers() {
       glow.userData.isGlow = true;
       markerGroup.add(glow);
 
-      // 港澳台标签
+      // 港澳台标签 - 根据labelDir设置合适的偏移量
       let labelPos = pos.clone();
-      labelPos.x += 0.003;
-      labelPos.y += 0.001;
+      const hkmDir = {
+        'bottom-right': { x: 0.012, y: -0.008 },
+        'bottom-left':  { x: -0.012, y: -0.008 },
+        'top-right':    { x: 0.012, y: 0.008 },
+        'top-left':     { x: -0.012, y: 0.008 },
+        'right':        { x: 0.015, y: 0 },
+        'left':         { x: -0.015, y: 0 },
+      };
+      const dirOffset = city.labelDir && hkmDir[city.labelDir] ? hkmDir[city.labelDir] : { x: 0.012, y: -0.006 };
+      labelPos.x += dirOffset.x;
+      labelPos.y += dirOffset.y;
       const twLineGeo = new THREE.BufferGeometry().setFromPoints([pos, labelPos.clone()]);
       const twLine = new THREE.Line(twLineGeo, new THREE.LineBasicMaterial({ color: 0x00aaff, transparent: true, opacity: 0.8 }));
       twLine.userData.city = city;
@@ -532,10 +540,26 @@ function createCityMarkers() {
       glow.userData.isGlow = true;
       markerGroup.add(glow);
 
-      // 城市标签贴近圆点
+      // 城市标签贴近圆点，根据labelDir预设方向
       let labelPos = pos.clone();
-      labelPos.x += city.offset ? city.offset.x : 0.002;
-      labelPos.y += city.offset ? city.offset.y : 0.001;
+      if (city.labelDir) {
+        const dirOffsets = {
+          'top':          { x: 0, y: 0.008 },
+          'bottom':       { x: 0, y: -0.008 },
+          'left':         { x: -0.012, y: 0.001 },
+          'right':        { x: 0.012, y: 0.001 },
+          'top-left':     { x: -0.008, y: 0.006 },
+          'top-right':    { x: 0.008, y: 0.006 },
+          'bottom-left':  { x: -0.008, y: -0.006 },
+          'bottom-right': { x: 0.008, y: -0.006 }
+        };
+        const off = dirOffsets[city.labelDir] || { x: 0.002, y: 0.001 };
+        labelPos.x += off.x;
+        labelPos.y += off.y;
+      } else {
+        labelPos.x += city.offset ? city.offset.x : 0.002;
+        labelPos.y += city.offset ? city.offset.y : 0.001;
+      }
 
       // 线条从城市点位延伸到标签位置
       const lineGeo = new THREE.BufferGeometry().setFromPoints([pos, labelPos]);
@@ -577,10 +601,10 @@ function fixLabelCollision() {
   const isOverview = cameraDistance > 26;
 
   // 估算文字尺寸（中文约14px宽，18px高，加上边距）
-  const LABEL_WIDTH = 70;  // 标签宽度（5个汉字约70px）
-  const LABEL_HEIGHT = 24; // 标签高度
-  const LABEL_MARGIN = 12; // 标签间距
-  const MARKER_TO_LABEL = 18; // 圆点到标签的最小距离
+  const LABEL_WIDTH = 76;  // 标签宽度（5个汉字约76px，含内边距）
+  const LABEL_HEIGHT = 28; // 标签高度（含半透明背景padding）
+  const LABEL_MARGIN = 16; // 标签间距（加大避免视觉拥挤）
+  const MARKER_TO_LABEL = 22; // 圆点到标签的最小距离
 
   // 8个方向（以圆点为圆心环绕）
   const DIRECTIONS = [
@@ -598,6 +622,33 @@ function fixLabelCollision() {
   function getOrderedDirections(city) {
     const lon = city.lon;
     const lat = city.lat;
+
+    // 如果城市指定了标签方向（大湾区等密集区域），优先使用
+    if (city.labelDir) {
+      const dirMap = {
+        'top':          { x: 0, y: 1 },
+        'bottom':       { x: 0, y: -1 },
+        'left':         { x: -1, y: 0 },
+        'right':        { x: 1, y: 0 },
+        'top-left':     { x: -1, y: 1 },
+        'top-right':    { x: 1, y: 1 },
+        'bottom-left':  { x: -1, y: -1 },
+        'bottom-right': { x: 1, y: -1 }
+      };
+      const preferred = dirMap[city.labelDir];
+      if (preferred) {
+        // 将指定方向排在最前面
+        const sorted = [...DIRECTIONS].sort((a, b) => {
+          const aMatch = (a.x === preferred.x && a.y === preferred.y) ? 100 : 0;
+          const bMatch = (b.x === preferred.x && b.y === preferred.y) ? 100 : 0;
+          // 次优先：与指定方向同侧的方向
+          const aSide = a.x * preferred.x + a.y * preferred.y;
+          const bSide = b.x * preferred.x + b.y * preferred.y;
+          return (bMatch + bSide) - (aMatch + aSide);
+        });
+        return sorted;
+      }
+    }
     // 东边城市优先往右，西边优先往左
     // 北边城市优先往上，南边优先往下
     const sorted = [...DIRECTIONS].sort((a, b) => {
@@ -670,8 +721,8 @@ function fixLabelCollision() {
     let usedLine = false;
 
     // 搜索距离圆点由近及远的位置
-    for (let ring = 1; ring <= 8; ring++) {
-      const baseDist = ring * 0.004; // 搜索半径步进
+    for (let ring = 1; ring <= 12; ring++) {
+      const baseDist = ring * 0.005; // 搜索半径步进（加大步长）
       let foundInRing = false;
 
       for (const dir of orderedDirs) {
@@ -745,7 +796,7 @@ function fixLabelCollision() {
       );
 
       // 只有被推开了一定距离才显示线，且线不能太长
-      if (isVisible && result.usedLine && lineLength < 0.05) {
+      if (isVisible && result.usedLine && lineLength < 0.08) {
         line.geometry.setFromPoints([markerWorldPos, finalPos.clone()]);
         line.material.opacity = 0.7;
       } else {
@@ -1153,7 +1204,7 @@ function addCityMarker(city) {
 // 对所有标签进行碰撞检测：优先贴近圆点，找最近空位
 function fixLabelCollisionForOne(label) {
   const THRESHOLD = 28;
-  const LABEL_MIN_DIST = 34;
+  const LABEL_MIN_DIST = 55;
 
   function getAllCityLabels() {
     return cityLabels.filter(l =>
@@ -1279,11 +1330,9 @@ window.addEventListener('keydown', (e) => {
     earth.rotation.y -= 0.1;
     clouds.rotation.y -= 0.1;
     atmosphere.rotation.y -= 0.1;
-    console.log('rotation.y =', earth.rotation.y.toFixed(3));
   } else if (e.key === 'ArrowRight') {
     earth.rotation.y += 0.1;
     clouds.rotation.y += 0.1;
     atmosphere.rotation.y += 0.1;
-    console.log('rotation.y =', earth.rotation.y.toFixed(3));
   }
 });

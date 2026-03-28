@@ -1,15 +1,177 @@
 <!DOCTYPE html>
-<html>
-<head><title>案例详情</title>
-<style>body{font-family:system-ui;padding:16px;background:#f5f5f7;}.card{background:white;border-radius:20px;padding:20px;}</style>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>案例详情 - 资源夜市</title>
+  <style>
+    :root {
+      --bg-deep: #01060f;
+      --bg-card: rgba(90, 200, 250, 0.06);
+      --bg-card-hover: rgba(90, 200, 250, 0.12);
+      --border-card: rgba(90, 200, 250, 0.15);
+      --border-card-hover: rgba(90, 200, 250, 0.35);
+      --accent-blue: #5ac8fa;
+      --accent-blue-light: #72d2ff;
+      --text-primary: rgba(228, 240, 252, 0.96);
+      --text-secondary: rgba(180, 200, 220, 0.75);
+      --text-muted: rgba(150, 180, 210, 0.6);
+      --gold: #F59E0B;
+      --success: #34C759;
+      --danger: #FF3B30;
+      --glass-blur: blur(20px);
+      --shadow-card: 0 12px 40px rgba(0, 0, 0, 0.4), 0 0 30px rgba(90, 200, 250, 0.08);
+      --shadow-card-hover: 0 20px 50px rgba(0, 0, 0, 0.5), 0 0 40px rgba(90, 200, 250, 0.15);
+      --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif; background: var(--bg-deep); color: var(--text-primary); min-height: 100vh; }
+    .navbar { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 12px 24px; background: rgba(1, 6, 15, 0.8); backdrop-filter: var(--glass-blur); border-bottom: 1px solid var(--border-card); }
+    .navbar-brand { display: flex; align-items: center; gap: 10px; color: var(--text-primary); text-decoration: none; font-size: 1.1rem; font-weight: 600; }
+    .navbar-links { display: flex; gap: 24px; }
+    .nav-link { color: var(--text-secondary); text-decoration: none; font-size: 0.9rem; cursor: pointer; }
+    .nav-link:hover, .nav-link.active { color: var(--accent-blue); }
+    .navbar-actions { display: flex; gap: 12px; }
+    .btn { padding: 8px 18px; border-radius: 20px; font-size: 0.85rem; cursor: pointer; transition: all 0.25s var(--ease-spring); border: none; text-decoration: none; display: inline-block; }
+    .btn-primary { background: var(--accent-blue); color: #000; font-weight: 600; }
+    .btn-outline { background: transparent; color: var(--accent-blue); border: 1px solid var(--border-card); }
+    .container { max-width: 860px; margin: 0 auto; padding: 84px 20px 60px; }
+
+    .back-link { display: inline-flex; align-items: center; gap: 6px; color: var(--accent-blue); text-decoration: none; font-size: 0.9rem; margin-bottom: 24px; transition: opacity 0.2s; }
+    .back-link:hover { opacity: 0.8; }
+    .back-link svg { width: 16px; height: 16px; }
+
+    .detail-header { margin-bottom: 28px; }
+    .detail-title { font-size: 1.5rem; font-weight: 700; line-height: 1.4; margin-bottom: 16px; }
+    .detail-meta { display: flex; flex-wrap: wrap; gap: 16px; }
+    .meta-item { display: flex; align-items: center; gap: 6px; padding: 6px 14px; border-radius: 12px; background: var(--bg-card); border: 1px solid var(--border-card); font-size: 0.85rem; }
+    .meta-label { color: var(--text-muted); }
+    .meta-value { color: var(--text-primary); font-weight: 600; }
+    .meta-value.gold { color: var(--gold); }
+
+    .detail-section { background: var(--bg-card); border: 1px solid var(--border-card); border-radius: 16px; padding: 24px; margin-bottom: 20px; transition: all 0.3s var(--ease-spring); }
+    .detail-section:hover { border-color: var(--border-card-hover); box-shadow: var(--shadow-card); }
+    .section-title { font-size: 1.05rem; font-weight: 600; color: var(--accent-blue); margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+    .section-title::before { content: ''; display: inline-block; width: 3px; height: 18px; background: var(--accent-blue); border-radius: 2px; }
+    .section-content { font-size: 0.92rem; line-height: 1.8; color: var(--text-secondary); }
+    .section-content p { margin-bottom: 10px; }
+    .section-content ul { padding-left: 20px; }
+    .section-content li { margin-bottom: 8px; }
+    .section-content strong { color: var(--text-primary); }
+
+    .badge-success { display: inline-block; padding: 4px 12px; border-radius: 10px; font-size: 0.82rem; font-weight: 600; background: rgba(52, 199, 89, 0.2); color: var(--success); margin-bottom: 12px; }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-in { animation: fadeInUp 0.45s var(--ease-spring) forwards; opacity: 0; }
+    .delay-1 { animation-delay: 0.05s; }
+    .delay-2 { animation-delay: 0.1s; }
+    .delay-3 { animation-delay: 0.15s; }
+    .delay-4 { animation-delay: 0.2s; }
+    .delay-5 { animation-delay: 0.25s; }
+
+    @media (max-width: 800px) {
+      .navbar-links { display: none; }
+      .detail-title { font-size: 1.25rem; }
+      .detail-meta { gap: 10px; }
+      .meta-item { font-size: 0.82rem; padding: 5px 10px; }
+    }
+  </style>
 </head>
 <body>
-    <h2>某AI医疗公司B轮融资2亿元</h2>
-    <div class="card">
-        <p><strong>成交金额：</strong>💰 2亿</p>
-        <p><strong>引荐人：</strong>李XX</p>
-        <p><strong>时间：</strong>2026-03-04</p>
-        <p>公司专注于AI医学影像，核心团队来自清华。本轮由知名医疗基金领投。</p>
+  <nav class="navbar">
+    <a href="index.html" class="navbar-brand"><span>🌌</span><span>资源夜市</span></a>
+    <div class="navbar-links">
+      <a href="index.html" class="nav-link">首页</a>
+      <a href="groups.html" class="nav-link">行业群码</a>
+      <a href="gov-list.html" class="nav-link">政企资源</a>
+      <a href="help-detail.html" class="nav-link">最新求助</a>
+      <a href="finance.html" class="nav-link">民企金融</a>
+      <a href="escort.html" class="nav-link">居间护航</a>
+      <a href="case-list.html" class="nav-link active">资源案例</a>
     </div>
+    <div class="navbar-actions">
+      <a href="login.html" class="btn btn-outline">登录</a>
+      <a href="register.html" class="btn btn-primary">注册</a>
+    </div>
+  </nav>
+
+  <div class="container">
+    <a href="case-list.html" class="back-link animate-in">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+      返回案例列表
+    </a>
+
+    <div class="detail-header animate-in delay-1">
+      <span class="badge-success">✅ 成功案例</span>
+      <h1 class="detail-title" id="caseTitle">✅ 某300万设备采购项目：双一级居间人分走18万</h1>
+      <div class="detail-meta">
+        <div class="meta-item">
+          <span class="meta-label">金额</span>
+          <span class="meta-value gold" id="caseAmount">💰 30万</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">时间</span>
+          <span class="meta-value" id="caseDate">2026-03-04</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">类型</span>
+          <span class="meta-value" id="caseType">设备采购</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="detail-section animate-in delay-2">
+      <h2 class="section-title">项目背景</h2>
+      <div class="section-content" id="sectionBackground">
+        <p>某中型制造企业因产线升级需要，计划采购一批价值约300万元的自动化设备。企业采购负责人在多方询价后，通过行业朋友得知本平台可以对接优质设备供应商。</p>
+        <p>项目方（甲方）明确了设备型号、技术参数和预算区间，但缺乏直接的供应商渠道。设备供应商（乙方）有现成产品库存，但苦于没有精准客户来源。</p>
+      </div>
+    </div>
+
+    <div class="detail-section animate-in delay-3">
+      <h2 class="section-title">对接过程</h2>
+      <div class="section-content" id="sectionProcess">
+        <p>整个对接过程历时约15天，经历了以下关键节点：</p>
+        <ul>
+          <li><strong>需求发布：</strong>甲方在平台发布设备采购需求，注明设备参数、预算300万元、交付时间要求。</li>
+          <li><strong>一级引荐人A介入：</strong>引荐人A长期跟踪制造业客户，第一时间识别到该需求，并联系到乙方的区域销售经理。</li>
+          <li><strong>一级引荐人B介入：</strong>引荐人B是乙方区域负责人的朋友，确认了供应商的资质和库存情况。</li>
+          <li><strong>双方对接：</strong>通过平台的居间护航机制，甲乙双方进行了线上初步沟通，随后安排线下验厂。</li>
+          <li><strong>签约成交：</strong>双方确认合同条款，成交金额300万元，居间服务费30万元。</li>
+        </ul>
+        <p>居间费按照平台明牌规则分配：双一级引荐人共得60%（各9万元，合计18万元），二级引荐人共得40%（12万元）。</p>
+      </div>
+    </div>
+
+    <div class="detail-section animate-in delay-4">
+      <h2 class="section-title">避坑要点</h2>
+      <div class="section-content" id="sectionTips">
+        <ul>
+          <li><strong>核实设备资质：</strong>采购大额设备前，务必要求供应商提供产品质检报告、售后服务协议，并安排线下验厂。</li>
+          <li><strong>明确居间费用：</strong>项目启动前，所有参与方需通过平台确认居间费比例和分配方式，避免事后纠纷。</li>
+          <li><strong>签署正式协议：</strong>居间协议、采购合同应同步签署，确保引荐人权益受法律保护。</li>
+          <li><strong>警惕中间加价：</strong>如果遇到中间人层层加价导致报价远高于市场价，建议通过平台核实供应商的一手报价。</li>
+          <li><strong>留痕保护：</strong>所有沟通记录、需求变更、报价单据通过平台传递并留痕，防止跳单风险。</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Read id from URL for future API integration
+    const params = new URLSearchParams(window.location.search);
+    const caseId = params.get('id');
+
+    // In the future, use caseId to fetch data from API:
+    // fetch(`/api/cases/${caseId}`).then(...)
+    // For now, sample content is displayed statically above.
+
+    if (caseId) {
+      console.log('Case detail page loaded for id:', caseId);
+    }
+  </script>
 </body>
 </html>

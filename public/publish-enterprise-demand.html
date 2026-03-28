@@ -1,18 +1,447 @@
 <!DOCTYPE html>
-<html>
-<head><title>发布企业需求</title>
-<style>body{font-family:system-ui;padding:16px;background:#f5f5f7;}input,select,textarea{width:100%;padding:14px;border:1px solid #eee;border-radius:14px;margin-bottom:16px;}.btn{background:#0071E3;color:white;border:none;border-radius:30px;padding:16px;width:100%;}</style>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>发布需求信息 - 资源夜市</title>
+  <style>
+    :root {
+      --bg-deep: #01060f;
+      --bg-card: rgba(90, 200, 250, 0.06);
+      --bg-card-hover: rgba(90, 200, 250, 0.12);
+      --border-card: rgba(90, 200, 250, 0.15);
+      --border-card-hover: rgba(90, 200, 250, 0.35);
+      --accent-blue: #5ac8fa;
+      --accent-blue-light: #72d2ff;
+      --accent-blue-dark: #0071E3;
+      --text-primary: rgba(228, 240, 252, 0.96);
+      --text-secondary: rgba(180, 200, 220, 0.75);
+      --text-muted: rgba(150, 180, 210, 0.6);
+      --gold: #F59E0B;
+      --success: #34C759;
+      --danger: #FF3B30;
+      --glass-blur: blur(20px);
+      --shadow-card: 0 12px 40px rgba(0, 0, 0, 0.4), 0 0 30px rgba(90, 200, 250, 0.08);
+      --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'PingFang SC', 'Microsoft YaHei', 'Helvetica Neue', sans-serif;
+      background: var(--bg-deep);
+      color: var(--text-primary);
+      min-height: 100vh;
+      font-size: 0.82rem;
+    }
+
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      padding: 12px 24px;
+      background: rgba(1, 6, 15, 0.8);
+      backdrop-filter: var(--glass-blur);
+      border-bottom: 1px solid var(--border-card);
+    }
+
+    .navbar-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--text-primary);
+      text-decoration: none;
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+
+    .navbar-brand-icon { font-size: 1.4rem; }
+    .back-btn { margin-left: auto; color: var(--text-secondary); text-decoration: none; font-size: 0.9rem; cursor: pointer; }
+    .back-btn:hover { color: var(--accent-blue); }
+
+    .container { max-width: 640px; margin: 0 auto; padding: 84px 20px 40px; }
+    .page-title { font-size: 1.4rem; font-weight: 600; margin-bottom: 8px; }
+    .page-desc { color: var(--text-muted); font-size: 0.85rem; margin-bottom: 32px; }
+
+    .form-group { margin-bottom: 24px; }
+
+    .form-label {
+      display: block;
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+    }
+
+    .form-label .required { color: var(--danger); margin-left: 2px; }
+    .form-label .optional { color: var(--text-muted); font-size: 0.8rem; margin-left: 6px; }
+
+    .form-input, .form-select, .form-textarea {
+      width: 100%;
+      padding: 14px 16px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-card);
+      border-radius: 12px;
+      color: var(--text-primary);
+      font-size: 1rem;
+      transition: all 0.2s;
+      outline: none;
+    }
+
+    .form-input:focus, .form-select:focus, .form-textarea:focus {
+      border-color: var(--accent-blue);
+      box-shadow: 0 0 0 3px rgba(90, 200, 250, 0.15);
+    }
+
+    .form-textarea { min-height: 120px; resize: vertical; font-family: inherit; }
+
+    .form-select {
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%235ac8fa' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 16px center;
+      padding-right: 40px;
+    }
+
+    .form-select option { background: #0a1628; color: var(--text-primary); }
+
+    .input-with-unit {
+      position: relative;
+    }
+
+    .input-with-unit .form-input {
+      padding-right: 60px;
+    }
+
+    .input-unit {
+      position: absolute;
+      right: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      pointer-events: none;
+    }
+
+    .checkbox-group {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      cursor: pointer;
+    }
+
+    .checkbox-group input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      margin-top: 2px;
+      accent-color: var(--accent-blue);
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .checkbox-group .checkbox-text {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    .privacy-notice {
+      background: rgba(90, 200, 250, 0.08);
+      border: 1px solid rgba(90, 200, 250, 0.15);
+      border-radius: 12px;
+      padding: 16px;
+      margin: 24px 0;
+    }
+
+    .privacy-notice .title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: var(--accent-blue);
+    }
+
+    .privacy-notice .desc { font-size: 0.8rem; color: var(--text-muted); line-height: 1.6; }
+
+    .submit-btn {
+      width: 100%;
+      padding: 16px;
+      background: var(--accent-blue);
+      color: #000;
+      border: none;
+      border-radius: 30px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.25s var(--ease-spring);
+      margin-top: 16px;
+    }
+
+    .submit-btn:hover { background: var(--accent-blue-light); transform: scale(1.02); }
+    .submit-btn:active { transform: scale(0.96); }
+    .submit-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+    .login-tip { text-align: center; padding: 60px 20px; color: var(--text-muted); }
+    .login-tip a { color: var(--accent-blue); text-decoration: none; }
+
+    .toast {
+      position: fixed;
+      top: 80px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-20px);
+      padding: 12px 24px;
+      background: rgba(0, 0, 0, 0.9);
+      border: 1px solid var(--border-card);
+      border-radius: 30px;
+      font-size: 0.9rem;
+      color: var(--text-primary);
+      opacity: 0;
+      transition: all 0.3s;
+      z-index: 200;
+      white-space: nowrap;
+    }
+
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+    .toast.success { border-color: var(--success); color: var(--success); }
+    .toast.error { border-color: var(--danger); color: var(--danger); }
+  </style>
 </head>
 <body>
-    <h2>发布企业需求</h2>
-    <input placeholder="需求标题">
-    <textarea placeholder="项目简介" rows="3"></textarea>
-    <input placeholder="体量（万元）" type="number">
-    <textarea placeholder="诉求" rows="2"></textarea>
-    <textarea placeholder="进展" rows="2"></textarea>
-    <select><option>IT互联网</option><option>教育培训</option></select>
-    <select><option>北京市</option><option>上海市</option></select>
-    <select><option>1个月</option><option>3个月</option></select>
-    <button class="btn">提交审核</button>
+  <nav class="navbar">
+    <a href="enterprise-list.html" class="navbar-brand">
+      <span class="navbar-brand-icon">🌌</span>
+      <span>资源夜市</span>
+    </a>
+    <a href="enterprise-list.html" class="back-btn">&larr; 返回列表</a>
+  </nav>
+
+  <div class="container" id="loginTip" style="display:none;">
+    <div class="login-tip">
+      <p>请先 <a href="login.html">登录</a> 或 <a href="register.html">注册</a> 后再发布需求信息</p>
+    </div>
+  </div>
+
+  <div class="container" id="formContainer">
+    <h1 class="page-title">发布需求人脉寻找</h1>
+    <p class="page-desc">描述您的对接需求，让合适的资源方主动找到您</p>
+
+    <form id="publishForm">
+      <!-- 1. 需求标题 -->
+      <div class="form-group">
+        <label class="form-label">需求标题 <span class="required">*</span></label>
+        <input type="text" class="form-input" name="title" placeholder="如：寻找深圳智能制造领域合作伙伴" maxlength="80" required>
+      </div>
+
+      <!-- 2. 目标企业类型 -->
+      <div class="form-group">
+        <label class="form-label">目标企业类型 <span class="required">*</span></label>
+        <select class="form-select" name="enterprise_type" required>
+          <option value="">请选择目标企业类型</option>
+          <option value="科技型企业">科技型企业</option>
+          <option value="制造业企业">制造业企业</option>
+          <option value="商贸型企业">商贸型企业</option>
+          <option value="服务业企业">服务业企业</option>
+          <option value="农业企业">农业企业</option>
+          <option value="建筑房地产">建筑房地产</option>
+          <option value="上市公司">上市公司</option>
+          <option value="中小微企业">中小微企业</option>
+        </select>
+      </div>
+
+      <!-- 3. 目标行业 -->
+      <div class="form-group">
+        <label class="form-label">目标行业 <span class="required">*</span></label>
+        <select class="form-select" name="industry" required>
+          <option value="">请选择目标行业</option>
+          <option value="IT互联网">IT互联网</option>
+          <option value="教育培训">教育培训</option>
+          <option value="金融投资">金融投资</option>
+          <option value="医疗健康">医疗健康</option>
+          <option value="智能制造">智能制造</option>
+          <option value="房地产">房地产</option>
+          <option value="法律咨询">法律咨询</option>
+          <option value="政府园区">政府园区</option>
+          <option value="创业孵化">创业孵化</option>
+          <option value="消费零售">消费零售</option>
+        </select>
+      </div>
+
+      <!-- 4. 目标部门 -->
+      <div class="form-group">
+        <label class="form-label">目标部门 <span class="required">*</span></label>
+        <select class="form-select" name="department" required>
+          <option value="">请选择目标部门</option>
+          <option value="招商部">招商部</option>
+          <option value="项目部">项目部</option>
+          <option value="采购部">采购部</option>
+          <option value="行政部">行政部</option>
+          <option value="市场部">市场部</option>
+          <option value="技术部">技术部</option>
+          <option value="财务部">财务部</option>
+          <option value="人力资源部">人力资源部</option>
+          <option value="其他">其他</option>
+        </select>
+      </div>
+
+      <!-- 5. 目标岗位 -->
+      <div class="form-group">
+        <label class="form-label">目标岗位 <span class="required">*</span></label>
+        <select class="form-select" name="position" required>
+          <option value="">请选择目标岗位</option>
+          <option value="负责人">负责人</option>
+          <option value="总监">总监</option>
+          <option value="主管">主管</option>
+          <option value="经理">经理</option>
+          <option value="专员">专员</option>
+        </select>
+      </div>
+
+      <!-- 6. 需求简介 -->
+      <div class="form-group">
+        <label class="form-label">需求简介 <span class="required">*</span></label>
+        <textarea class="form-textarea" name="description" placeholder="详细描述您的对接需求..." maxlength="500" required></textarea>
+      </div>
+
+      <!-- 7. 预算体量 -->
+      <div class="form-group">
+        <label class="form-label">预算体量 <span class="optional">（选填）</span></label>
+        <div class="input-with-unit">
+          <input type="number" class="form-input" name="budget" placeholder="预算金额（万元）" min="0" step="0.01">
+          <span class="input-unit">万元</span>
+        </div>
+      </div>
+
+      <!-- 8. 目标地区 -->
+      <div class="form-group">
+        <label class="form-label">目标地区 <span class="required">*</span></label>
+        <select class="form-select" name="region" required>
+          <option value="">请选择目标地区</option>
+          <option value="全国">全国</option>
+          <option value="北京">北京</option>
+          <option value="上海">上海</option>
+          <option value="深圳">深圳</option>
+          <option value="广州">广州</option>
+          <option value="杭州">杭州</option>
+          <option value="成都">成都</option>
+          <option value="武汉">武汉</option>
+          <option value="西安">西安</option>
+          <option value="南京">南京</option>
+          <option value="苏州">苏州</option>
+          <option value="天津">天津</option>
+          <option value="重庆">重庆</option>
+          <option value="长沙">长沙</option>
+          <option value="郑州">郑州</option>
+          <option value="东莞">东莞</option>
+          <option value="佛山">佛山</option>
+          <option value="宁波">宁波</option>
+          <option value="青岛">青岛</option>
+          <option value="无锡">无锡</option>
+        </select>
+      </div>
+
+      <!-- 9. 有效期 -->
+      <div class="form-group">
+        <label class="form-label">有效期 <span class="required">*</span></label>
+        <select class="form-select" name="validity" required>
+          <option value="">请选择有效期</option>
+          <option value="30">30天</option>
+          <option value="60">60天</option>
+          <option value="90">90天</option>
+        </select>
+      </div>
+
+      <!-- 10. 需求真实性承诺 -->
+      <div class="form-group">
+        <label class="checkbox-group">
+          <input type="checkbox" name="commitment" id="commitmentCheck">
+          <span class="checkbox-text">我承诺以上需求信息真实有效，愿意承担因虚假信息导致的一切责任。平台有权对不实信息进行删除处理。</span>
+        </label>
+      </div>
+
+      <!-- 隐私保护提示 -->
+      <div class="privacy-notice">
+        <div class="title">🔒 隐私保护</div>
+        <div class="desc">
+          您的需求信息将经过审核后展示，个人联系方式不会直接公开。<br>
+          对接过程通过平台进行，保障双方信息安全与权益。
+        </div>
+      </div>
+
+      <button type="submit" class="submit-btn" id="submitBtn">提交审核</button>
+    </form>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const token = localStorage.getItem('token');
+    if (!token) {
+      document.getElementById('loginTip').style.display = 'block';
+      document.getElementById('formContainer').style.display = 'none';
+    }
+
+    document.getElementById('publishForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const form = e.target;
+      const btn = document.getElementById('submitBtn');
+
+      if (!form.title.value.trim()) { showToast('请填写需求标题', 'error'); return; }
+      if (!form.enterprise_type.value) { showToast('请选择目标企业类型', 'error'); return; }
+      if (!form.industry.value) { showToast('请选择目标行业', 'error'); return; }
+      if (!form.department.value) { showToast('请选择目标部门', 'error'); return; }
+      if (!form.position.value) { showToast('请选择目标岗位', 'error'); return; }
+      if (!form.description.value.trim()) { showToast('请填写需求简介', 'error'); return; }
+      if (!form.region.value) { showToast('请选择目标地区', 'error'); return; }
+      if (!form.validity.value) { showToast('请选择有效期', 'error'); return; }
+      if (!document.getElementById('commitmentCheck').checked) { showToast('请勾选需求真实性承诺', 'error'); return; }
+
+      btn.disabled = true;
+      btn.textContent = '提交中...';
+
+      try {
+        const res = await fetch('/api/content/enterprise-demands', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token
+          },
+          body: JSON.stringify({
+            title: form.title.value.trim(),
+            enterprise_type: form.enterprise_type.value,
+            industry: form.industry.value,
+            department: form.department.value,
+            position: form.position.value,
+            description: form.description.value.trim(),
+            budget: form.budget.value ? parseFloat(form.budget.value) : null,
+            region: form.region.value,
+            validity: parseInt(form.validity.value),
+            commitment: true
+          })
+        });
+
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || '提交失败');
+        showToast('提交成功，等待审核', 'success');
+        setTimeout(() => { location.href = 'enterprise-list.html'; }, 1500);
+      } catch (err) {
+        showToast(err.message, 'error');
+        btn.disabled = false;
+        btn.textContent = '提交审核';
+      }
+    });
+
+    function showToast(msg, type = '') {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.className = 'toast ' + type + ' show';
+      setTimeout(() => { toast.className = 'toast'; }, 3000);
+    }
+  </script>
 </body>
 </html>

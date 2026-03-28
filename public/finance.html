@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>民企金融 - 资源星河</title>
+  <title>民企金融 - 资源夜市</title>
   <style>
     :root {
       --bg-deep: #01060f;
@@ -60,13 +60,13 @@
     .product-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent 0%, rgba(90,200,250,0.2) 50%, transparent 100%); opacity: 0; transition: opacity 0.3s; }
     .product-card:hover { transform: translateY(-4px); border-color: var(--border-card-hover); box-shadow: 0 20px 50px rgba(0,0,0,0.5), 0 0 40px rgba(90,200,250,0.15); }
     .product-card:hover::before { opacity: 1; }
-    .product-category { font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--accent-blue); margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+    .product-category { font-size: 0.82rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--accent-blue); margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
     .product-name { font-size: 1.1rem; font-weight: 600; margin-bottom: 16px; }
     .product-dl { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
-    .product-dt { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 2px; }
+    .product-dt { font-size: 0.82rem; color: var(--text-muted); margin-bottom: 2px; }
     .product-dd { font-size: 0.9rem; color: var(--text-primary); font-weight: 500; }
     .product-tags { display: flex; gap: 6px; flex-wrap: wrap; }
-    .product-tag { padding: 5px 12px; border-radius: 6px; font-size: 0.72rem; background: rgba(90,200,250,0.08); color: var(--text-secondary); border: 1px solid rgba(90,200,250,0.1); }
+    .product-tag { padding: 5px 12px; border-radius: 6px; font-size: 0.82rem; background: rgba(90,200,250,0.08); color: var(--text-secondary); border: 1px solid rgba(90,200,250,0.1); }
     .process-section { background: var(--bg-card); border: 1px solid var(--border-card); border-radius: 20px; padding: 24px; margin-bottom: 32px; position: relative; overflow: hidden; }
     .process-section::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent 0%, rgba(90,200,250,0.2) 50%, transparent 100%); }
     .section-title { font-size: 1.1rem; font-weight: 600; margin-bottom: 24px; text-align: center; display: flex; align-items: center; justify-content: center; gap: 8px; }
@@ -76,7 +76,7 @@
     .step:last-child::after { display: none; }
     .step-num { width: 44px; height: 44px; border-radius: 50%; background: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-blue-light) 100%); color: #000; font-weight: 700; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; font-size: 1rem; box-shadow: 0 4px 15px rgba(90,200,250,0.3); }
     .step-title { font-size: 0.9rem; font-weight: 600; margin-bottom: 4px; }
-    .step-desc { font-size: 0.75rem; color: var(--text-muted); }
+    .step-desc { font-size: 0.82rem; color: var(--text-muted); }
     .eval-entry { background: linear-gradient(135deg, rgba(245, 158, 11, 0.12) 0%, rgba(245, 158, 11, 0.03) 100%); border: 1px solid rgba(245, 158, 11, 0.25); border-radius: 24px; padding: 32px; text-align: center; position: relative; overflow: hidden; }
     .eval-entry::before { content: ''; position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 40%; height: 1px; background: linear-gradient(90deg, transparent 0%, rgba(245,158,11,0.5) 50%, transparent 100%); }
     .eval-title { font-size: 1.2rem; font-weight: 600; margin-bottom: 8px; }
@@ -108,7 +108,7 @@
     .eval-question { background: var(--bg-card-hover); border: 1px solid var(--border-card); border-radius: 16px; padding: 16px; margin-bottom: 14px; }
     .eval-question-label { font-size: 0.85rem; font-weight: 500; color: var(--text-primary); margin-bottom: 4px; display: flex; align-items: center; gap: 6px; }
     .eval-question-label .q-num { display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; border-radius: 50%; background: var(--accent-blue); color: #000; font-size: 0.7rem; font-weight: 700; flex-shrink: 0; }
-    .eval-question-help { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 12px; line-height: 1.5; }
+    .eval-question-help { font-size: 0.82rem; color: var(--text-muted); margin-bottom: 12px; line-height: 1.5; }
     .eval-options { display: flex; gap: 10px; flex-wrap: wrap; }
     .eval-option { padding: 10px 18px; border-radius: 10px; font-size: 0.85rem; cursor: pointer; border: 1px solid var(--border-card); background: transparent; color: var(--text-secondary); transition: all 0.2s; flex: 1; text-align: center; min-width: 80px; }
     .eval-option:hover { border-color: var(--accent-blue); color: var(--accent-blue); }
@@ -118,7 +118,7 @@
     .eval-submit:active { transform: translateY(0); }
     .eval-submit:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
     .eval-result { background: var(--bg-card); border: 1px solid var(--border-card); border-radius: 24px; padding: 28px; }
-    .eval-result-label { font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); margin-bottom: 12px; }
+    .eval-result-label { font-size: 0.82rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); margin-bottom: 12px; }
     .score-display { text-align: center; padding: 20px 0 24px; border-bottom: 1px solid rgba(255,255,255,0.06); margin-bottom: 20px; }
     .score-number { font-size: 3.5rem; font-weight: 700; line-height: 1; margin-bottom: 8px; }
     .score-number.grade-a { color: var(--success); }
@@ -163,15 +163,67 @@
     .type-option:hover { border-color: var(--accent-blue); background: rgba(90,200,250,0.05); }
     .type-option.selected { border-color: var(--accent-blue); background: rgba(90,200,250,0.1); }
     .type-option-title { font-size: 0.9rem; font-weight: 600; color: var(--text-primary); margin-bottom: 4px; }
-    .type-option-desc { font-size: 0.75rem; color: var(--text-muted); }
-    .veto-tag { display: inline-block; background: rgba(255,59,48,0.15); color: var(--danger); border-radius: 6px; padding: 2px 8px; font-size: 0.72rem; font-weight: 600; margin-left: 8px; }
-    @media (max-width: 900px) { .products-grid { grid-template-columns: 1fr; } .eval-grid { grid-template-columns: 1fr; } .type-grid { grid-template-columns: 1fr; } }
+    .type-option-desc { font-size: 0.82rem; color: var(--text-muted); }
+    .veto-tag { display: inline-block; background: rgba(255,59,48,0.15); color: var(--danger); border-radius: 6px; padding: 2px 8px; font-size: 0.82rem; font-weight: 600; margin-left: 8px; }
+
+    /* ===== 融资服务中心首页 ===== */
+    .fin-hero { background: linear-gradient(180deg, rgba(90,200,250,0.06) 0%, transparent 100%); border-bottom: 1px solid var(--border-card); margin: -84px -20px 40px; padding: 100px 20px 48px; text-align: center; }
+    .fin-hero-badge { display: inline-block; background: linear-gradient(135deg, var(--gold) 0%, var(--gold-light) 100%); color: #000; font-size: 0.82rem; font-weight: 700; padding: 5px 14px; border-radius: 20px; margin-bottom: 20px; letter-spacing: 1px; }
+    .fin-hero-title { font-size: 2.2rem; font-weight: 700; color: var(--text-primary); margin-bottom: 12px; line-height: 1.3; }
+    .fin-hero-sub { font-size: 1.1rem; color: var(--accent-blue); margin-bottom: 8px; }
+    .fin-hero-desc { font-size: 0.95rem; color: var(--text-muted); max-width: 600px; margin: 0 auto 24px; line-height: 1.7; }
+
+    /* 核心服务 */
+    .fin-services { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-bottom: 40px; }
+    .fin-service { background: var(--bg-card); border: 1px solid var(--border-card); border-radius: 20px; padding: 24px; transition: all 0.3s; }
+    .fin-service:hover { border-color: var(--accent-blue); transform: translateY(-3px); }
+    .fin-service-icon { font-size: 2rem; margin-bottom: 12px; }
+    .fin-service-title { font-size: 1rem; font-weight: 600; color: var(--text-primary); margin-bottom: 8px; }
+    .fin-service-desc { font-size: 0.85rem; color: var(--text-muted); line-height: 1.6; }
+
+    /* 对比表格 */
+    .fin-compare { background: var(--bg-card); border: 1px solid var(--border-card); border-radius: 20px; padding: 24px; margin-bottom: 40px; overflow-x: auto; }
+    .fin-compare-title { font-size: 1.1rem; font-weight: 600; text-align: center; margin-bottom: 24px; }
+    .fin-compare table { width: 100%; border-collapse: collapse; }
+    .fin-compare th { padding: 14px 16px; font-size: 0.85rem; font-weight: 600; text-align: left; border-bottom: 1px solid var(--border-card); color: var(--text-muted); }
+    .fin-compare th:first-child { color: var(--accent-blue); }
+    .fin-compare td { padding: 14px 16px; font-size: 0.88rem; color: var(--text-secondary); border-bottom: 1px solid rgba(255,255,255,0.04); vertical-align: top; }
+    .fin-compare tr:last-child td { border-bottom: none; }
+    .fin-compare td:first-child { color: var(--text-primary); font-weight: 500; }
+    .fin-compare .us { color: var(--success); font-weight: 600; }
+
+    /* 平台实力 */
+    .fin-strength { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 40px; }
+    .fin-strength-card { background: var(--bg-card); border: 1px solid var(--border-card); border-radius: 16px; padding: 24px; text-align: center; }
+    .fin-strength-num { font-size: 2rem; font-weight: 700; color: var(--gold); margin-bottom: 8px; }
+    .fin-strength-label { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 4px; }
+    .fin-strength-sub { font-size: 0.78rem; color: var(--text-muted); opacity: 0.7; }
+
+    /* 服务承诺 */
+    .fin-promises { background: linear-gradient(135deg, rgba(90,200,250,0.08) 0%, rgba(90,200,250,0.02) 100%); border: 1px solid rgba(90,200,250,0.2); border-radius: 20px; padding: 28px; margin-bottom: 40px; }
+    .fin-promises-title { font-size: 1.1rem; font-weight: 600; text-align: center; margin-bottom: 24px; }
+    .fin-promises-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+    .fin-promise { display: flex; align-items: flex-start; gap: 12px; padding: 16px; background: rgba(255,255,255,0.02); border-radius: 12px; }
+    .fin-promise-icon { font-size: 1.4rem; flex-shrink: 0; }
+    .fin-promise-text { font-size: 0.88rem; color: var(--text-secondary); line-height: 1.5; }
+
+    /* CTA区 */
+    .fin-cta-box { background: linear-gradient(135deg, rgba(245,158,11,0.15) 0%, rgba(245,158,11,0.05) 100%); border: 1px solid rgba(245,158,11,0.3); border-radius: 24px; padding: 40px; text-align: center; margin-bottom: 40px; }
+    .fin-cta-title { font-size: 1.2rem; font-weight: 600; color: var(--text-primary); margin-bottom: 12px; }
+    .fin-cta-flow { display: flex; justify-content: center; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; font-size: 0.85rem; color: var(--text-muted); }
+    .fin-cta-flow span { color: var(--gold); font-weight: 600; }
+    .fin-cta-footer { font-size: 0.78rem; color: var(--text-muted); opacity: 0.7; margin-top: 16px; }
+
+    /* 底部 */
+    .fin-footer { text-align: center; padding: 24px; border-top: 1px solid var(--border-card); font-size: 0.8rem; color: var(--text-muted); }
+
+    @media (max-width: 900px) { .products-grid { grid-template-columns: 1fr; } .eval-grid { grid-template-columns: 1fr; } .type-grid { grid-template-columns: 1fr; } .fin-services { grid-template-columns: 1fr; } .fin-compare { overflow-x: auto; } .fin-strength { grid-template-columns: 1fr; } .fin-promises-grid { grid-template-columns: 1fr; } }
     @media (max-width: 800px) { .navbar-links { display: none; } .stats-section { grid-template-columns: 1fr; } }
   </style>
 </head>
 <body>
   <nav class="navbar">
-    <a href="index.html" class="navbar-brand"><span>🌌</span><span>资源星河</span></a>
+    <a href="index.html" class="navbar-brand"><span>🌌</span><span>资源夜市</span></a>
     <div class="navbar-links">
       <a href="index.html" class="nav-link">首页</a>
       <a href="groups.html" class="nav-link">行业群码</a>
