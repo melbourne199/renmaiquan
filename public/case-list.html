@@ -49,7 +49,7 @@
     .case-badge { padding: 4px 10px; border-radius: 10px; font-size: 0.75rem; font-weight: 600; }
     .badge-success { background: rgba(52, 199, 89, 0.2); color: var(--success); }
     .badge-warning { background: rgba(255, 149, 0, 0.2); color: var(--gold); }
-    .card-title { font-size: 0.95rem; font-weight: 600; color: var(--text-primary); margin-bottom: 8px; }
+    .card-title { font-size: 0.95rem; font-weight: 600; color: var(--text-primary); margin-bottom: 8px; line-height: 1.45; }
     .card-desc { font-size: 0.85rem; color: var(--text-secondary); line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 12px; }
     .card-footer { display: flex; justify-content: space-between; align-items: center; padding-top: 12px; border-top: 1px solid var(--border-card); }
     .amount { font-size: 0.9rem; font-weight: 600; color: var(--gold); }
@@ -87,36 +87,87 @@
 
     <!-- 成功案例 -->
     <div class="cards-grid" id="successGrid">
-      <div class="case-card">
+      <!-- 智能制造 -->
+      <div class="case-card" onclick="location.href='case-detail.html?id=1'">
         <div class="card-header">
-          <span class="case-badge badge-success">✅ 成功案例</span>
+          <span class="case-badge badge-success">✅ 智能制造</span>
         </div>
         <div class="card-title">某300万设备采购项目：双一级居间人分走18万</div>
         <div class="card-desc">某制造企业采购设备，通过平台对接双一级居间人，30万居间费一级分走18万，二级居间人分走12万</div>
         <div class="card-footer">
-          <span class="amount">💰 30万</span>
+          <span class="amount">💰 居间费 30万</span>
           <span class="time-ago">2026-03-04</span>
         </div>
       </div>
-      <div class="case-card">
+      <div class="case-card" onclick="location.href='case-detail.html?id=2'">
         <div class="card-header">
-          <span class="case-badge badge-success">✅ 成功案例</span>
+          <span class="case-badge badge-success">✅ 智能制造</span>
         </div>
-        <div class="card-title">某科技公司B轮融资2亿</div>
-        <div class="card-desc">通过居间人链路，成功对接投资机构，完成B轮融资2亿元，居间服务费按约定比例分成</div>
+        <div class="card-title">珠三角高端装备制造企业完成3000万设备更新贴息贷</div>
+        <div class="card-desc">平台匹配国有银行低息贴息政策资源，项目落地后一级居间人获18万服务费、二级居间人获12万分成</div>
         <div class="card-footer">
-          <span class="amount">💰 2亿</span>
-          <span class="time-ago">2026-03-01</span>
+          <span class="amount">💰 融资 3000万 · 居间 30万</span>
+          <span class="time-ago">2026-03-12</span>
         </div>
       </div>
-      <div class="case-card">
+
+      <!-- 硬科技 & 生物医药 -->
+      <div class="case-card" onclick="location.href='case-detail.html?id=3'">
         <div class="card-header">
-          <span class="case-badge badge-success">✅ 成功案例</span>
+          <span class="case-badge badge-success">✅ 硬科技</span>
         </div>
-        <div class="card-title">政府园区招商对接成功</div>
+        <div class="card-title">可控核聚变头部企业完成5亿元天使轮融资</div>
+        <div class="card-desc">平台定向对接红杉中国、高瓴创投等硬科技赛道一线机构，协助梳理技术商业化路径后30天内完成核心对接</div>
+        <div class="card-footer">
+          <span class="amount">💰 融资 5亿 · 30天闭环</span>
+          <span class="time-ago">2026-03-10</span>
+        </div>
+      </div>
+      <div class="case-card" onclick="location.href='case-detail.html?id=4'">
+        <div class="card-header">
+          <span class="case-badge badge-success">✅ 生物医药</span>
+        </div>
+        <div class="card-title">创新药企完成2.5亿B轮融资：战略投资+管线合作</div>
+        <div class="card-desc">平台精准匹配某上市药企旗下产业投资基金，促成战略投资+管线合作的组合方案，居间团队获320万服务佣金</div>
+        <div class="card-footer">
+          <span class="amount">💰 融资 2.5亿 · 居间 320万</span>
+          <span class="time-ago">2026-03-08</span>
+        </div>
+      </div>
+
+      <!-- 产业招商 & 新消费 -->
+      <div class="case-card" onclick="location.href='case-detail.html?id=5'">
+        <div class="card-header">
+          <span class="case-badge badge-success">✅ 产业招商</span>
+        </div>
+        <div class="card-title">西部国家级高新区对接3家专精特新企业落地8000万</div>
+        <div class="card-desc">平台对接3家专精特新企业完成总规模8000万元产业落地投资，招商居间团队按园区政策获120万招商服务奖励</div>
+        <div class="card-footer">
+          <span class="amount">💰 落地 8000万 · 居间 120万</span>
+          <span class="time-ago">2026-03-06</span>
+        </div>
+      </div>
+      <div class="case-card" onclick="location.href='case-detail.html?id=6'">
+        <div class="card-header">
+          <span class="case-badge badge-success">✅ 新消费</span>
+        </div>
+        <div class="card-title">国潮美妆品牌完成1.2亿A轮融资：融资+流量双闭环</div>
+        <div class="card-desc">平台帮助对接字节跳动旗下消费投资基金，同步匹配抖音电商流量扶持资源，实现融资与品牌曝光的双重闭环</div>
+        <div class="card-footer">
+          <span class="amount">💰 融资 1.2亿 · 流量+资本</span>
+          <span class="time-ago">2026-03-05</span>
+        </div>
+      </div>
+
+      <!-- 原有案例 -->
+      <div class="case-card" onclick="location.href='case-detail.html?id=7'">
+        <div class="card-header">
+          <span class="case-badge badge-success">✅ 政企对接</span>
+        </div>
+        <div class="card-title">政府园区招商对接成功：5000万项目落地</div>
         <div class="card-desc">某县政府园区招商，通过平台对接优质企业，成功落地投资额5000万元项目</div>
         <div class="card-footer">
-          <span class="amount">💰 5000万</span>
+          <span class="amount">💰 落地 5000万</span>
           <span class="time-ago">2026-02-28</span>
         </div>
       </div>

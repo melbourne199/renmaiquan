@@ -60,22 +60,65 @@
     .rule-title { font-size: 0.95rem; font-weight: 600; margin-bottom: 4px; }
     .rule-desc { font-size: 0.8rem; color: var(--text-muted); }
 
-    /* U型链路可视化 */
-    .链路-section { background: var(--bg-card); border: 1px solid var(--border-card); border-radius: 20px; padding: 24px; margin-bottom: 32px; }
-    .链路可视化 { position: relative; height: 320px; margin: 20px 0; }
-    .链路-side { position: absolute; width: 140px; padding: 16px; background: var(--bg-card-hover); border: 1px solid var(--border-card); border-radius: 12px; text-align: center; }
-    .链路-side.left { left: 30px; top: 50%; transform: translateY(-50%); }
-    .链路-side.right { right: 30px; top: 50%; transform: translateY(-50%); }
-    .链路-side-title { font-size: 1rem; font-weight: 600; margin-bottom: 8px; }
-    .链路-role { font-size: 0.8rem; color: var(--accent-blue); margin-bottom: 4px; }
-    .链路-count { font-size: 0.75rem; color: var(--text-muted); }
-    .链路-center { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: 200px; padding: 20px; background: linear-gradient(135deg, rgba(245, 158, 11, 0.2) 0%, rgba(245, 158, 11, 0.1) 100%); border: 2px solid var(--gold); border-radius: 16px; text-align: center; }
-    .链路-center-title { font-size: 1rem; font-weight: 700; margin-bottom: 8px; color: var(--gold); }
-    .链路-center-percent { font-size: 1.2rem; font-weight: 600; color: var(--text-primary); }
-    .链路-arrow { position: absolute; font-size: 2.5rem; color: var(--accent-blue); opacity: 0.5; }
-    .链路-arrow.left { left: 180px; top: 50%; transform: translateY(-50%); }
-    .链路-arrow.right { right: 180px; top: 50%; transform: translateY(-50%); }
-    .链路-wait { color: var(--text-muted); font-size: 0.85rem; }
+    /* U型链路可视化 - 全新版 */
+    .uchain-section { background: var(--bg-card); border: 1px solid var(--border-card); border-radius: 20px; padding: 28px; margin-bottom: 32px; overflow: hidden; }
+    .uchain-wrap { position: relative; width: 100%; max-width: 820px; margin: 0 auto; padding: 20px 0; }
+
+    /* SVG U型线条 */
+    .uchain-svg { width: 100%; height: 100%; position: absolute; top: 0; left: 0; pointer-events: none; z-index: 0; }
+    .uchain-path-bg { fill: none; stroke: rgba(90,200,250,0.08); stroke-width: 3; }
+    .uchain-path-main { fill: none; stroke: url(#chainGrad); stroke-width: 3; stroke-dasharray: 8 4; animation: chainFlow 1.5s linear infinite; }
+    .uchain-path-close { fill: none; stroke: var(--success); stroke-width: 3; opacity: 0; transition: opacity 0.8s ease; }
+    .uchain-path-close.active { opacity: 1; stroke-dasharray: none; }
+    @keyframes chainFlow { to { stroke-dashoffset: -24; } }
+
+    /* 顶部甲乙方 */
+    .uchain-top { display: flex; justify-content: space-between; align-items: flex-start; position: relative; z-index: 1; margin-bottom: 16px; }
+    .uchain-party { display: flex; flex-direction: column; align-items: center; width: 140px; }
+    .party-avatar { width: 64px; height: 64px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; font-weight: 700; position: relative; transition: all 0.3s var(--ease-spring); }
+    .party-avatar.side-a { background: linear-gradient(135deg, #ff6b9d, #c44dff); border: 3px solid rgba(255,107,157,0.5); box-shadow: 0 0 24px rgba(255,107,157,0.3); }
+    .party-avatar.side-b { background: linear-gradient(135deg, #5ac8fa, #0071e3); border: 3px solid rgba(90,200,250,0.5); box-shadow: 0 0 24px rgba(90,200,250,0.3); }
+    .party-avatar.highlight { transform: scale(1.12); box-shadow: 0 0 40px rgba(245,158,11,0.6); border-color: var(--gold); }
+    .party-avatar .avatar-letter { color: #fff; text-shadow: 0 2px 8px rgba(0,0,0,0.4); }
+    .party-name { margin-top: 8px; font-size: 0.95rem; font-weight: 600; }
+    .party-role { font-size: 0.82rem; color: var(--text-muted); margin-top: 2px; }
+
+    /* 顶部中间费用 */
+    .uchain-fee-center { position: absolute; left: 50%; top: 10px; transform: translateX(-50%); text-align: center; z-index: 2; }
+    .fee-total { font-size: 1.4rem; font-weight: 700; color: var(--gold); }
+    .fee-label { font-size: 0.82rem; color: var(--text-muted); margin-top: 2px; }
+
+    /* 一级居间人行 */
+    .uchain-level1 { display: flex; justify-content: space-between; align-items: center; position: relative; z-index: 1; margin: 24px 40px; }
+    .level1-node { display: flex; flex-direction: column; align-items: center; }
+    .level1-avatar { width: 52px; height: 52px; border-radius: 50%; background: rgba(255,107,157,0.12); border: 2px solid rgba(255,107,157,0.5); display: flex; align-items: center; justify-content: center; font-size: 1.2rem; position: relative; transition: all 0.3s var(--ease-spring); }
+    .level1-avatar.filled { background: linear-gradient(135deg, rgba(255,107,157,0.3), rgba(196,77,255,0.2)); }
+    .level1-avatar.highlight { transform: scale(1.15); box-shadow: 0 0 30px rgba(245,158,11,0.5); border-color: var(--gold); }
+    .level1-avatar.empty { border-style: dashed; opacity: 0.5; }
+    .level1-label { margin-top: 6px; font-size: 0.85rem; font-weight: 500; color: var(--accent-blue); }
+    .level1-percent { font-size: 0.82rem; color: var(--gold); font-weight: 600; }
+    .level1-line { flex: 1; height: 3px; background: linear-gradient(90deg, rgba(255,107,157,0.6), rgba(196,77,255,0.4), rgba(255,107,157,0.6)); border-radius: 2px; margin: 0 16px; position: relative; }
+    .level1-line::after { content: '一级60%'; position: absolute; top: -20px; left: 50%; transform: translateX(-50%); font-size: 0.82rem; color: rgba(255,107,157,0.8); font-weight: 600; white-space: nowrap; }
+
+    /* 二级居间人行 */
+    .uchain-level2 { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; position: relative; z-index: 1; margin: 24px 20px 12px; }
+    .level2-node { display: flex; flex-direction: column; align-items: center; }
+    .level2-avatar { width: 46px; height: 46px; background: rgba(245,158,11,0.08); border: 2px solid rgba(245,158,11,0.35); display: flex; align-items: center; justify-content: center; font-size: 1rem; clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%); transition: all 0.3s var(--ease-spring); position: relative; }
+    .level2-avatar.filled { background: linear-gradient(135deg, rgba(245,158,11,0.2), rgba(252,211,77,0.15)); border-color: var(--gold); }
+    .level2-avatar.highlight { transform: scale(1.15); filter: drop-shadow(0 0 16px rgba(245,158,11,0.6)); }
+    .level2-avatar.empty { border-style: dashed; opacity: 0.4; }
+    .level2-label { margin-top: 6px; font-size: 0.82rem; color: var(--text-secondary); }
+    .level2-percent { font-size: 0.78rem; color: var(--gold); font-weight: 500; }
+    .level2-line-wrap { display: flex; align-items: center; gap: 0; width: 100%; justify-content: center; margin-top: 8px; }
+    .level2-line-seg { height: 2px; width: 40px; background: linear-gradient(90deg, rgba(245,158,11,0.5), rgba(252,211,77,0.3)); border-radius: 1px; }
+    .level2-tag { text-align: center; font-size: 0.82rem; color: rgba(245,158,11,0.7); font-weight: 500; margin-top: 8px; }
+
+    /* 底部闭环状态 */
+    .uchain-bottom { text-align: center; position: relative; z-index: 1; margin-top: 16px; min-height: 44px; }
+    .chain-status { display: inline-flex; align-items: center; gap: 8px; padding: 10px 24px; border-radius: 30px; font-size: 0.9rem; font-weight: 600; transition: all 0.5s var(--ease-spring); }
+    .chain-status.open { background: rgba(90,200,250,0.1); border: 1px solid rgba(90,200,250,0.2); color: var(--accent-blue); }
+    .chain-status.closed { background: rgba(52,199,89,0.15); border: 1px solid rgba(52,199,89,0.4); color: var(--success); animation: closedPulse 2s ease-in-out infinite; }
+    @keyframes closedPulse { 0%,100% { box-shadow: 0 0 0 0 rgba(52,199,89,0); } 50% { box-shadow: 0 0 20px 4px rgba(52,199,89,0.2); } }
 
     /* 规则提示 */
     .rules-section { margin-bottom: 32px; }
@@ -219,12 +262,18 @@
     @media (max-width: 800px) {
       .intro-content, .profit-rules, .rules-grid, .projects-grid { grid-template-columns: 1fr; }
       .navbar-links { display: none; }
-      .链路可视化 { height: 400px; }
-      .链路-side { width: 100px; padding: 12px; font-size: 0.85rem; }
-      .链路-side.left { left: 10px; }
-      .链路-side.right { right: 10px; }
-      .链路-center { width: 120px; padding: 12px; }
-      .链路-arrow { display: none; }
+      .uchain-top { gap: 8px; }
+      .uchain-party { width: 100px; }
+      .party-avatar { width: 52px; height: 52px; font-size: 1.3rem; }
+      .party-name { font-size: 0.82rem; }
+      .uchain-level1 { margin: 16px 12px; }
+      .level1-avatar { width: 42px; height: 42px; }
+      .level2-avatar { width: 38px; height: 38px; }
+      .uchain-level2 { gap: 12px; margin: 16px 8px 8px; }
+      .fee-total { font-size: 1.1rem; }
+      .uchain-fee-center { top: 6px; }
+      .街长-rules-grid { grid-template-columns: repeat(2, 1fr); }
+      .街长-alert-list { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -427,25 +476,89 @@
     </div>
 
     <!-- U型链路可视化 -->
-    <div class="链路-section">
-      <div class="section-title">🔗 U型链路可视化</div>
-      <div class="链路可视化">
-        <div class="链路-side left" id="sideA">
-          <div class="链路-side-title">甲方</div>
-          <div class="链路-role" id="sideA-Level1">等待一级引荐</div>
-          <div class="链路-count" id="sideA-Level2">二级引荐: 0人</div>
+    <div class="uchain-section">
+      <div class="section-title">🔗 U型居间链条可视化</div>
+      <div class="uchain-wrap" id="uchainWrap">
+        <!-- SVG背景线条 -->
+        <svg class="uchain-svg" viewBox="0 0 820 380" preserveAspectRatio="xMidYMid meet">
+          <defs>
+            <linearGradient id="chainGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" style="stop-color:#ff6b9d;stop-opacity:0.6"/>
+              <stop offset="50%" style="stop-color:#c44dff;stop-opacity:0.4"/>
+              <stop offset="100%" style="stop-color:#5ac8fa;stop-opacity:0.6"/>
+            </linearGradient>
+            <linearGradient id="closeGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" style="stop-color:#34C759"/>
+              <stop offset="100%" style="stop-color:#30d158"/>
+            </linearGradient>
+          </defs>
+          <!-- U型背景路径 -->
+          <path class="uchain-path-bg" d="M 100,60 L 100,140 Q 100,280 250,300 L 410,310 Q 560,300 720,280 L 720,140 L 720,60"/>
+          <!-- U型流动路径 -->
+          <path class="uchain-path-main" d="M 100,60 L 100,140 Q 100,280 250,300 L 410,310 Q 560,300 720,280 L 720,140 L 720,60"/>
+          <!-- 闭环底线 -->
+          <path class="uchain-path-close" id="closePath" d="M 250,300 Q 410,340 570,300" stroke="url(#closeGrad)" stroke-width="4"/>
+        </svg>
+
+        <!-- 顶部：甲方 / 居间费 / 乙方 -->
+        <div class="uchain-top">
+          <div class="uchain-party">
+            <div class="party-avatar side-a" id="avatarA"><span class="avatar-letter">甲</span></div>
+            <div class="party-name" id="partyAName">甲方（拍板人）</div>
+            <div class="party-role">项目发起方</div>
+          </div>
+          <div class="uchain-fee-center">
+            <div class="fee-total" id="feeTotal">¥0</div>
+            <div class="fee-label">居间费总额</div>
+          </div>
+          <div class="uchain-party">
+            <div class="party-avatar side-b" id="avatarB"><span class="avatar-letter">乙</span></div>
+            <div class="party-name" id="partyBName">乙方（拍板人）</div>
+            <div class="party-role">资源对接方</div>
+          </div>
         </div>
-        <div class="链路-center">
-          <div class="链路-center-title">居间费分配</div>
-          <div class="链路-center-percent">一级60% · 二级40%</div>
+
+        <!-- 一级居间人 -->
+        <div class="uchain-level1">
+          <div class="level1-node">
+            <div class="level1-avatar empty" id="l1a"><span>👤</span></div>
+            <div class="level1-label">甲方一级</div>
+            <div class="level1-percent">30%</div>
+          </div>
+          <div class="level1-line"></div>
+          <div class="level1-node">
+            <div class="level1-avatar empty" id="l1b"><span>👤</span></div>
+            <div class="level1-label">乙方一级</div>
+            <div class="level1-percent">30%</div>
+          </div>
         </div>
-        <div class="链路-side right" id="sideB">
-          <div class="链路-side-title">乙方</div>
-          <div class="链路-role" id="sideB-Level1">等待一级引荐</div>
-          <div class="链路-count" id="sideB-Level2">二级引荐: 0人</div>
+
+        <!-- 二级居间人 -->
+        <div class="level2-tag">⬇ 二级引荐人 · 共分40% ⬇</div>
+        <div class="uchain-level2" id="level2Container">
+          <div class="level2-node">
+            <div class="level2-avatar empty" id="l2_0"><span>+</span></div>
+            <div class="level2-label">二级 #1</div>
+            <div class="level2-percent">—</div>
+          </div>
+          <div class="level2-node">
+            <div class="level2-avatar empty" id="l2_1"><span>+</span></div>
+            <div class="level2-label">二级 #2</div>
+            <div class="level2-percent">—</div>
+          </div>
+          <div class="level2-node">
+            <div class="level2-avatar empty" id="l2_2"><span>+</span></div>
+            <div class="level2-label">二级 #3</div>
+            <div class="level2-percent">—</div>
+          </div>
         </div>
-        <div class="链路-arrow left">←</div>
-        <div class="链路-arrow right">→</div>
+
+        <!-- 底部状态 -->
+        <div class="uchain-bottom">
+          <div class="chain-status open" id="chainStatus">
+            <span>🔗</span> 链路开放中 · 等待角色填满
+          </div>
+        </div>
       </div>
     </div>
 
@@ -576,6 +689,18 @@
           <input type="number" class="form-input" id="projectFee" placeholder="例如：300000">
         </div>
         <div class="form-group">
+          <label class="form-label">一级居间人模式</label>
+          <div style="display:flex;gap:12px;margin-top:8px;">
+            <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:0.9rem;color:var(--text-secondary);">
+              <input type="radio" name="l1Mode" value="1" checked style="accent-color:var(--accent-blue);"> 双边一级（甲乙各1人，共60%）
+            </label>
+            <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:0.9rem;color:var(--text-secondary);">
+              <input type="radio" name="l1Mode" value="0" style="accent-color:var(--accent-blue);"> 单边一级（只需1人，30%）
+            </label>
+          </div>
+          <div class="form-hint">单边一级：只需甲乙任一方有引荐人即可闭环；双边一级：需双方各有一名引荐人</div>
+        </div>
+        <div class="form-group">
           <label class="form-label">甲方简称（脱敏）</label>
           <input type="text" class="form-input" id="partyA" placeholder="例如：某制造企业">
           <div class="form-hint">显示给其他参与者的名称，不会泄露真实公司名</div>
@@ -699,6 +824,7 @@
 
     // API基础URL
     const API_BASE = '/api/escort';
+    const token = localStorage.getItem('token');
 
     // 角色自测
     function openQuiz() {
@@ -796,18 +922,36 @@
       const party_a_name = document.getElementById('partyA').value.trim() || '甲方';
       const party_b_name = document.getElementById('partyB').value.trim() || '乙方';
       const description = document.getElementById('projectDesc').value.trim();
+      const l1_required = parseInt(document.querySelector('input[name="l1Mode"]:checked').value);
 
       if (!title || !total_fee) {
         alert('请填写必填项');
         return;
       }
 
+      if (!token) {
+        alert('请先登录后再创建项目');
+        location.href = 'login.html';
+        return;
+      }
+
       try {
         const res = await fetch(API_BASE + '/projects', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ title, total_fee, party_a_name, party_b_name, description })
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token
+          },
+          body: JSON.stringify({ title, total_fee, party_a_name, party_b_name, description, l1_required })
         });
+
+        if (res.status === 401) {
+          alert('登录已过期，请重新登录');
+          localStorage.removeItem('token');
+          location.href = 'login.html';
+          return;
+        }
+
         const data = await res.json();
 
         if (data.success) {
@@ -860,9 +1004,19 @@
         return;
       }
 
-      // 先获取项目信息，让用户选择角色
+      if (!token) {
+        alert('请先登录后再加入项目');
+        location.href = 'login.html';
+        return;
+      }
+
       try {
         const res = await fetch(API_BASE + '/projects/by-code/' + invite_code);
+        if (res.status === 401) {
+          alert('登录已过期，请重新登录');
+          location.href = 'login.html';
+          return;
+        }
         const data = await res.json();
 
         if (!data.success) {
@@ -870,18 +1024,26 @@
           return;
         }
 
-        // 简化处理：用户加入为一级引荐人
-        // 实际应该让用户选择角色
         const joinRes = await fetch(API_BASE + '/projects/join', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token
+          },
           body: JSON.stringify({
             invite_code,
-            side: 1, // 乙方
-            role: 1  // 一级引荐
+            side: 1,
+            role: 1
           })
         });
-        const joinData = await res.json();
+
+        if (joinRes.status === 401) {
+          alert('登录已过期，请重新登录');
+          location.href = 'login.html';
+          return;
+        }
+
+        const joinData = await joinRes.json();
 
         if (joinData.success) {
           alert('加入成功');
@@ -897,8 +1059,12 @@
 
     // 加载我的项目
     async function loadMyProjects() {
+      if (!token) return;
       try {
-        const res = await fetch(API_BASE + '/my-projects');
+        const res = await fetch(API_BASE + '/my-projects', {
+          headers: { 'Authorization': 'Bearer ' + token }
+        });
+        if (!res.ok) return;
         const data = await res.json();
 
         if (data.success && data.data.length > 0) {
@@ -939,6 +1105,222 @@
       window.location.href = 'escort.html?project=' + id;
     }
 
+    // ===== U型链路可视化引擎 =====
+    function renderUChain(projectData) {
+      if (!projectData) {
+        // 演示模式：展示静态样例
+        renderDemoChain();
+        return;
+      }
+
+      const { total_fee, party_a_name, party_b_name, a_side, b_side } = projectData;
+
+      // 费用
+      document.getElementById('feeTotal').textContent = '¥' + parseFloat(total_fee).toLocaleString();
+      document.getElementById('partyAName').textContent = (party_a_name || '甲方') + '（拍板人）';
+      document.getElementById('partyBName').textContent = (party_b_name || '乙方') + '（拍板人）';
+
+      // 甲方头像
+      if (a_side.decision_maker) {
+        document.getElementById('avatarA').querySelector('.avatar-letter').textContent = (party_a_name || '甲')[0];
+      }
+      if (b_side.decision_maker) {
+        document.getElementById('avatarB').querySelector('.avatar-letter').textContent = (party_b_name || '乙')[0];
+      }
+
+      // 一级居间人
+      const l1Req = projectData.l1_required !== undefined ? projectData.l1_required : 1;
+      fillLevel1('l1a', a_side.level1, total_fee);
+      fillLevel1('l1b', b_side.level1, total_fee);
+      updateLevel1Labels(l1Req, a_side.level1, b_side.level1);
+
+      // 二级居间人
+      const allLevel2 = [...(a_side.level2 || []), ...(b_side.level2 || [])];
+      renderLevel2Nodes(allLevel2, total_fee);
+
+      // 当前用户高亮
+      highlightCurrentUser(projectData);
+
+      // 检查闭环
+      checkChainClosed(a_side, b_side, l1Req);
+    }
+
+    function updateLevel1Labels(l1Required, aLevel1, bLevel1) {
+      // 单边一级模式：另一侧显示"暂缺"而不是空状态
+      const l1aLabel = document.querySelector('#l1a').parentElement.querySelector('.level1-label');
+      const l1bLabel = document.querySelector('#l1b').parentElement.querySelector('.level1-label');
+      if (!l1Required) {
+        // 单边模式：标签改为"一级(单)"和"一级(单)"
+        if (l1aLabel) l1aLabel.textContent = '甲方一级';
+        if (l1bLabel) l1bLabel.textContent = '乙方一级';
+      }
+    }
+
+    function fillLevel1(elemId, participant, totalFee) {
+      const el = document.getElementById(elemId);
+      if (participant) {
+        el.classList.remove('empty');
+        el.classList.add('filled');
+        const name = participant.User ? participant.User.username : '已加入';
+        el.querySelector('span').textContent = name[0];
+        el.title = name + ' · 30%';
+      }
+    }
+
+    function renderLevel2Nodes(level2List, totalFee) {
+      const container = document.getElementById('level2Container');
+      const count = Math.max(level2List.length, 3); // 最少显示3个位
+      const perPercent = level2List.length > 0 ? (40 / level2List.length).toFixed(1) : '—';
+
+      container.innerHTML = '';
+      for (let i = 0; i < count; i++) {
+        const p = level2List[i];
+        const filled = !!p;
+        const name = filled && p.User ? p.User.username : '';
+        const node = document.createElement('div');
+        node.className = 'level2-node';
+        node.innerHTML = `
+          <div class="level2-avatar ${filled ? 'filled' : 'empty'}" id="l2_${i}">
+            <span>${filled ? name[0] : '+'}</span>
+          </div>
+          <div class="level2-label">二级 #${i + 1}</div>
+          <div class="level2-percent">${filled ? perPercent + '%' : '—'}</div>
+        `;
+        container.appendChild(node);
+      }
+    }
+
+    function highlightCurrentUser(projectData) {
+      if (!token) return;
+      // 解析token获取用户ID
+      try {
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        const userId = payload.id;
+        const { a_side, b_side } = projectData;
+
+        // 检查甲方拍板人
+        if (a_side.decision_maker && a_side.decision_maker.user_id === userId) {
+          document.getElementById('avatarA').classList.add('highlight');
+        }
+        // 乙方拍板人
+        if (b_side.decision_maker && b_side.decision_maker.user_id === userId) {
+          document.getElementById('avatarB').classList.add('highlight');
+        }
+        // 甲方一级
+        if (a_side.level1 && a_side.level1.user_id === userId) {
+          document.getElementById('l1a').classList.add('highlight');
+        }
+        // 乙方一级
+        if (b_side.level1 && b_side.level1.user_id === userId) {
+          document.getElementById('l1b').classList.add('highlight');
+        }
+        // 二级
+        const allL2 = [...(a_side.level2 || []), ...(b_side.level2 || [])];
+        allL2.forEach((p, i) => {
+          if (p.user_id === userId) {
+            const el = document.getElementById('l2_' + i);
+            if (el) el.classList.add('highlight');
+          }
+        });
+      } catch (e) {}
+    }
+
+    function checkChainClosed(aSide, bSide, l1Required) {
+      const statusEl = document.getElementById('chainStatus');
+      const closePath = document.getElementById('closePath');
+
+      const hasBothDecision = aSide.decision_maker && bSide.decision_maker;
+      const aHasL1 = !!aSide.level1;
+      const bHasL1 = !!bSide.level1;
+      const hasAnyL1 = aHasL1 || bHasL1;
+      const hasBothL1 = aHasL1 && bHasL1;
+      const hasAnyL2 = (aSide.level2 && aSide.level2.length > 0) || (bSide.level2 && bSide.level2.length > 0);
+
+      // l1Required: 1=双边一级(双方各需1个) 0=单边一级(共需1个)
+      const l1Satisfied = l1Required ? hasBothL1 : hasAnyL1;
+
+      if (hasBothDecision && l1Satisfied) {
+        // 链路闭环：甲乙双方拍板人 + 一级居间人(根据模式)
+        closePath.classList.add('active');
+        statusEl.className = 'chain-status closed';
+        statusEl.innerHTML = '<span>✅</span> 链路已闭环，可生成协议';
+      } else {
+        closePath.classList.remove('active');
+        statusEl.className = 'chain-status open';
+        const missing = [];
+        if (!hasBothDecision) missing.push('甲乙双方拍板人');
+        if (l1Required) {
+          if (!hasBothL1) missing.push('一级引荐人(双边)');
+        } else {
+          if (!hasAnyL1) missing.push('一级引荐人(单边)');
+        }
+        statusEl.innerHTML = `<span>🔗</span> 链路开放中 · 等待${missing.join('、')}加入`;
+      }
+    }
+
+    // 演示模式：展示有部分数据的链条
+    function renderDemoChain() {
+      document.getElementById('feeTotal').textContent = '¥300,000';
+      document.getElementById('partyAName').textContent = '某制造企业（拍板人）';
+      document.getElementById('partyBName').textContent = '某采购方（拍板人）';
+      document.getElementById('avatarA').querySelector('.avatar-letter').textContent = '制';
+      document.getElementById('avatarB').querySelector('.avatar-letter').textContent = '采';
+
+      // 甲方一级已填
+      const l1a = document.getElementById('l1a');
+      l1a.classList.remove('empty');
+      l1a.classList.add('filled');
+      l1a.querySelector('span').textContent = '张';
+
+      // 乙方一级已填
+      const l1b = document.getElementById('l1b');
+      l1b.classList.remove('empty');
+      l1b.classList.add('filled');
+      l1b.querySelector('span').textContent = '李';
+
+      // 二级：2个已填，1个等待
+      const container = document.getElementById('level2Container');
+      const demoL2 = [
+        { name: '王', filled: true },
+        { name: '赵', filled: true },
+        { name: '', filled: false },
+      ];
+      container.innerHTML = demoL2.map((d, i) => `
+        <div class="level2-node">
+          <div class="level2-avatar ${d.filled ? 'filled' : 'empty'}" id="l2_${i}">
+            <span>${d.filled ? d.name : '+'}</span>
+          </div>
+          <div class="level2-label">二级 #${i + 1}</div>
+          <div class="level2-percent">${d.filled ? '20%' : '—'}</div>
+        </div>
+      `).join('');
+
+      // 链路未闭环（还有1个空位）
+      const statusEl = document.getElementById('chainStatus');
+      statusEl.className = 'chain-status open';
+      statusEl.innerHTML = '<span>🔗</span> 链路开放中 · 等待二级引荐人加入';
+    }
+
+    // 加载项目并渲染U型链
+    async function loadProjectChain(projectId) {
+      if (!projectId) {
+        renderDemoChain();
+        return;
+      }
+      try {
+        const res = await fetch(API_BASE + '/projects/' + projectId);
+        if (!res.ok) { renderDemoChain(); return; }
+        const data = await res.json();
+        if (data.success) {
+          renderUChain(data.data);
+        } else {
+          renderDemoChain();
+        }
+      } catch (e) {
+        renderDemoChain();
+      }
+    }
+
     // 页面加载时检查URL参数
     window.onload = function() {
       const params = new URLSearchParams(window.location.search);
@@ -948,6 +1330,9 @@
       if (code) {
         openJoinProject();
       }
+
+      // 加载U型链条
+      loadProjectChain(projectId);
 
       loadMyProjects();
     };

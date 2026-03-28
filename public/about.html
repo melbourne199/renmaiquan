@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>关于 - 资源夜市一条街</title>
+  <style>
+    :root {
+      --bg-base: #030810;
+      --bg-card: #0a1628;
+      --bg-card-hover: #0f1f35;
+      --accent-blue: #5ac8fa;
+      --accent-blue-dim: rgba(90,200,250,0.15);
+      --text-primary: #e8e8e8;
+      --text-secondary: #8a9ab0;
+      --text-muted: #5a6a7a;
+      --border-card: rgba(90,200,250,0.1);
+      --gold: #F59E0B;
+      --gold-light: #FBBF24;
+      --radius-card: 16px;
+      --radius-lg: 24px;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: var(--bg-base);
+      color: var(--text-primary);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      line-height: 1.6;
+    }
+    .container { max-width: 900px; margin: 0 auto; padding: 100px 20px 60px; }
+    .page-header { text-align: center; margin-bottom: 48px; }
+    .page-title {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+      background: linear-gradient(135deg, var(--accent-blue), var(--gold));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .page-subtitle { color: var(--text-secondary); font-size: 1rem; }
+    .about-section {
+      background: var(--bg-card);
+      border: 1px solid var(--border-card);
+      border-radius: var(--radius-lg);
+      padding: 32px;
+      margin-bottom: 24px;
+    }
+    .section-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 16px;
+      color: var(--accent-blue);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .section-text { color: var(--text-secondary); font-size: 0.95rem; line-height: 1.8; }
+    .section-text + .section-text { margin-top: 12px; }
+    .value-list { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+    .value-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+    }
+    .value-list li::before { content: '→'; color: var(--gold); }
+    .contact-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px;
+      background: var(--bg-base);
+      border-radius: 12px;
+      margin-bottom: 12px;
+    }
+    .contact-icon { font-size: 1.5rem; }
+    .contact-label { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 4px; }
+    .contact-value { color: var(--text-primary); font-size: 0.95rem; }
+    .company-card {
+      background: linear-gradient(135deg, rgba(90,200,250,0.08), rgba(245,158,11,0.08));
+      border: 1px solid var(--border-card);
+      border-radius: var(--radius-lg);
+      padding: 32px;
+      text-align: center;
+    }
+    .company-name { font-size: 1.3rem; font-weight: 700; margin-bottom: 8px; }
+    .company-reg { color: var(--text-muted); font-size: 0.85rem; margin-bottom: 16px; }
+    .company-desc { color: var(--text-secondary); font-size: 0.95rem; line-height: 1.7; }
+    @media (max-width: 768px) {
+      .container { padding: 88px 16px 40px; }
+      .page-title { font-size: 1.6rem; }
+      .about-section { padding: 24px; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <a href="index.html" class="navbar-brand">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="#5ac8fa" stroke-width="1.5"/><path d="M8 12h8M12 8v8" stroke="#5ac8fa" stroke-width="1.5" stroke-linecap="round"/></svg>
+      资源夜市
+    </a>
+    <div class="navbar-links">
+      <a href="index.html" class="nav-link">首页</a>
+      <div class="nav-dropdown">
+        <span class="nav-link">关于 ▼</span>
+        <div class="nav-dropdown-menu">
+          <a href="about.html" class="nav-dropdown-item">关于我们</a>
+          <a href="about.html#contact" class="nav-dropdown-item">联系方式</a>
+        </div>
+      </div>
+      <a href="finance.html" class="nav-link">民企金融</a>
+    </div>
+    <div class="navbar-actions">
+      <a href="https://wa.me/8613912345678" class="btn btn-outline" target="_blank">咨询顾问</a>
+      <a href="https://mp.weixin.qq.com/" class="btn btn-primary" target="_blank">预约咨询</a>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="page-header">
+      <h1 class="page-title">关于资源夜市一条街</h1>
+      <p class="page-subtitle">政企资源对接平台 · 居间服务专业护航</p>
+    </div>
+
+    <div class="about-section" id="about">
+      <h2 class="section-title">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.5"/><path d="M12 8v4l3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        我们是谁
+      </h2>
+      <p class="section-text">
+        资源夜市一条街是知策（深圳）企业管理有限公司旗下品牌，专注于为企业提供政企资源对接、融资咨询、居间服务等专业支持。
+      </p>
+      <p class="section-text">
+        我们搭建了一个高效、透明的资源流通平台，帮助企业在复杂的商业环境中快速找到合适的资源与合作机会，降低对接成本，提高成功率。
+      </p>
+    </div>
+
+    <div class="about-section">
+      <h2 class="section-title">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        我们做什么
+      </h2>
+      <ul class="value-list">
+        <li>汇聚优质行业群码，打破信息孤岛，让资源流动起来</li>
+        <li>整合政企资源库，精准匹配需求，提高对接效率</li>
+        <li>提供民企融资咨询，规避常见陷阱，找到正确融资路径</li>
+        <li>专业居间护航服务，保障双方权益，确保合作顺利</li>
+        <li>分享真实资源案例，经验互通，共同成长</li>
+      </ul>
+    </div>
+
+    <div class="about-section" id="contact">
+      <h2 class="section-title">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        联系方式
+      </h2>
+      <div class="contact-item">
+        <span class="contact-icon">💬</span>
+        <div>
+          <div class="contact-label">微信咨询</div>
+          <div class="contact-value">请扫描下方二维码或添加好友</div>
+        </div>
+      </div>
+      <div class="contact-item">
+        <span class="contact-icon">📱</span>
+        <div>
+          <div class="contact-label">联系电话</div>
+          <div class="contact-value">139-1234-5678</div>
+        </div>
+      </div>
+      <div class="contact-item">
+        <span class="contact-icon">⏰</span>
+        <div>
+          <div class="contact-label">服务时间</div>
+          <div class="contact-value">周一至周六 9:00-18:00</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="company-card">
+      <div class="company-name">知策（深圳）企业管理有限公司</div>
+      <div class="company-reg">粤ICP备2026032295号</div>
+      <p class="company-desc">
+        专注于企业服务领域，致力于为中小企业提供一站式政企资源对接与管理咨询服务。
+      </p>
+    </div>
+  </div>
+
+  <style>
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 64px;
+      background: rgba(3,8,16,0.95);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-card);
+      display: flex;
+      align-items: center;
+      padding: 0 24px;
+      z-index: 100;
+    }
+    .navbar-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--text-primary);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 1.05rem;
+    }
+    .navbar-links {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-left: 40px;
+    }
+    .nav-link {
+      color: var(--text-secondary);
+      text-decoration: none;
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      transition: all 0.2s;
+      cursor: pointer;
+    }
+    .nav-link:hover, .nav-link.active { color: var(--accent-blue); background: var(--accent-blue-dim); }
+    .navbar-actions { margin-left: auto; display: flex; gap: 10px; }
+    .btn {
+      padding: 8px 18px;
+      border-radius: 10px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.2s;
+      cursor: pointer;
+      border: none;
+    }
+    .btn-outline {
+      background: transparent;
+      border: 1px solid var(--border-card);
+      color: var(--text-secondary);
+    }
+    .btn-outline:hover { border-color: var(--accent-blue); color: var(--accent-blue); }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent-blue), #4ab);
+      color: #000;
+    }
+    .btn-primary:hover { transform: scale(1.02); }
+    .nav-dropdown { position: relative; display: inline-block; }
+    .nav-dropdown-menu {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      background: #1a1a2e;
+      border: 1px solid #2a2a4e;
+      border-radius: 8px;
+      min-width: 140px;
+      z-index: 1000;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+    .nav-dropdown-item { display: block; padding: 10px 16px; color: #e0e0e0; text-decoration: none; font-size: 0.9rem; transition: background 0.2s; }
+    .nav-dropdown-item:hover { background: #2a2a4e; color: #5ac8fa; }
+    .nav-dropdown:hover .nav-dropdown-menu { display: block; }
+    @media (max-width: 768px) {
+      .navbar { padding: 0 16px; }
+      .navbar-links { display: none; }
+      .navbar-actions .btn-outline { display: none; }
+    }
+  </style>
+</body>
+</html>

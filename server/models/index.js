@@ -100,6 +100,7 @@ const EscortProject = sequelize.define('EscortProject', {
   party_a_name: DataTypes.STRING, // 甲方简称（脱敏）
   party_b_name: DataTypes.STRING, // 乙方简称（脱敏）
   status: { type: DataTypes.TINYINT, defaultValue: 0 }, // 0=招募中 1=执行中 2=已完成 3=已取消
+  l1_required: { type: DataTypes.TINYINT, defaultValue: 1 }, // 1=双边一级(各需1个) 0=单边一级(共需1个)
   a_side_status: { type: DataTypes.TINYINT, defaultValue: 0 }, // 0=等待一级 1=一级已到位 2=链条完成
   b_side_status: { type: DataTypes.TINYINT, defaultValue: 0 },
   expire_date: DataTypes.DATE,

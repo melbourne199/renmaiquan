@@ -25,7 +25,7 @@ function calculateFees(totalFee) {
 // 创建居间项目
 router.post('/projects', authenticate, async (req, res) => {
   try {
-    const { title, description, total_fee, party_a_name, party_b_name, expire_date } = req.body;
+    const { title, description, total_fee, party_a_name, party_b_name, expire_date, l1_required } = req.body;
     const creator_id = req.user.id;
 
     if (!title || !total_fee) {
@@ -45,6 +45,7 @@ router.post('/projects', authenticate, async (req, res) => {
       party_a_name: party_a_name || '甲方',
       party_b_name: party_b_name || '乙方',
       status: 0,
+      l1_required: l1_required !== undefined ? (l1_required ? 1 : 0) : 1,
       expire_date,
       invite_code
     });
@@ -165,6 +166,7 @@ router.get('/projects/:id', async (req, res) => {
         party_a_name: project.party_a_name,
         party_b_name: project.party_b_name,
         status: project.status,
+        l1_required: project.l1_required,
         invite_code: project.invite_code,
         fees,
         a_side: {
