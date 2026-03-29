@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>发布企业资源 - 资源夜市</title>
+  <title>发布我熟悉的企业信息 - 资源夜市</title>
   <style>
     :root {
       --bg-deep: #01060f;
@@ -65,6 +65,7 @@
     .container { max-width: 640px; margin: 0 auto; padding: 84px 20px 40px; }
     .page-title { font-size: 1.4rem; font-weight: 600; margin-bottom: 8px; }
     .page-desc { color: var(--text-muted); font-size: 0.85rem; margin-bottom: 32px; }
+    .page-notice { color: #888; font-size: 12px; line-height: 1.6; margin-bottom: 24px; padding: 12px 16px; background: rgba(90, 200, 250, 0.05); border-radius: 8px; border-left: 3px solid var(--accent-blue); }
 
     .form-group { margin-bottom: 24px; }
 
@@ -80,13 +81,27 @@
     .form-input, .form-select, .form-textarea {
       width: 100%;
       padding: 14px 16px;
-      background: var(--bg-card);
+      background: #0a1628 !important;
       border: 1px solid var(--border-card);
       border-radius: 12px;
-      color: var(--text-primary);
+      color: var(--text-primary) !important;
       font-size: 1rem;
       transition: all 0.2s;
       outline: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+    }
+    .form-select {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%235a6a7a' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 16px center;
+      padding-right: 40px;
+    }
+    .form-select option {
+      background: #0a1628 !important;
+      color: var(--text-primary) !important;
+      padding: 12px;
     }
 
     .form-input:focus, .form-select:focus, .form-textarea:focus {
@@ -96,21 +111,94 @@
 
     .form-textarea { min-height: 120px; resize: vertical; font-family: inherit; }
 
-    .form-select {
-      cursor: pointer;
-      appearance: none;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%235ac8fa' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
-      background-repeat: no-repeat;
-      background-position: right 16px center;
+    /* 模糊搜索下拉框 */
+    .search-input-wrapper {
+      position: relative;
+    }
+
+    .search-input-wrapper input {
       padding-right: 40px;
     }
 
-    .form-select option { background: #0a1628; color: var(--text-primary); }
-
-    .form-hint {
-      font-size: 0.82rem;
+    .search-input-wrapper .search-icon {
+      position: absolute;
+      right: 16px;
+      top: 50%;
+      transform: translateY(-50%);
       color: var(--text-muted);
-      margin-top: 6px;
+      pointer-events: none;
+    }
+
+    .search-dropdown {
+      position: relative;
+      max-height: 240px;
+      overflow-y: auto;
+      background: #0a1628;
+      border: 1px solid var(--border-card);
+      border-radius: 0 0 12px 12px;
+      z-index: 50;
+      display: none;
+    }
+
+    .search-dropdown.show { display: block; }
+
+    .search-dropdown-item {
+      padding: 12px 16px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .search-dropdown-item:hover, .search-dropdown-item.highlighted {
+      background: var(--bg-card-hover);
+    }
+
+    .search-dropdown-item.no-data {
+      color: var(--text-muted);
+      text-align: center;
+      cursor: default;
+    }
+
+    .search-dropdown-item .item-label {
+      font-size: 0.9rem;
+    }
+
+    .search-dropdown-item .item-level {
+      font-size: 0.75rem;
+      color: var(--accent-blue);
+      margin-top: 2px;
+    }
+
+    .search-dropdown-item.selected {
+      background: rgba(90, 200, 250, 0.15);
+    }
+
+    /* 选中结果显示 */
+    .selected-display {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .selected-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      background: rgba(90, 200, 250, 0.15);
+      border: 1px solid rgba(90, 200, 250, 0.3);
+      border-radius: 20px;
+      font-size: 0.85rem;
+      color: var(--accent-blue);
+    }
+
+    .selected-tag .remove {
+      cursor: pointer;
+      opacity: 0.7;
+    }
+
+    .selected-tag .remove:hover {
+      opacity: 1;
     }
 
     .char-count {
@@ -216,103 +304,94 @@
 </head>
 <body>
   <nav class="navbar">
-    <a href="enterprise-list.html" class="navbar-brand">
+    <a href="index.html" class="navbar-brand">
       <span class="navbar-brand-icon">🌌</span>
       <span>资源夜市</span>
     </a>
-    <a href="enterprise-list.html" class="back-btn">&larr; 返回列表</a>
+    <a href="index.html" class="back-btn">&larr; 返回首页</a>
   </nav>
 
   <div class="container" id="loginTip" style="display:none;">
     <div class="login-tip">
-      <p>请先 <a href="login.html">登录</a> 或 <a href="register.html">注册</a> 后再发布企业资源</p>
+      <p>请先 <a href="login.html">登录</a> 或 <a href="register.html">注册</a> 后再发布企业信息</p>
     </div>
   </div>
 
   <div class="container" id="formContainer">
-    <h1 class="page-title">发布企业资源</h1>
-    <p class="page-desc">发布你的企业资源对接信息，让有需求的人主动找到你</p>
+    <h1 class="page-title">发布我熟悉的企业信息</h1>
+    <p class="page-desc">发布你熟悉的企业资源对接信息，让有需求的人主动找到你</p>
+    <p class="page-notice">本板块用于合规展示自身资源与渠道，并非炫耀人脉、消耗关系，更不涉及权力变现与违规交易。旨在让优质资源在阳光下发挥价值、贡献力量、放大作为，促成正规合作、积累长期口碑。</p>
 
     <form id="publishForm">
       <!-- 1. 企业名称 -->
       <div class="form-group">
         <label class="form-label">企业名称 <span class="required">*</span></label>
-        <input type="text" class="form-input" name="company_name" placeholder="如：华为技术有限公司" maxlength="100" required>
+        <div class="search-input-wrapper">
+          <input type="text" class="form-input" name="company_name" id="companySearch" placeholder="输入企业名称，支持模糊搜索" autocomplete="off">
+          <span class="search-icon">🔍</span>
+          <div class="search-dropdown" id="companyDropdown"></div>
+        </div>
       </div>
 
-      <!-- 2. 所属区域层级 -->
+      <!-- 2. 企业所在地区 -->
       <div class="form-group">
-        <label class="form-label">所属区域层级 <span class="required">*</span></label>
-        <select class="form-select" name="region_level" required>
-          <option value="">请选择区域层级</option>
-          <option value="顶层">顶层</option>
-          <option value="省级">省级</option>
-          <option value="市级">市级</option>
-          <option value="区县级">区县级</option>
-          <option value="街镇级">街镇级</option>
-        </select>
+        <label class="form-label">企业所在地区 <span class="required">*</span></label>
+        <div class="search-input-wrapper">
+          <input type="text" class="form-input" id="regionSearch" placeholder="输入省、市、区/县关键字搜索" autocomplete="off">
+          <span class="search-icon">🔍</span>
+          <div class="search-dropdown" id="regionDropdown"></div>
+        </div>
+        <div class="selected-display" id="selectedRegions"></div>
+        <input type="hidden" name="region_province" id="regionProvince">
+        <input type="hidden" name="region_city" id="regionCity">
+        <input type="hidden" name="region_district" id="regionDistrict">
       </div>
 
       <!-- 3. 行业分类 -->
       <div class="form-group">
         <label class="form-label">行业分类 <span class="required">*</span></label>
-        <select class="form-select" name="industry" required>
-          <option value="">请选择行业分类</option>
-          <option value="IT互联网">IT互联网</option>
-          <option value="教育培训">教育培训</option>
-          <option value="金融投资">金融投资</option>
-          <option value="医疗健康">医疗健康</option>
-          <option value="智能制造">智能制造</option>
-          <option value="房地产">房地产</option>
-          <option value="法律咨询">法律咨询</option>
-          <option value="政府园区">政府园区</option>
-          <option value="创业孵化">创业孵化</option>
-          <option value="消费零售">消费零售</option>
-        </select>
+        <div class="search-input-wrapper">
+          <input type="text" class="form-input" id="industrySearch" placeholder="输入或选择行业分类" autocomplete="off" required>
+          <span class="search-icon">🔍</span>
+          <div class="search-dropdown" id="industryDropdown"></div>
+        </div>
+        <input type="hidden" name="industry" id="industryValue">
       </div>
 
       <!-- 4. 对接部门 -->
       <div class="form-group">
         <label class="form-label">对接部门 <span class="required">*</span></label>
-        <select class="form-select" name="department" required>
-          <option value="">请选择对接部门</option>
-          <option value="招商部">招商部</option>
-          <option value="项目部">项目部</option>
-          <option value="采购部">采购部</option>
-          <option value="行政部">行政部</option>
-          <option value="市场部">市场部</option>
-          <option value="技术部">技术部</option>
-          <option value="财务部">财务部</option>
-          <option value="人力资源部">人力资源部</option>
-          <option value="其他">其他</option>
-        </select>
+        <div class="search-input-wrapper">
+          <input type="text" class="form-input" id="departmentSearch" placeholder="输入或选择对接部门" autocomplete="off" required>
+          <span class="search-icon">🔍</span>
+          <div class="search-dropdown" id="departmentDropdown"></div>
+        </div>
+        <input type="hidden" name="department" id="departmentValue">
       </div>
 
       <!-- 5. 对接岗位 -->
       <div class="form-group">
         <label class="form-label">对接岗位 <span class="required">*</span></label>
-        <select class="form-select" name="position" required>
-          <option value="">请选择对接岗位</option>
-          <option value="负责人">负责人</option>
-          <option value="总监">总监</option>
-          <option value="主管">主管</option>
-          <option value="经理">经理</option>
-          <option value="专员">专员</option>
-        </select>
+        <div class="search-input-wrapper">
+          <input type="text" class="form-input" id="positionSearch" placeholder="输入或选择对接岗位" autocomplete="off" required>
+          <span class="search-icon">🔍</span>
+          <div class="search-dropdown" id="positionDropdown"></div>
+        </div>
+        <input type="hidden" name="position" id="positionValue">
       </div>
 
       <!-- 6. 资源/需求简介 -->
       <div class="form-group">
         <label class="form-label">资源/需求简介 <span class="required">*</span></label>
-        <input type="text" class="form-input" name="summary" placeholder="一句话概括可对接的资源或需求" maxlength="80" required oninput="updateCharCount(this, 'summaryCount', 80)">
-        <div class="char-count" id="summaryCount">0 / 80</div>
+        <input type="text" class="form-input" name="summary" placeholder="一句话概括可对接的资源或需求" maxlength="80" required>
+        <div class="char-count">0 / 80</div>
       </div>
 
       <!-- 7. 详细说明 -->
       <div class="form-group">
         <label class="form-label">详细说明 <span class="required">*</span></label>
-        <textarea class="form-textarea" name="description" placeholder="详细描述你的企业资源或对接需求，包括合作方式、优势条件等..." maxlength="500" required oninput="updateCharCount(this, 'descCount', 500)"></textarea>
-        <div class="char-count" id="descCount">0 / 500</div>
+        <textarea class="form-textarea" name="description" placeholder="详细描述你的企业资源或对接需求，包括合作方式、优势条件等..." maxlength="500" required></textarea>
+        <div class="char-count">0 / 500</div>
       </div>
 
       <!-- 8. 对接有效期 -->
@@ -328,8 +407,8 @@
 
       <!-- 9. 资源真实性承诺 -->
       <div class="form-group">
-        <label class="checkbox-group" for="truthCheck">
-          <input type="checkbox" id="truthCheck" name="truth_commitment">
+        <label class="checkbox-group">
+          <input type="checkbox" name="truth_commitment" required>
           <span class="checkbox-text">我承诺以上信息真实有效，如有虚假愿承担相应责任</span>
         </label>
       </div>
@@ -350,27 +429,335 @@
   <div class="toast" id="toast"></div>
 
   <script>
+    // 省份数据
+    const provinces = ['北京市','天津市','上海市','重庆市','河北省','山西省','辽宁省','吉林省','黑龙江省','江苏省','浙江省','安徽省','福建省','江西省','山东省','河南省','湖北省','湖南省','广东省','海南省','四川省','贵州省','云南省','陕西省','甘肃省','青海省','内蒙古自治区','广西壮族自治区','西藏自治区','宁夏回族自治区','新疆维吾尔自治区','香港特别行政区','澳门特别行政区','台湾省'];
+
+    // 城市数据
+    const citiesData = {
+      '北京市': { districts: ['东城区','西城区','朝阳区','丰台区','石景山区','海淀区','门头沟区','房山区','通州区','顺义区','昌平区','大兴区','怀柔区','平谷区','密云区','延庆区'] },
+      '上海市': { districts: ['黄浦区','徐汇区','长宁区','静安区','普陀区','虹口区','杨浦区','闵行区','宝山区','嘉定区','浦东新区','金山区','松江区','青浦区','奉贤区','崇明区'] },
+      '天津市': { districts: ['和平区','河东区','河西区','南开区','河北区','红桥区','东丽区','西青区','津南区','北辰区','武清区','宝坻区','滨海新区','宁河区','静海区','蓟州区'] },
+      '重庆市': { districts: ['万州区','涪陵区','渝中区','大渡口区','江北区','沙坪坝区','九龙坡区','南岸区','北碚区','渝北区','巴南区','黔江区','长寿区','江津区','合川区','永川区','南川区','璧山区','铜梁区','潼南区','荣昌区','开州区','梁平区','武隆区'] },
+      '河北省': { cities: ['石家庄市','唐山市','秦皇岛市','邯郸市','邢台市','保定市','张家口市','承德市','沧州市','廊坊市','衡水市','雄安新区'] },
+      '山西省': { cities: ['太原市','大同市','阳泉市','长治市','晋城市','朔州市','晋中市','运城市','忻州市','临汾市','吕梁市'] },
+      '辽宁省': { cities: ['沈阳市','大连市','鞍山市','抚顺市','本溪市','丹东市','锦州市','营口市','阜新市','辽阳市','盘锦市','铁岭市','朝阳市','葫芦岛市'] },
+      '吉林省': { cities: ['长春市','吉林市','四平市','辽源市','通化市','白山市','松原市','白城市','延边朝鲜族自治州'] },
+      '黑龙江省': { cities: ['哈尔滨市','齐齐哈尔市','鸡西市','鹤岗市','双鸭山市','大庆市','伊春市','佳木斯市','七台河市','牡丹江市','黑河市','绥化市','大兴安岭地区'] },
+      '江苏省': { cities: ['南京市','无锡市','徐州市','常州市','苏州市','南通市','连云港市','淮安市','盐城市','扬州市','镇江市','泰州市','宿迁市'] },
+      '浙江省': { cities: ['杭州市','宁波市','温州市','嘉兴市','湖州市','绍兴市','金华市','衢州市','舟山市','台州市','丽水市'] },
+      '安徽省': { cities: ['合肥市','芜湖市','蚌埠市','淮南市','马鞍山市','淮北市','铜陵市','安庆市','黄山市','滁州市','阜阳市','宿州市','六安市','亳州市','池州市','宣城市'] },
+      '福建省': { cities: ['福州市','厦门市','莆田市','三明市','泉州市','漳州市','南平市','龙岩市','宁德市','平潭综合实验区'] },
+      '江西省': { cities: ['南昌市','景德镇市','萍乡市','九江市','新余市','鹰潭市','赣州市','吉安市','宜春市','抚州市','上饶市'] },
+      '山东省': { cities: ['济南市','青岛市','淄博市','枣庄市','东营市','烟台市','潍坊市','济宁市','泰安市','威海市','日照市','临沂市','德州市','聊城市','滨州市','菏泽市'] },
+      '河南省': { cities: ['郑州市','开封市','洛阳市','平顶山市','安阳市','鹤壁市','新乡市','焦作市','濮阳市','许昌市','漯河市','三门峡市','南阳市','商丘市','信阳市','周口市','驻马店市','济源市'] },
+      '湖北省': { cities: ['武汉市','黄石市','十堰市','宜昌市','襄阳市','鄂州市','荆门市','孝感市','荆州市','黄冈市','咸宁市','随州市','恩施土家族苗族自治州','仙桃市','潜江市','天门市','神农架林区'] },
+      '湖南省': { cities: ['长沙市','株洲市','湘潭市','衡阳市','邵阳市','岳阳市','常德市','张家界市','益阳市','郴州市','永州市','怀化市','娄底市','湘西土家族苗族自治州'] },
+      '广东省': { cities: ['广州市','深圳市','珠海市','汕头市','佛山市','韶关市','湛江市','肇庆市','江门市','茂名市','惠州市','梅州市','汕尾市','河源市','阳江市','清远市','东莞市','中山市','潮州市','揭阳市','云浮市','增城区','从化区'] },
+      '海南省': { cities: ['海口市','三亚市','三沙市','儋州市'] },
+      '四川省': { cities: ['成都市','自贡市','攀枝花市','泸州市','德阳市','绵阳市','广元市','遂宁市','内江市','乐山市','南充市','眉山市','宜宾市','广安市','达州市','雅安市','巴中市','资阳市','阿坝藏族羌族自治州','甘孜藏族自治州','凉山彝族自治州'] },
+      '贵州省': { cities: ['贵阳市','六盘水市','遵义市','安顺市','毕节市','铜仁市','黔西南布依族苗族自治州','黔东南苗族侗族自治州','黔南布依族苗族自治州'] },
+      '云南省': { cities: ['昆明市','曲靖市','玉溪市','保山市','昭通市','丽江市','普洱市','临沧市','楚雄彝族自治州','红河哈尼族彝族自治州','文山壮族苗族自治州','西双版纳傣族自治州','大理白族自治州','德宏傣族景颇族自治州','怒江傈僳族自治州','迪庆藏族自治州'] },
+      '陕西省': { cities: ['西安市','铜川市','宝鸡市','咸阳市','渭南市','延安市','汉中市','榆林市','安康市','商洛市'] },
+      '甘肃省': { cities: ['兰州市','嘉峪关市','金昌市','白银市','天水市','武威市','张掖市','平凉市','酒泉市','庆阳市','定西市','陇南市','临夏回族自治州','甘南藏族自治州'] },
+      '青海省': { cities: ['西宁市','海东市','海北藏族自治州','黄南藏族自治州','海南藏族自治州','果洛藏族自治州','玉树藏族自治州','海西蒙古族藏族自治州'] },
+      '内蒙古自治区': { cities: ['呼和浩特市','包头市','乌海市','赤峰市','通辽市','鄂尔多斯市','呼伦贝尔市','巴彦淖尔市','乌兰察布市','兴安盟','锡林郭勒盟','阿拉善盟'] },
+      '广西壮族自治区': { cities: ['南宁市','柳州市','桂林市','梧州市','北海市','防城港市','钦州市','贵港市','玉林市','百色市','贺州市','河池市','来宾市','崇左市'] },
+      '西藏自治区': { cities: ['拉萨市','日喀则市','昌都市','林芝市','山南市','那曲市','阿里地区'] },
+      '宁夏回族自治区': { cities: ['银川市','石嘴山市','吴忠市','固原市','中卫市'] },
+      '新疆维吾尔自治区': { cities: ['乌鲁木齐市','克拉玛依市','吐鲁番市','哈密市','阿克苏地区','喀什地区','和田地区','伊犁哈萨克自治州','塔城地区','阿勒泰地区','博尔塔拉蒙古自治州','巴音郭楞蒙古自治州','昌吉回族自治州','克孜勒苏柯尔克孜自治州'] }
+    };
+
+    // 行业分类
+    const industries = ['IT互联网','教育培训','金融投资','医疗健康','智能制造','房地产','法律咨询','政府园区','创业孵化','消费零售','能源环保','化工原料','物流运输','建筑工程','文化传媒','农业畜牧','其他'];
+
+    // 部门
+    const departments = ['招商部','项目部','采购部','行政部','市场部','技术部','财务部','人力资源部','法务部','战略发展部','公共关系部','客户服务部','生产管理部','质量管理部','其他'];
+
+    // 岗位
+    const positions = ['负责人','总监','主管','经理','专员','助理','顾问','首席官','副总裁','总经理','副总经理','董事长','副董事长','其他'];
+
+    // 企业名称候选
+    const sampleCompanies = ['华为技术有限公司','腾讯科技有限公司','阿里巴巴（中国）有限公司','百度在线网络技术有限公司','京东集团','美团网络科技有限公司','字节跳动科技有限公司','小米科技有限责任公司','网易（杭州）网络有限公司','滴滴出行科技有限公司','比亚迪股份有限公司','宁德时代新能源科技股份有限公司','海尔集团有限公司','格力电器股份有限公司','万科企业股份有限公司','中国平安保险（集团）股份有限公司','招商银行股份有限公司','中国移动通信集团有限公司','中国电信集团有限公司','中国联合网络通信集团有限公司'];
+
+    // 初始化
     const token = localStorage.getItem('token');
     if (!token) {
       document.getElementById('loginTip').style.display = 'block';
       document.getElementById('formContainer').style.display = 'none';
     }
 
-    function updateCharCount(el, countId, max) {
-      var len = el.value.length;
-      document.getElementById(countId).textContent = len + ' / ' + max;
+    // 已选择的地区
+    let selectedRegions = { province: null, city: null, district: null };
+
+    // 构建地区搜索数据
+    function buildRegionSearchData() {
+      const items = [];
+
+      // 添加省份
+      provinces.forEach(p => {
+        items.push({ type: 'province', value: p, label: p, level: '省级' });
+      });
+
+      // 添加城市
+      Object.keys(citiesData).forEach(province => {
+        const data = citiesData[province];
+        if (data.cities) {
+          data.cities.forEach(c => {
+            items.push({ type: 'city', value: c, label: c, level: '市级', parent: province });
+            // 添加该城市的区县
+            if (data.districts) {
+              data.districts.forEach(d => {
+                items.push({ type: 'district', value: d, label: d, level: '区/县级', parent: c, grandparent: province });
+              });
+            }
+          });
+        } else if (data.districts) {
+          // 直辖市的区
+          data.districts.forEach(d => {
+            items.push({ type: 'district', value: d, label: d, level: '区/县级', parent: d, grandparent: province });
+          });
+        }
+      });
+
+      return items;
     }
 
+    const regionSearchData = buildRegionSearchData();
+
+    // 地区搜索下拉框
+    function setupRegionSearch() {
+      const input = document.getElementById('regionSearch');
+      const dropdown = document.getElementById('regionDropdown');
+      const selectedDisplay = document.getElementById('selectedRegions');
+
+      input.addEventListener('focus', function() {
+        showDropdown(this.value);
+      });
+
+      input.addEventListener('input', function() {
+        showDropdown(this.value);
+      });
+
+      document.addEventListener('click', function(e) {
+        if (!input.contains(e.target) && !dropdown.contains(e.target)) {
+          dropdown.classList.remove('show');
+        }
+      });
+
+      function showDropdown(query) {
+        let filtered = regionSearchData;
+
+        if (query) {
+          filtered = regionSearchData.filter(item =>
+            item.label.toLowerCase().includes(query.toLowerCase())
+          );
+        }
+
+        // 显示最近选择或全部
+        const recentItems = [];
+        if (selectedRegions.district) {
+          // 已有区级选择，显示同城市其他区
+          const parentCity = Object.keys(citiesData).find(p =>
+            citiesData[p].districts && citiesData[p].districts.includes(selectedRegions.district)
+          );
+          if (parentCity) {
+            const cityData = citiesData[parentCity];
+            if (cityData && cityData.districts) {
+              cityData.districts.forEach(d => {
+                if (!query || d.includes(query)) {
+                  recentItems.push({ type: 'district', value: d, label: d, level: '区/县级', parent: d, grandparent: parentCity });
+                }
+              });
+            }
+          }
+        } else if (selectedRegions.city) {
+          // 已有城市选择，显示该城市所有区
+          const parentProvince = Object.keys(citiesData).find(p =>
+            citiesData[p].cities && citiesData[p].cities.includes(selectedRegions.city)
+          );
+          if (parentProvince) {
+            const cityData = citiesData[parentProvince];
+            if (cityData && cityData.districts) {
+              cityData.districts.forEach(d => {
+                if (!query || d.includes(query)) {
+                  recentItems.push({ type: 'district', value: d, label: d, level: '区/县级', parent: d, grandparent: parentProvince });
+                }
+              });
+            }
+          }
+        } else if (selectedRegions.province) {
+          // 已有省份选择，显示该省份所有城市
+          const provinceData = citiesData[selectedRegions.province];
+          if (provinceData && provinceData.cities) {
+            provinceData.cities.forEach(c => {
+              if (!query || c.includes(query)) {
+                recentItems.push({ type: 'city', value: c, label: c, level: '市级', parent: selectedRegions.province });
+              }
+            });
+          }
+        }
+
+        let html = '';
+        if (recentItems.length > 0) {
+          html += '<div style="padding:8px 16px;font-size:0.75rem;color:var(--text-muted);border-bottom:1px solid var(--border-card);">选择下级</div>';
+          recentItems.forEach(item => {
+            html += `<div class="search-dropdown-item" data-type="${item.type}" data-value="${item.value}" data-parent="${item.parent || ''}" data-grandparent="${item.grandparent || ''}">
+              <div class="item-label">${highlightMatch(item.label, query)}</div>
+              <div class="item-level">${item.level}</div>
+            </div>`;
+          });
+          if (query && filtered.length > 0) {
+            html += '<div style="padding:8px 16px;font-size:0.75rem;color:var(--text-muted);border-bottom:1px solid var(--border-card);">搜索结果</div>';
+          }
+        }
+
+        if (query && filtered.length > 0) {
+          filtered.forEach(item => {
+            const isSelected = (selectedRegions.province && item.value === selectedRegions.province) ||
+                              (selectedRegions.city && item.value === selectedRegions.city) ||
+                              (selectedRegions.district && item.value === selectedRegions.district);
+            html += `<div class="search-dropdown-item ${isSelected ? 'selected' : ''}" data-type="${item.type}" data-value="${item.value}" data-parent="${item.parent || ''}" data-grandparent="${item.grandparent || ''}">
+              <div class="item-label">${highlightMatch(item.label, query)}</div>
+              <div class="item-level">${item.parent ? (item.grandparent ? item.grandparent + ' > ' : '') + item.parent + ' > ' : ''}${item.level}</div>
+            </div>`;
+          });
+        }
+
+        if (filtered.length === 0 && query) {
+          html += '<div class="search-dropdown-item no-data">无匹配项</div>';
+        }
+
+        dropdown.innerHTML = html;
+        dropdown.classList.add('show');
+
+        dropdown.querySelectorAll('.search-dropdown-item:not(.no-data)').forEach(item => {
+          item.addEventListener('click', function() {
+            selectRegion(this.dataset.type, this.dataset.value, this.dataset.parent, this.dataset.grandparent);
+            dropdown.classList.remove('show');
+            input.value = '';
+          });
+        });
+      }
+
+      function selectRegion(type, value, parent, grandparent) {
+        if (type === 'province') {
+          selectedRegions = { province: value, city: null, district: null };
+        } else if (type === 'city') {
+          selectedRegions = { province: grandparent || selectedRegions.province, city: value, district: null };
+        } else if (type === 'district') {
+          selectedRegions = { province: grandparent || parent, city: parent, district: value };
+        }
+        updateRegionDisplay();
+      }
+
+      function updateRegionDisplay() {
+        let html = '';
+        if (selectedRegions.province) {
+          html += `<span class="selected-tag">${selectedRegions.province} <span class="remove" onclick="removeRegion('province')">×</span></span>`;
+        }
+        if (selectedRegions.city) {
+          html += `<span class="selected-tag">${selectedRegions.city} <span class="remove" onclick="removeRegion('city')">×</span></span>`;
+        }
+        if (selectedRegions.district) {
+          html += `<span class="selected-tag">${selectedRegions.district} <span class="remove" onclick="removeRegion('district')">×</span></span>`;
+        }
+        selectedDisplay.innerHTML = html;
+
+        // 更新隐藏字段
+        document.getElementById('regionProvince').value = selectedRegions.province || '';
+        document.getElementById('regionCity').value = selectedRegions.city || '';
+        document.getElementById('regionDistrict').value = selectedRegions.district || '';
+      }
+
+      window.removeRegion = function(level) {
+        if (level === 'province') {
+          selectedRegions = { province: null, city: null, district: null };
+        } else if (level === 'city') {
+          selectedRegions.city = null;
+          selectedRegions.district = null;
+        } else if (level === 'district') {
+          selectedRegions.district = null;
+        }
+        updateRegionDisplay();
+      };
+    }
+
+    // 模糊搜索下拉框通用函数
+    function setupSearchDropdown(inputId, dropdownId, dataList, hiddenId) {
+      const input = document.getElementById(inputId);
+      const dropdown = document.getElementById(dropdownId);
+
+      input.addEventListener('focus', function() {
+        showDropdown(this.value);
+      });
+
+      input.addEventListener('input', function() {
+        showDropdown(this.value);
+      });
+
+      document.addEventListener('click', function(e) {
+        if (!input.contains(e.target) && !dropdown.contains(e.target)) {
+          dropdown.classList.remove('show');
+        }
+      });
+
+      function showDropdown(query) {
+        const filtered = dataList.filter(item =>
+          item.toLowerCase().includes(query.toLowerCase())
+        );
+
+        if (filtered.length === 0) {
+          dropdown.innerHTML = '<div class="search-dropdown-item no-data">无匹配项</div>';
+        } else {
+          dropdown.innerHTML = filtered.map((item, i) =>
+            `<div class="search-dropdown-item" data-value="${item}">${highlightMatch(item, query)}</div>`
+          ).join('');
+        }
+
+        dropdown.classList.add('show');
+
+        dropdown.querySelectorAll('.search-dropdown-item:not(.no-data)').forEach(item => {
+          item.addEventListener('click', function() {
+            input.value = this.dataset.value;
+            if (hiddenId) document.getElementById(hiddenId).value = this.dataset.value;
+            dropdown.classList.remove('show');
+          });
+        });
+      }
+
+      function highlightMatch(text, query) {
+        if (!query) return text;
+        const regex = new RegExp(`(${query})`, 'gi');
+        return text.replace(regex, '<strong>$1</strong>');
+      }
+    }
+
+    // 初始化企业名称搜索
+    setupSearchDropdown('companySearch', 'companyDropdown', sampleCompanies);
+
+    // 初始化行业搜索
+    setupSearchDropdown('industrySearch', 'industryDropdown', industries, 'industryValue');
+
+    // 初始化部门搜索
+    setupSearchDropdown('departmentSearch', 'departmentDropdown', departments, 'departmentValue');
+
+    // 初始化岗位搜索
+    setupSearchDropdown('positionSearch', 'positionDropdown', positions, 'positionValue');
+
+    // 初始化地区搜索
+    setupRegionSearch();
+
+    // 表单提交
     document.getElementById('publishForm').addEventListener('submit', async function(e) {
       e.preventDefault();
-      var form = e.target;
-      var btn = document.getElementById('submitBtn');
+      const form = e.target;
+      const btn = document.getElementById('submitBtn');
 
       if (!form.company_name.value.trim()) { showToast('请填写企业名称', 'error'); return; }
-      if (!form.region_level.value) { showToast('请选择所属区域层级', 'error'); return; }
-      if (!form.industry.value) { showToast('请选择行业分类', 'error'); return; }
-      if (!form.department.value) { showToast('请选择对接部门', 'error'); return; }
-      if (!form.position.value) { showToast('请选择对接岗位', 'error'); return; }
+      if (!selectedRegions.province) { showToast('请选择企业所在地区', 'error'); return; }
+      if (!document.getElementById('industryValue').value) { showToast('请选择行业分类', 'error'); return; }
+      if (!document.getElementById('departmentValue').value) { showToast('请选择对接部门', 'error'); return; }
+      if (!document.getElementById('positionValue').value) { showToast('请选择对接岗位', 'error'); return; }
       if (!form.summary.value.trim()) { showToast('请填写资源/需求简介', 'error'); return; }
       if (!form.description.value.trim()) { showToast('请填写详细说明', 'error'); return; }
       if (!form.validity.value) { showToast('请选择对接有效期', 'error'); return; }
@@ -380,7 +767,7 @@
       btn.textContent = '提交中...';
 
       try {
-        var res = await fetch('/api/content/enterprise-likes', {
+        const res = await fetch('/api/content/enterprise-likes', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -388,10 +775,12 @@
           },
           body: JSON.stringify({
             company_name: form.company_name.value.trim(),
-            region_level: form.region_level.value,
-            industry: form.industry.value,
-            department: form.department.value,
-            position: form.position.value,
+            province: selectedRegions.province,
+            city: selectedRegions.city,
+            district: selectedRegions.district,
+            industry: document.getElementById('industryValue').value,
+            department: document.getElementById('departmentValue').value,
+            position: document.getElementById('positionValue').value,
             summary: form.summary.value.trim(),
             description: form.description.value.trim(),
             validity: parseInt(form.validity.value, 10),
@@ -399,7 +788,7 @@
           })
         });
 
-        var data = await res.json();
+        const data = await res.json();
         if (!res.ok) throw new Error(data.error || '提交失败');
         showToast('提交成功，等待审核', 'success');
         setTimeout(function() { location.href = 'user-likes.html'; }, 1500);
@@ -411,7 +800,7 @@
     });
 
     function showToast(msg, type) {
-      var toast = document.getElementById('toast');
+      const toast = document.getElementById('toast');
       toast.textContent = msg;
       toast.className = 'toast ' + (type || '') + ' show';
       setTimeout(function() { toast.className = 'toast'; }, 3000);

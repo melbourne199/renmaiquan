@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>发布政务信息 - 资源夜市</title>
+  <title>发布部门渠道对接 - 资源夜市</title>
   <style>
     :root {
       --bg-deep: #01060f;
@@ -32,7 +32,6 @@
       background: var(--bg-deep);
       color: var(--text-primary);
       min-height: 100vh;
-      font-size: 0.95rem;
     }
 
     .navbar {
@@ -66,6 +65,7 @@
     .container { max-width: 640px; margin: 0 auto; padding: 84px 20px 40px; }
     .page-title { font-size: 1.4rem; font-weight: 600; margin-bottom: 8px; }
     .page-desc { color: var(--text-muted); font-size: 0.85rem; margin-bottom: 32px; }
+    .page-notice { color: #888; font-size: 12px; line-height: 1.6; margin-bottom: 24px; padding: 12px 16px; background: rgba(90, 200, 250, 0.05); border-radius: 8px; border-left: 3px solid var(--accent-blue); }
 
     .form-group { margin-bottom: 24px; }
 
@@ -81,7 +81,7 @@
     .form-input, .form-select, .form-textarea {
       width: 100%;
       padding: 14px 16px;
-      background: var(--bg-card);
+      background: #0a1628 !important;
       border: 1px solid var(--border-card);
       border-radius: 12px;
       color: var(--text-primary);
@@ -97,17 +97,83 @@
 
     .form-textarea { min-height: 120px; resize: vertical; font-family: inherit; }
 
-    .form-select {
+    /* 模糊搜索下拉框 */
+    .search-input-wrapper {
+      position: relative;
+    }
+
+    .search-input-wrapper input {
+      padding-right: 40px;
+    }
+
+    .search-input-wrapper .search-icon {
+      position: absolute;
+      right: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      pointer-events: none;
+    }
+
+    .search-dropdown {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      max-height: 200px;
+      overflow-y: auto;
+      background: #0a1628;
+      border: 1px solid var(--border-card);
+      border-top: none;
+      border-radius: 0 0 12px 12px;
+      z-index: 1000;
+      display: none;
+    }
+
+    .search-dropdown.show { display: block; }
+
+    .search-dropdown-item {
+      padding: 12px 16px;
+      cursor: pointer;
+      background: #0a1628;
+      transition: background 0.2s;
+    }
+
+    .search-dropdown-item:hover, .search-dropdown-item.highlighted {
+      background: var(--bg-card-hover);
+    }
+
+    .search-dropdown-item.no-data {
+      color: var(--text-muted);
+      text-align: center;
+      cursor: default;
+    }
+
+    /* 三级联动 */
+    .region-selects {
+      display: flex;
+      gap: 12px;
+    }
+
+    .region-selects .search-select-wrapper {
+      flex: 1;
+    }
+
+    .search-select {
       cursor: pointer;
       appearance: none;
+      background-color: #0a1628;
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%235ac8fa' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
       background-repeat: no-repeat;
       background-position: right 16px center;
       padding-right: 40px;
     }
 
-    .form-select option { background: #0a1628; color: var(--text-primary); }
-    .form-select optgroup { background: #0a1628; color: var(--accent-blue); font-style: normal; font-weight: 600; }
+    .search-select option { background: #0a1628; color: var(--text-primary); }
+
+    .search-select-wrapper {
+      position: relative;
+    }
 
     .char-count {
       text-align: right;
@@ -215,137 +281,74 @@
 </head>
 <body>
   <nav class="navbar">
-    <a href="gov-list.html" class="navbar-brand">
+    <a href="index.html" class="navbar-brand">
       <span class="navbar-brand-icon">🌌</span>
       <span>资源夜市</span>
     </a>
-    <a href="gov-list.html" class="back-btn">&larr; 返回列表</a>
+    <a href="index.html" class="back-btn">&larr; 返回首页</a>
   </nav>
 
   <div class="container" id="loginTip" style="display:none;">
     <div class="login-tip">
-      <p>请先 <a href="login.html">登录</a> 或 <a href="register.html">注册</a> 后再发布政务信息</p>
+      <p>请先 <a href="login.html">登录</a> 或 <a href="register.html">注册</a> 后再发布部门渠道信息</p>
     </div>
   </div>
 
   <div class="container" id="formContainer">
-    <h1 class="page-title">发布政务信息</h1>
-    <p class="page-desc">发布政务资源对接信息，让有需求的人主动找到你</p>
+    <h1 class="page-title">发布部门渠道对接</h1>
+    <p class="page-desc">发布部门渠道信息，让有需求的人主动找到你</p>
+    <p class="page-notice">精准发布内部渠道信息，仅描述行业、区域与岗位层级，不涉及个人隐私信息。通过合规引荐实现业务衔接，让资源方与需求方安全对接、共同创造价值。</p>
 
     <form id="publishForm">
       <!-- 1. 单位行业 -->
       <div class="form-group">
         <label class="form-label">单位行业 <span class="required">*</span></label>
-        <select class="form-select" name="department" required>
-          <option value="">请选择单位行业</option>
-          <optgroup label="核心组成部门">
-            <option value="发改-宏观经济调控">发改-宏观经济调控</option>
-            <option value="教育-公共教育管理">教育-公共教育管理</option>
-            <option value="科技-技术创新推进">科技-技术创新推进</option>
-            <option value="工信-产业发展促进">工信-产业发展促进</option>
-            <option value="民宗-民族事务协调">民宗-民族事务协调</option>
-            <option value="公安-公共安全保障">公安-公共安全保障</option>
-            <option value="民政-社会事务管理">民政-社会事务管理</option>
-            <option value="司法-法治建设推进">司法-法治建设推进</option>
-            <option value="财政-财政收支管理">财政-财政收支管理</option>
-            <option value="人社-就业与社保服务">人社-就业与社保服务</option>
-            <option value="自然资源-国土规划利用">自然资源-国土规划利用</option>
-            <option value="生态环境-污染防治监管">生态环境-污染防治监管</option>
-            <option value="住建-城乡建设管理">住建-城乡建设管理</option>
-            <option value="交通-综合运输管理">交通-综合运输管理</option>
-            <option value="水利-水资源管理">水利-水资源管理</option>
-            <option value="农业农村-乡村振兴推进">农业农村-乡村振兴推进</option>
-            <option value="商务-内外贸易促进">商务-内外贸易促进</option>
-            <option value="文旅-文化旅游发展">文旅-文化旅游发展</option>
-            <option value="卫健-公共卫生服务">卫健-公共卫生服务</option>
-            <option value="退役军人-权益保障">退役军人-权益保障</option>
-            <option value="应急-安全生产监管">应急-安全生产监管</option>
-            <option value="审计-经济责任审计">审计-经济责任审计</option>
-            <option value="市场监管-市场秩序维护">市场监管-市场秩序维护</option>
-            <option value="医保-医疗保障管理">医保-医疗保障管理</option>
-          </optgroup>
-          <optgroup label="直属机构和管理部门">
-            <option value="国资-国企资产监管">国资-国企资产监管</option>
-            <option value="林业-森林资源保护">林业-森林资源保护</option>
-            <option value="海洋渔业-海洋经济发展">海洋渔业-海洋经济发展</option>
-            <option value="广电-文化内容监管">广电-文化内容监管</option>
-            <option value="体育-体育事业发展">体育-体育事业发展</option>
-            <option value="粮储-物资储备管理">粮储-物资储备管理</option>
-            <option value="统计-经济数据统计">统计-经济数据统计</option>
-            <option value="数据管理-数字政务推进">数据管理-数字政务推进</option>
-            <option value="档案-档案管理与利用">档案-档案管理与利用</option>
-            <option value="金融监管-金融风险防控">金融监管-金融风险防控</option>
-            <option value="信访-群众诉求办理">信访-群众诉求办理</option>
-          </optgroup>
-          <optgroup label="垂直管理系统">
-            <option value="税务-税费征收管理">税务-税费征收管理</option>
-            <option value="海关-口岸通关监管">海关-口岸通关监管</option>
-            <option value="气象-气象服务与防灾">气象-气象服务与防灾</option>
-            <option value="证监-资本市场监管">证监-资本市场监管</option>
-            <option value="银监-银行业监管">银监-银行业监管</option>
-            <option value="保监-保险业监管">保监-保险业监管</option>
-            <option value="通信管理-电信行业监管">通信管理-电信行业监管</option>
-            <option value="邮政管理-邮政行业监管">邮政管理-邮政行业监管</option>
-            <option value="烟草-烟草专卖管理">烟草-烟草专卖管理</option>
-          </optgroup>
-          <optgroup label="其他">
-            <option value="法院-审判业务服务">法院-审判业务服务</option>
-            <option value="检察院-法律监督服务">检察院-法律监督服务</option>
-            <option value="纪委监委-纪律监察服务">纪委监委-纪律监察服务</option>
-            <option value="公积金-住房公积金管理">公积金-住房公积金管理</option>
-            <option value="供销-农村流通服务">供销-农村流通服务</option>
-            <option value="药监-药品安全监管">药监-药品安全监管</option>
-          </optgroup>
-        </select>
+        <div class="search-input-wrapper">
+          <input type="text" class="form-input" id="industrySearch" name="industry" placeholder="输入或选择单位行业" autocomplete="off" required>
+          <span class="search-icon">🔍</span>
+          <div class="search-dropdown" id="industryDropdown"></div>
+        </div>
       </div>
 
-      <!-- 2. 所属区域层级 -->
+      <!-- 2. 区域选择 -->
       <div class="form-group">
-        <label class="form-label">所属区域层级 <span class="required">*</span></label>
-        <select class="form-select" name="region_level" required>
-          <option value="">请选择区域层级</option>
-          <option value="顶层">顶层</option>
-          <option value="省级">省级</option>
-          <option value="市级">市级</option>
-          <option value="区县级">区县级</option>
-          <option value="街镇级">街镇级</option>
-        </select>
+        <label class="form-label">区域选择 <span class="required">*</span></label>
+        <div class="search-input-wrapper">
+          <input type="text" class="form-input" id="regionSearch" placeholder="输入省/市/区关键词搜索" autocomplete="off">
+          <span class="search-icon">🔍</span>
+          <div class="search-dropdown" id="regionDropdown"></div>
+        </div>
+        <div class="region-hint">* 输入地址关键词，一键选择完整区域，精准对接本地资源</div>
+        <input type="hidden" name="region_province" id="regionProvince">
+        <input type="hidden" name="region_city" id="regionCity">
+        <input type="hidden" name="region_district" id="regionDistrict">
       </div>
 
-      <!-- 3. 对接部门 -->
-      <div class="form-group">
-        <label class="form-label">对接部门 <span class="required">*</span></label>
-        <input type="text" class="form-input" name="target_department" placeholder="如：招商局、项目科" maxlength="50" required>
-      </div>
-
-      <!-- 4. 对接岗位 -->
+      <!-- 3. 对接岗位 -->
       <div class="form-group">
         <label class="form-label">对接岗位 <span class="required">*</span></label>
-        <select class="form-select" name="target_position" required>
-          <option value="">请选择对接岗位</option>
-          <option value="负责人">负责人</option>
-          <option value="主管">主管</option>
-          <option value="经理">经理</option>
-          <option value="专员">专员</option>
-          <option value="科员">科员</option>
-        </select>
+        <div class="search-input-wrapper">
+          <input type="text" class="form-input" id="positionSearch" name="position" placeholder="输入或选择对接岗位" autocomplete="off" required>
+          <span class="search-icon">🔍</span>
+          <div class="search-dropdown" id="positionDropdown"></div>
+        </div>
       </div>
 
-      <!-- 5. 资源/需求简介 -->
+      <!-- 4. 资源/需求简介 -->
       <div class="form-group">
         <label class="form-label">资源/需求简介 <span class="required">*</span></label>
-        <input type="text" class="form-input" name="summary" placeholder="一句话描述您的资源或需求" maxlength="80" required oninput="updateCount(this, 'summaryCount', 80)">
-        <div class="char-count" id="summaryCount">0 / 80</div>
+        <input type="text" class="form-input" name="summary" placeholder="一句话描述您的资源或需求" maxlength="80" required>
+        <div class="char-count">0 / 80</div>
       </div>
 
-      <!-- 6. 详细说明 -->
+      <!-- 5. 详细说明 -->
       <div class="form-group">
         <label class="form-label">详细说明 <span class="required">*</span></label>
-        <textarea class="form-textarea" name="detail" placeholder="详细描述您的资源情况或对接需求，请勿包含个人隐私信息" maxlength="500" required oninput="updateCount(this, 'detailCount', 500)"></textarea>
-        <div class="char-count" id="detailCount">0 / 500</div>
+        <textarea class="form-textarea" name="detail" placeholder="详细描述您的资源情况或对接需求，请勿包含个人隐私信息" maxlength="500" required></textarea>
+        <div class="char-count">0 / 500</div>
       </div>
 
-      <!-- 7. 对接有效期 -->
+      <!-- 6. 对接有效期 -->
       <div class="form-group">
         <label class="form-label">对接有效期 <span class="required">*</span></label>
         <select class="form-select" name="validity" required>
@@ -363,7 +366,7 @@
 
       <!-- 需求真实性承诺 -->
       <div class="checkbox-group">
-        <input type="checkbox" id="truthCommit" name="truth_commit">
+        <input type="checkbox" id="truthCommit" name="truth_commit" required>
         <label for="truthCommit">我承诺所填信息真实有效，不含虚假或夸大内容。如有违规，愿承担相应责任。</label>
       </div>
 
@@ -383,26 +386,217 @@
   <div class="toast" id="toast"></div>
 
   <script>
+    // 省份数据
+    const provinces = ['北京市','天津市','上海市','重庆市','河北省','山西省','辽宁省','吉林省','黑龙江省','江苏省','浙江省','安徽省','福建省','江西省','山东省','河南省','湖北省','湖南省','广东省','海南省','四川省','贵州省','云南省','陕西省','甘肃省','青海省','内蒙古自治区','广西壮族自治区','西藏自治区','宁夏回族自治区','新疆维吾尔自治区'];
+
+    // 城市数据
+    const cities = {
+      '北京市': ['东城区','西城区','朝阳区','丰台区','石景山区','海淀区','门头沟区','房山区','通州区','顺义区','昌平区','大兴区','怀柔区','平谷区','密云区','延庆区'],
+      '上海市': ['黄浦区','徐汇区','长宁区','静安区','普陀区','虹口区','杨浦区','闵行区','宝山区','嘉定区','浦东新区','金山区','松江区','青浦区','奉贤区','崇明区'],
+      '广东省': [{name:'广州市',districts:['越秀区','海珠区','荔湾区','天河区','白云区','黄埔区','番禺区','花都区','南沙区','从化区','增城区']},{name:'深圳市',districts:['罗湖区','福田区','南山区','宝安区','龙岗区','盐田区','龙华区','坪山区','光明区','大鹏新区']},{name:'珠海市',districts:['香洲区','斗门区','金湾区']},{name:'东莞市',districts:['莞城区','南城区','万江区','石碣镇','石龙镇','茶山镇','石排镇','企石镇','横沥镇','桥头镇','谢岗镇','东坑镇','常平镇','寮步镇','大朗镇','黄江镇','清溪镇','塘厦镇','凤岗镇','长安镇','虎门镇','厚街镇','沙田镇','道滘镇','洪梅镇','麻涌镇','望牛墩镇','中堂镇','高埗镇']},{name:'佛山市',districts:['禅城区','南海区','顺德区','三水区','高明区']},{name:'汕头市',districts:['龙湖区','金平区','濠江区','潮阳区','潮南区','澄海区','南澳县']},{name:'惠州市',districts:['惠城区','惠阳区','博罗县','惠东县','龙门县']},{name:'江门市',districts:['蓬江区','江海区','新会区','台山市','开平市','鹤山市','恩平市']},{name:'中山市',districts:['石岐区','东区','西区','南区','五桂山区','小榄镇','古镇镇','横栏镇','港口镇','沙溪镇','大涌镇','黄圃镇','南头镇','东凤镇','阜沙镇','三角镇','民众镇','南朗镇','三乡镇','坦洲镇','神湾镇']}]
+    };
+
+    // 政务行业分类
+    const industries = ['发改','教育','科技','工信','民宗','公安','民政','司法','财政','人社','自然资源','生态环境','住建','交通','水利','农业农村','商务','文旅','卫健','退役军人','应急','审计','市场监管','医保','国资','林业','海洋渔业','广电','体育','粮储','统计','数据管理','档案','金融监管','信访','税务','海关','气象','证监','银监','保监','通信管理','邮政管理','烟草','法院','检察院','纪委监委','公积金','供销','药监'];
+
+    // 岗位
+    const positions = ['负责人','总监','主管','经理','专员','助理','顾问','首席官','副总裁','总经理','副总经理','董事长','副董事长','其他'];
+
+    // 初始化
     const token = localStorage.getItem('token');
     if (!token) {
       document.getElementById('loginTip').style.display = 'block';
       document.getElementById('formContainer').style.display = 'none';
     }
 
-    function updateCount(el, countId, max) {
-      const len = el.value.length;
-      document.getElementById(countId).textContent = len + ' / ' + max;
+    // 模糊搜索下拉框通用函数
+    function setupSearchDropdown(inputId, dropdownId, dataList, onSelect) {
+      const input = document.getElementById(inputId);
+      const dropdown = document.getElementById(dropdownId);
+
+      input.addEventListener('focus', function() {
+        showDropdown(this.value);
+      });
+
+      input.addEventListener('input', function() {
+        showDropdown(this.value);
+      });
+
+      document.addEventListener('click', function(e) {
+        if (!input.contains(e.target) && !dropdown.contains(e.target)) {
+          dropdown.classList.remove('show');
+        }
+      });
+
+      function showDropdown(query) {
+        const filtered = dataList.filter(item =>
+          item.toLowerCase().includes(query.toLowerCase())
+        );
+
+        if (filtered.length === 0) {
+          dropdown.innerHTML = '<div class="search-dropdown-item no-data">无匹配项</div>';
+        } else {
+          dropdown.innerHTML = filtered.map((item, i) =>
+            `<div class="search-dropdown-item" data-value="${item}">${highlightMatch(item, query)}</div>`
+          ).join('');
+        }
+
+        dropdown.classList.add('show');
+
+        dropdown.querySelectorAll('.search-dropdown-item:not(.no-data)').forEach(item => {
+          item.addEventListener('click', function() {
+            input.value = this.dataset.value;
+            dropdown.classList.remove('show');
+            if (onSelect) onSelect(this.dataset.value);
+          });
+        });
+      }
+
+      function highlightMatch(text, query) {
+        if (!query) return text;
+        const regex = new RegExp(`(${query})`, 'gi');
+        return text.replace(regex, '<strong>$1</strong>');
+      }
     }
 
-    document.getElementById('publishForm').addEventListener('submit', async (e) => {
+    // 初始化行业搜索
+    setupSearchDropdown('industrySearch', 'industryDropdown', industries);
+
+    // 初始化岗位搜索
+    setupSearchDropdown('positionSearch', 'positionDropdown', positions);
+
+    // 地址搜索数据
+    const citiesData = {
+      '北京市': { districts: ['东城区','西城区','朝阳区','丰台区','石景山区','海淀区','门头沟区','房山区','通州区','顺义区','昌平区','大兴区','怀柔区','平谷区','密云区','延庆区'] },
+      '上海市': { districts: ['黄浦区','徐汇区','长宁区','静安区','普陀区','虹口区','杨浦区','闵行区','宝山区','嘉定区','浦东新区','金山区','松江区','青浦区','奉贤区','崇明区'] },
+      '广东省': { cities: ['广州市','深圳市','珠海市','东莞市','佛山市','汕头市','惠州市','江门市','中山市','茂名市','湛江市','韶关市','肇庆市','梅州市','汕尾市','河源市','阳江市','清远市','潮州市','揭阳市','云浮市'], districts: { '广州市': '越秀区|海珠区|荔湾区|天河区|白云区|黄埔区|番禺区|花都区|南沙区|从化区|增城区', '深圳市': '罗湖区|福田区|南山区|宝安区|龙岗区|盐田区|龙华区|坪山区|光明区|大鹏新区' } },
+      '浙江省': { cities: ['杭州市','宁波市','温州市','嘉兴市','湖州市','绍兴市','金华市','衢州市','舟山市','台州市','丽水市'] },
+      '江苏省': { cities: ['南京市','苏州市','无锡市','常州市','南通市','徐州市','连云港市','淮安市','盐城市','扬州市','镇江市','泰州市','宿迁市'] },
+      '四川省': { cities: ['成都市','绵阳市','自贡市','攀枝花市','泸州市','德阳市','广元市','遂宁市','内江市','乐山市','南充市','眉山市','宜宾市','广安市','达州市','雅安市','巴中市','资阳市'] },
+      '山东省': { cities: ['济南市','青岛市','淄博市','枣庄市','东营市','烟台市','潍坊市','济宁市','泰安市','威海市','日照市','临沂市','德州市','聊城市','滨州市','菏泽市'] },
+      '河南省': { cities: ['郑州市','开封市','洛阳市','平顶山市','安阳市','鹤壁市','新乡市','焦作市','濮阳市','许昌市','漯河市','三门峡市','南阳市','商丘市','信阳市','周口市','驻马店市'] },
+      '湖北省': { cities: ['武汉市','黄石市','十堰市','宜昌市','襄阳市','鄂州市','荆门市','孝感市','荆州市','黄冈市','咸宁市','随州市'] },
+      '湖南省': { cities: ['长沙市','株洲市','湘潭市','衡阳市','邵阳市','岳阳市','常德市','张家界市','益阳市','郴州市','永州市','怀化市','娄底市'] },
+      '河北省': { cities: ['石家庄市','唐山市','秦皇岛市','邯郸市','邢台市','保定市','张家口市','承德市','沧州市','廊坊市','衡水市'] },
+      '辽宁省': { cities: ['沈阳市','大连市','鞍山市','抚顺市','本溪市','丹东市','锦州市','营口市','阜新市','辽阳市','盘锦市','铁岭市','朝阳市','葫芦岛市'] },
+      '吉林省': { cities: ['长春市','吉林市','四平市','辽源市','通化市','白山市','松原市','白城市'] },
+      '黑龙江省': { cities: ['哈尔滨市','齐齐哈尔市','鸡西市','鹤岗市','双鸭山市','大庆市','伊春市','佳木斯市','七台河市','牡丹江市','黑河市','绥化市'] },
+      '福建省': { cities: ['福州市','厦门市','莆田市','泉州市','漳州市','龙岩市','三明市','南平市','宁德市'] },
+      '江西省': { cities: ['南昌市','景德镇市','萍乡市','九江市','新余市','鹰潭市','赣州市','吉安市','宜春市','抚州市','上饶市'] },
+      '山西省': { cities: ['太原市','大同市','阳泉市','长治市','晋城市','朔州市','晋中市','运城市','忻州市','临汾市','吕梁市'] },
+      '安徽省': { cities: ['合肥市','芜湖市','蚌埠市','淮南市','马鞍山市','淮北市','铜陵市','安庆市','黄山市','滁州市','阜阳市','宿州市','六安市','亳州市','池州市','宣城市'] },
+      '陕西省': { cities: ['西安市','铜川市','宝鸡市','咸阳市','渭南市','延安市','汉中市','榆林市','安康市','商洛市'] },
+      '甘肃省': { cities: ['兰州市','嘉峪关市','金昌市','白银市','天水市','武威市','张掖市','平凉市','酒泉市','庆阳市','定西市','陇南市'] },
+      '云南省': { cities: ['昆明市','曲靖市','玉溪市','保山市','昭通市','丽江市','普洱市','临沧市'] },
+      '贵州省': { cities: ['贵阳市','六盘水市','遵义市','安顺市','毕节市','铜仁市','黔西南布依族苗族自治州','黔东南苗族侗族自治州','黔南布依族苗族自治州'] },
+      '青海省': { cities: ['西宁市','海东市'] },
+      '内蒙古自治区': { cities: ['呼和浩特市','包头市','乌海市','赤峰市','通辽市','鄂尔多斯市','呼伦贝尔市','巴彦淖尔市','乌兰察布市'] },
+      '广西壮族自治区': { cities: ['南宁市','柳州市','桂林市','梧州市','北海市','防城港市','钦州市','贵港市','玉林市','百色市','贺州市','河池市','来宾市','崇左市'] },
+      '西藏自治区': { cities: ['拉萨市'] },
+      '宁夏回族自治区': { cities: ['银川市','石嘴山市','吴忠市','固原市','中卫市'] },
+      '新疆维吾尔自治区': { cities: ['乌鲁木齐市','克拉玛依市','吐鲁番市','哈密市'] },
+      '海南省': { cities: ['海口市','三亚市','三沙市','儋州市'] },
+      '天津市': { districts: ['和平区','河东区','河西区','南开区','河北区','红桥区','东丽区','西青区','津南区','北辰区','武清区','宝坻区','滨海新区','宁河区','静海区','蓟州区'] },
+      '重庆市': { districts: ['万州区','涪陵区','渝中区','大渡口区','江北区','沙坪坝区','九龙坡区','南岸区','北碚区','渝北区','巴南区','长寿区','江津区','合川区','永川区','南川区','璧山区','铜梁区','潼南区','荣昌区','开州区','梁平区','武隆区'] }
+    };
+
+    // 构建扁平化搜索数据
+    function buildRegionSearchData() {
+      const items = [];
+      provinces.forEach(p => items.push({ type: 'province', value: p, label: p, level: '省级', display: p }));
+      Object.keys(citiesData).forEach(province => {
+        const data = citiesData[province];
+        if (data.cities) {
+          data.cities.forEach(c => {
+            items.push({ type: 'city', value: c, label: c, level: '市级', parent: province, display: province + c });
+            if (data.districts && data.districts[c]) {
+              data.districts[c].split('|').forEach(d => {
+                items.push({ type: 'district', value: d, label: d, level: '区/县级', parent: c, grandparent: province, display: province + c + d });
+              });
+            }
+          });
+        } else if (data.districts) {
+          data.districts.forEach(d => {
+            items.push({ type: 'district', value: d, label: d, level: '区/县级', parent: d, grandparent: province, display: province + d });
+          });
+        }
+      });
+      return items;
+    }
+
+    let selectedRegion = { province: null, city: null, district: null };
+
+    // 初始化地址搜索
+    function initRegionSearch() {
+      const input = document.getElementById('regionSearch');
+      const dropdown = document.getElementById('regionDropdown');
+      const regionData = buildRegionSearchData();
+
+      input.addEventListener('focus', () => showMatches(input.value));
+      input.addEventListener('input', () => showMatches(input.value));
+      document.addEventListener('click', (e) => {
+        if (!input.contains(e.target) && !dropdown.contains(e.target)) dropdown.classList.remove('show');
+      });
+
+      function showMatches(query) {
+        let filtered = regionData;
+        if (query) filtered = regionData.filter(item => item.label.includes(query));
+
+        if (filtered.length === 0) {
+          dropdown.innerHTML = '<div class="search-dropdown-item no-data">无匹配项</div>';
+        } else {
+          dropdown.innerHTML = filtered.slice(0, 20).map(item =>
+            `<div class="search-dropdown-item" data-type="${item.type}" data-value="${item.label}" data-parent="${item.parent||''}" data-grandparent="${item.grandparent||''}">
+              <div class="item-label">${item.label}</div>
+              <div class="item-level">${item.display}</div>
+            </div>`
+          ).join('');
+        }
+        dropdown.classList.add('show');
+
+        dropdown.querySelectorAll('.search-dropdown-item:not(.no-data)').forEach(item => {
+          item.addEventListener('click', function() {
+            const type = this.dataset.type;
+            const val = this.dataset.value;
+            if (type === 'province') {
+              selectedRegion = { province: val, city: null, district: null };
+              input.value = val;
+            } else if (type === 'city') {
+              selectedRegion = { province: this.dataset.parent, city: val, district: null };
+              input.value = this.dataset.parent + val;
+            } else if (type === 'district') {
+              selectedRegion = { province: this.dataset.grandparent, city: this.dataset.parent, district: val };
+              input.value = this.dataset.grandparent + this.dataset.parent + val;
+            }
+            document.getElementById('regionProvince').value = selectedRegion.province;
+            document.getElementById('regionCity').value = selectedRegion.city || '';
+            document.getElementById('regionDistrict').value = selectedRegion.district || '';
+            dropdown.classList.remove('show');
+          });
+        });
+      }
+    }
+
+    // 添加CSS样式
+    const style = document.createElement('style');
+    style.textContent = `
+      .region-hint { font-size: 0.75rem; color: var(--text-muted); margin-top: 8px; line-height: 1.5; }
+      .item-level { font-size: 0.75rem; color: var(--accent-blue); margin-top: 2px; }
+    `;
+    document.head.appendChild(style);
+
+    // 初始化地址搜索
+    initRegionSearch();
+
+    // 表单提交
+    document.getElementById('publishForm').addEventListener('submit', async function(e) {
       e.preventDefault();
       const form = e.target;
       const btn = document.getElementById('submitBtn');
 
-      if (!form.department.value) { showToast('请选择单位行业', 'error'); return; }
-      if (!form.region_level.value) { showToast('请选择所属区域层级', 'error'); return; }
-      if (!form.target_department.value.trim()) { showToast('请填写对接部门', 'error'); return; }
-      if (!form.target_position.value) { showToast('请选择对接岗位', 'error'); return; }
+      if (!form.industry.value) { showToast('请选择单位行业', 'error'); return; }
+      if (!document.getElementById('regionProvince').value) { showToast('请选择区域', 'error'); return; }
+      if (!form.position.value) { showToast('请选择对接岗位', 'error'); return; }
       if (!form.summary.value.trim()) { showToast('请填写资源/需求简介', 'error'); return; }
       if (!form.detail.value.trim()) { showToast('请填写详细说明', 'error'); return; }
       if (!form.validity.value) { showToast('请选择对接有效期', 'error'); return; }
@@ -419,10 +613,13 @@
             'Authorization': 'Bearer ' + token
           },
           body: JSON.stringify({
-            department: form.department.value,
-            region_level: form.region_level.value,
-            target_department: form.target_department.value.trim(),
-            target_position: form.target_position.value,
+            department: form.industry.value,
+            region_level: '省市县',
+            province: document.getElementById('regionProvince').value,
+            city: document.getElementById('regionCity').value,
+            district: document.getElementById('regionDistrict').value,
+            target_department: form.industry.value,
+            target_position: form.position.value,
             summary: form.summary.value.trim(),
             detail: form.detail.value.trim(),
             validity: parseInt(form.validity.value),
@@ -433,7 +630,7 @@
         const data = await res.json();
         if (!res.ok) throw new Error(data.error || '提交失败');
         showToast('提交成功，等待审核', 'success');
-        setTimeout(() => { location.href = 'user-gov.html'; }, 1500);
+        setTimeout(function() { location.href = 'user-gov.html'; }, 1500);
       } catch (err) {
         showToast(err.message, 'error');
         btn.disabled = false;
@@ -445,7 +642,7 @@
       const toast = document.getElementById('toast');
       toast.textContent = msg;
       toast.className = 'toast ' + (type || '') + ' show';
-      setTimeout(() => { toast.className = 'toast'; }, 3000);
+      setTimeout(function() { toast.className = 'toast'; }, 3000);
     }
   </script>
 </body>

@@ -119,61 +119,22 @@
 
     <!-- 底部功能卡片（发布入口） -->
     <div class="cards-container">
-      <div class="func-card" onclick="showPublishMenu()">
+      <a href="publish-enterprise-supply.html" class="func-card">
         <h3>💼 企业资源对接</h3>
         <p>我朋友在XX企业XX部门。</p>
-      </div>
-      <div class="func-card" onclick="showPublishMenu()">
+      </a>
+      <a href="publish-enterprise-demand.html" class="func-card">
         <h3>🔍 需求人脉寻找</h3>
         <p>我需要找XX部门对接业务。</p>
-      </div>
-      <div class="func-card" onclick="showPublishMenu()">
+      </a>
+      <a href="publish-gov.html" class="func-card">
         <h3>🤝 部门渠道对接</h3>
         <p>我朋友在XX部门的XX岗。</p>
-      </div>
-      <div class="func-card" onclick="showPublishMenu()">
+      </a>
+      <a href="publish-case.html" class="func-card">
         <h3>🚀 优质项目发布</h3>
         <p>我有可行性项目，欢迎合作引荐。</p>
-      </div>
-    </div>
-
-    <!-- 发布弹窗 -->
-    <div class="publish-overlay" id="publishOverlay" onclick="hidePublishMenu()"></div>
-    <div class="publish-menu" id="publishMenu">
-      <div class="publish-menu-title">选择发布类型</div>
-      <div class="publish-menu-item" onclick="navigateTo('publish-resource')">
-        <span class="publish-icon">💼</span>
-        <div>
-          <div class="publish-item-title">企业资源对接</div>
-          <div class="publish-item-desc">我朋友在XX企业XX部门</div>
-          <div class="publish-item-notice">本板块用于合规展示自身资源与渠道，并非炫耀人脉、消耗关系，更不涉及权力变现与违规交易。旨在让优质资源在阳光下发挥价值、贡献力量、放大作为，促成正规合作，积累长期口碑</div>
-        </div>
-      </div>
-      <div class="publish-menu-item" onclick="navigateTo('publish-demand')">
-        <span class="publish-icon">🔍</span>
-        <div>
-          <div class="publish-item-title">需求人脉寻找</div>
-          <div class="publish-item-desc">我需要找XX部门对接业务</div>
-          <div class="publish-item-notice">平台支持按「地区 + 行业 + 部门」精准寻找对接人，禁止直接索要或暴露个人隐私信息。所有需求以解决正规业务为目的，实现高效、安全、合规对接</div>
-        </div>
-      </div>
-      <div class="publish-menu-item" onclick="navigateTo('publish-org')">
-        <span class="publish-icon">🤝</span>
-        <div>
-          <div class="publish-item-title">部门渠道对接</div>
-          <div class="publish-item-desc">我朋友在XX部门的XX岗</div>
-          <div class="publish-item-notice">本用于精准发布内部渠道信息，仅描述部门与岗位层级，不涉及具体个人信息。通过合规引荐实现业务衔接，让资源方与需求方安全对接，共同创造价值</div>
-        </div>
-      </div>
-      <div class="publish-menu-item" onclick="navigateTo('publish-project')">
-        <span class="publish-icon">🚀</span>
-        <div>
-          <div class="publish-item-title">优质项目发布</div>
-          <div class="publish-item-desc">我有可行性项目，欢迎合作引荐</div>
-          <div class="publish-item-notice">我有可行性项目，欢迎合作引荐。发布真实、合法、可落地的优质项目，面向平台资源方寻求引荐与合作。通过居间撮合实现多方共赢，让好项目找到合适渠道，让渠道发挥真正价值</div>
-        </div>
-      </div>
-      <button class="publish-menu-close" onclick="hidePublishMenu()">取消</button>
+      </a>
     </div>
 
     <div class="footer-meta">
@@ -189,39 +150,6 @@
     btn.classList.toggle('active');
     panel.classList.toggle('open');
     overlay.classList.toggle('open');
-  }
-
-  function showPublishMenu() {
-    document.getElementById('publishOverlay').classList.add('open');
-    document.getElementById('publishMenu').classList.add('open');
-  }
-
-  function hidePublishMenu() {
-    document.getElementById('publishOverlay').classList.remove('open');
-    document.getElementById('publishMenu').classList.remove('open');
-  }
-
-  function navigateTo(page) {
-    const pages = {
-      'groups': 'groups.html',
-      'group-detail': 'group-detail.html',
-      'publish-group': 'publish-group.html',
-      'publish-resource': 'publish-enterprise-supply.html',
-      'publish-demand': 'publish-enterprise-demand.html',
-      'publish-org': 'publish-gov.html',
-      'publish-project': 'publish-case.html',
-      'publish-help': 'publish-help.html',
-      'energy': 'gov-list.html',
-      'helps': 'help-detail.html',
-      'finance': 'finance.html',
-      'escort': 'escort.html',
-      'cases': 'case-list.html'
-    };
-    if (pages[page]) {
-      location.href = pages[page];
-    } else {
-      console.log('Navigate to:', page);
-    }
   }
   </script>
   <script type="importmap">
