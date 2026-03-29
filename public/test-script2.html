@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head><title>Test Script</title></head>
+<body>
+<script type="importmap">
+{
+  "imports": {
+    "three": "./libs/three@0.160.0/build/three.module.js",
+    "three/addons/": "./libs/three@0.160.0/examples/jsm/"
+  }
+}
+</script>
+<script type="module">
+try {
+  import * as THREE from 'three';
+  import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+  import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
+  console.log('Imports OK');
+  
+  // 直接执行init代码
+  let scene, camera, renderer, earth, clouds, labelRenderer;
+  const cityData = []; // 空数组
+  const labelData = [];
+  
+  function init() {
+    console.log('init called');
+    // 简化版本
+    scene = new THREE.Scene();
+    camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+    camera.position.z = 126;
+    
+    renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.getElementById('canvas-container').appendChild(renderer.domElement);
+    console.log('renderer created');
+  }
+  
+  window.addEventListener('load', init);
+} catch(e) {
+  console.error('Error:', e.message);
+}
+</script>
+</body>
+</html>

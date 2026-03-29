@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head><title>Test Script</title></head>
+<body>
+<div id="canvas-container"></div>
+<script type="importmap">
+{
+  "imports": {
+    "three": "./libs/three@0.160.0/build/three.module.js",
+    "three/addons/": "./libs/three@0.160.0/examples/jsm/"
+  }
+}
+</script>
+<script type="module">
+import * as THREE from 'three';
+
+window.THREE = THREE;
+console.log('THREE:', THREE.REVISION);
+
+const cityData = [];
+const labelData = [];
+
+let scene, camera, renderer, earth, clouds, labelRenderer;
+
+function init() {
+  console.log('init() called');
+  scene = new THREE.Scene();
+  camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+  camera.position.z = 126;
+  
+  renderer = new THREE.WebGLRenderer({ antialias: true });
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  document.getElementById('canvas-container').appendChild(renderer.domElement);
+  console.log('Canvas created:', !!document.querySelector('canvas'));
+}
+
+console.log('Calling init directly');
+init();
+console.log('init() completed');
+</script>
+</body>
+</html>

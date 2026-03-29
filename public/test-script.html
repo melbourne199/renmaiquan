@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head><title>Test Script</title></head>
+<body>
+<script type="importmap">
+{
+  "imports": {
+    "three": "./libs/three@0.160.0/build/three.module.js",
+    "three/addons/": "./libs/three@0.160.0/examples/jsm/"
+  }
+}
+</script>
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
+
+window.THREE = THREE;
+window.OrbitControls = OrbitControls;
+window.CSS2DRenderer = CSS2DRenderer;
+window.CSS2DObject = CSS2DObject;
+
+console.log('THREE:', THREE.REVISION);
+console.log('OrbitControls:', typeof OrbitControls);
+console.log('CSS2DRenderer:', typeof CSS2DRenderer);
+
+// 尝试加载script.js
+import('./script.js')
+  .then(m => {
+    console.log('script.js loaded, init:', typeof m.init);
+    window._scriptModule = m;
+  })
+  .catch(e => console.error('script.js failed:', e));
+</script>
+</body>
+</html>

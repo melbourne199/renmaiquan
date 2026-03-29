@@ -158,7 +158,7 @@
     .level1-line::after { content: '一级60%'; position: absolute; top: -20px; left: 50%; transform: translateX(-50%); font-size: 0.82rem; color: rgba(255,107,157,0.8); font-weight: 600; white-space: nowrap; }
 
     /* 二级居间人行 */
-    .uchain-level2 { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; position: relative; z-index: 1; margin: 64px 20px 12px; }
+    .uchain-level2 { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; position: relative; z-index: 1; margin: 24px 20px 12px; }
     .level2-node { display: flex; flex-direction: column; align-items: center; }
     .level2-avatar { width: 46px; height: 46px; background: rgba(245,158,11,0.08); border: 2px solid rgba(245,158,11,0.35); display: flex; align-items: center; justify-content: center; font-size: 1rem; clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%); transition: all 0.3s var(--ease-spring); position: relative; }
     .level2-avatar.filled { background: linear-gradient(135deg, rgba(245,158,11,0.2), rgba(252,211,77,0.15)); border-color: var(--gold); }
@@ -168,7 +168,7 @@
     .level2-percent { font-size: 0.78rem; color: var(--gold); font-weight: 500; }
     .level2-line-wrap { display: flex; align-items: center; gap: 0; width: 100%; justify-content: center; margin-top: 8px; }
     .level2-line-seg { height: 2px; width: 40px; background: linear-gradient(90deg, rgba(245,158,11,0.5), rgba(252,211,77,0.3)); border-radius: 1px; }
-    .level2-tag { text-align: center; font-size: 0.82rem; color: rgba(245,158,11,0.7); font-weight: 500; margin-top: 48px; }
+    .level2-tag { text-align: center; font-size: 0.82rem; color: rgba(245,158,11,0.7); font-weight: 500; margin-top: 8px; }
 
     /* 计费规则折叠模块 */
     .fee-rules-block { background: rgba(90,200,250,0.06); border: 1px solid rgba(90,200,250,0.15); border-radius: 12px; margin-bottom: 16px; overflow: hidden; }
@@ -221,36 +221,6 @@
     .rule-icon { font-size: 1.2rem; flex-shrink: 0; }
     .rule-text { font-size: 0.85rem; color: var(--text-secondary); line-height: 1.5; }
     .rule-text strong { color: var(--text-primary); }
-
-    /* 合同签署 */
-    .contract-section { margin-bottom: 32px; }
-    .contract-cards { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
-    .contract-card { background: var(--bg-card); border: 1px solid var(--border-card); border-radius: 16px; overflow: hidden; cursor: pointer; transition: all 0.3s var(--ease-spring); }
-    .contract-card:hover { border-color: var(--accent-blue); box-shadow: 0 0 20px rgba(90, 200, 250, 0.2); }
-    .contract-card.open { border-color: var(--accent-blue); }
-    .contract-card-header { display: flex; align-items: center; gap: 16px; padding: 20px; }
-    .contract-card-icon { font-size: 2rem; }
-    .contract-card-info { flex: 1; }
-    .contract-card-title { font-size: 1.1rem; font-weight: 600; color: var(--text-primary); margin-bottom: 4px; }
-    .contract-card-sub { font-size: 0.85rem; color: var(--gold); }
-    .contract-card-arrow { font-size: 1.5rem; color: var(--text-secondary); transition: transform 0.3s; }
-    .contract-card.open .contract-card-arrow { transform: rotate(90deg); }
-    .contract-card-body { display: none; padding: 0 20px 20px; border-top: 1px solid var(--border-card); }
-    .contract-card.open .contract-card-body { display: block; }
-    .contract-agreement { background: rgba(0,0,0,0.3); border-radius: 12px; padding: 20px; margin-bottom: 16px; max-height: 400px; overflow-y: auto; }
-    .contract-agreement h4 { color: var(--gold); margin-bottom: 16px; font-size: 1.1rem; }
-    .contract-agreement h5 { color: var(--accent-blue); margin: 16px 0 8px; font-size: 0.95rem; }
-    .contract-agreement p { color: var(--text-secondary); font-size: 0.85rem; line-height: 1.6; margin-bottom: 8px; }
-    .contract-agreement hr { border: none; border-top: 1px solid var(--border-card); margin: 16px 0; }
-    .contract-signature { margin-top: 24px; }
-    .signature-line { display: flex; justify-content: space-between; color: var(--text-secondary); font-size: 0.85rem; }
-    .contract-actions { display: flex; gap: 12px; }
-    .contract-actions .btn { flex: 1; }
-    .contract-fee { color: var(--gold); font-size: 1.1rem; }
-    .contract-date { color: var(--accent-blue); }
-    .contract-agreement::-webkit-scrollbar { width: 6px; }
-    .contract-agreement::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); border-radius: 3px; }
-    .contract-agreement::-webkit-scrollbar-thumb { background: var(--accent-blue); border-radius: 3px; }
 
     /* 底部CTA */
     .cta-section { text-align: center; padding: 32px; background: linear-gradient(135deg, rgba(245, 158, 11, 0.15) 0%, rgba(245, 158, 11, 0.05) 100%); border: 1px solid rgba(245, 158, 11, 0.3); border-radius: 24px; }
@@ -637,7 +607,7 @@
           <!-- U型链主体 -->
           <div class="uchain-wrap" id="uchainWrap">
             <!-- SVG：U型路径 -->
-            <svg class="uchain-svg" viewBox="0 0 820 460" preserveAspectRatio="xMidYMid meet">
+            <svg class="uchain-svg" viewBox="0 0 820 420" preserveAspectRatio="xMidYMid meet">
               <defs>
                 <linearGradient id="chainGrad" x1="0%" y1="0%" x2="100%" y2="0%">
                   <stop offset="0%" style="stop-color:#ff6b9d;stop-opacity:0.6"/>
@@ -649,9 +619,9 @@
                   <stop offset="100%" style="stop-color:#30d158"/>
                 </linearGradient>
               </defs>
-              <path class="uchain-path-bg" d="M 80,130 L 80,210 Q 80,340 230,360 L 410,370 Q 590,340 740,340 L 740,210 L 740,130"/>
-              <path class="uchain-path-main" d="M 80,130 L 80,210 Q 80,340 230,360 L 410,370 Q 590,340 740,340 L 740,210 L 740,130"/>
-              <path class="uchain-path-close" id="closePath" d="M 230,360 Q 410,400 590,360" stroke="url(#closeGrad)" stroke-width="4"/>
+              <path class="uchain-path-bg" d="M 80,90 L 80,170 Q 80,300 230,320 L 410,330 Q 590,300 740,300 L 740,170 L 740,90"/>
+              <path class="uchain-path-main" d="M 80,90 L 80,170 Q 80,300 230,320 L 410,330 Q 590,300 740,300 L 740,170 L 740,90"/>
+              <path class="uchain-path-close" id="closePath" d="M 230,320 Q 410,360 590,320" stroke="url(#closeGrad)" stroke-width="4"/>
             </svg>
 
             <!-- 3D 饼图：居间费分配比例 -->
@@ -772,88 +742,6 @@
         <div class="rule-item">
           <div class="rule-icon">❌</div>
           <div class="rule-text"><strong>禁止行为：</strong>跳单、瞎传话、泄露信息</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- 合同签署 -->
-    <div class="contract-section">
-      <div class="section-title">📝 合同签署</div>
-      <div class="contract-cards">
-        <!-- 甲乙双方咨询协议 -->
-        <div class="contract-card" onclick="toggleContract(this)">
-          <div class="contract-card-header">
-            <div class="contract-card-icon">📋</div>
-            <div class="contract-card-info">
-              <div class="contract-card-title">甲乙双方咨询协议</div>
-              <div class="contract-card-sub">指导价 ¥2999</div>
-            </div>
-            <div class="contract-card-arrow">›</div>
-          </div>
-          <div class="contract-card-body">
-            <div class="contract-agreement">
-              <h4>甲方乙双方咨询协议</h4>
-              <p><strong>甲方（委托方）：</strong>[委托方名称]</p>
-              <p><strong>乙方（咨询方）：</strong>[咨询方名称]</p>
-              <p><strong>签订日期：</strong><span class="contract-date"></span></p>
-              <hr>
-              <h5>一、服务内容</h5>
-              <p>乙方为甲方提供专业的商业咨询服务，包括但不限于：市场分析、商业模式优化、项目评估等。</p>
-              <h5>二、服务费用</h5>
-              <p>本协议咨询服务费用为人民币 <strong class="contract-fee">¥2999</strong> 元。</p>
-              <h5>三、双方权利与义务</h5>
-              <p>甲方有权了解乙方工作进展，乙方有义务按质按量完成咨询任务。</p>
-              <h5>四、保密条款</h5>
-              <p>双方应对合作过程中知悉的对方商业秘密予以保密。</p>
-              <h5>五、争议解决</h5>
-              <p>如发生争议，双方应友好协商解决；协商不成的，提交合同签订地有管辖权的人民法院诉讼解决。</p>
-              <div class="contract-signature">
-                <div class="signature-line"><span>甲方签字：__________</span><span>乙方签字：__________</span></div>
-              </div>
-            </div>
-            <div class="contract-actions">
-              <button class="btn btn-outline" onclick="event.stopPropagation(); downloadContract('consult')">📥 下载协议</button>
-              <button class="btn btn-gold" onclick="event.stopPropagation(); signContract('consult')">✍️ 发起签署</button>
-            </div>
-          </div>
-        </div>
-
-        <!-- 居间协议(含追诉条款) -->
-        <div class="contract-card" onclick="toggleContract(this)">
-          <div class="contract-card-header">
-            <div class="contract-card-icon">⚖️</div>
-            <div class="contract-card-info">
-              <div class="contract-card-title">居间协议（含追诉条款）</div>
-              <div class="contract-card-sub">标准价 ¥4999</div>
-            </div>
-            <div class="contract-card-arrow">›</div>
-          </div>
-          <div class="contract-card-body">
-            <div class="contract-agreement">
-              <h4>居间服务协议（含追诉条款）</h4>
-              <p><strong>甲方（委托人）：</strong>[委托人名称]</p>
-              <p><strong>乙方（居间人）：</strong>[居间人名称]</p>
-              <p><strong>签订日期：</strong><span class="contract-date"></span></p>
-              <hr>
-              <h5>一、服务内容</h5>
-              <p>乙方为甲方提供居间撮合服务，协助甲方与第三方达成合作协议。</p>
-              <h5>二、服务费用</h5>
-              <p>本协议居间服务费用为人民币 <strong class="contract-fee">¥4999</strong> 元。</p>
-              <h5>三、追诉条款</h5>
-              <p>若甲方违反本协议约定，私下与乙方引荐的第三方达成交易，甲方应向乙方支付协议总金额 <strong>3倍</strong>的赔偿金。</p>
-              <h5>四、居间人权益保障</h5>
-              <p>居间人有权知悉项目进展，有权按照链条分配规则获得居间费用。</p>
-              <h5>五、争议解决</h5>
-              <p>如发生争议，双方应友好协商解决；协商不成的，提交合同签订地有管辖权的人民法院诉讼解决。</p>
-              <div class="contract-signature">
-                <div class="signature-line"><span>甲方签字：__________</span><span>乙方签字：__________</span></div>
-              </div>
-            </div>
-            <div class="contract-actions">
-              <button class="btn btn-outline" onclick="event.stopPropagation(); downloadContract('broker')">📥 下载协议</button>
-              <button class="btn btn-gold" onclick="event.stopPropagation(); signContract('broker')">✍️ 发起签署</button>
-            </div>
-          </div>
         </div>
       </div>
     </div>
@@ -1863,36 +1751,6 @@
         chart.resize({ width: pieW, height: pieH });
       });
     }
-
-    // 合同签署 - 展开/收起
-    function toggleContract(card) {
-      card.classList.toggle('open');
-    }
-
-    // 合同签署 - 下载协议
-    function downloadContract(type) {
-      const titles = {
-        consult: '甲乙双方咨询协议',
-        broker: '居间协议（含追诉条款）'
-      };
-      alert('📥 正在生成 ' + titles[type] + '...\n\n请稍候，系统将在完成后自动下载。');
-      // 实际下载逻辑可对接后端
-    }
-
-    // 合同签署 - 发起签署
-    function signContract(type) {
-      const titles = {
-        consult: '甲乙双方咨询协议',
-        broker: '居间协议（含追诉条款）'
-      };
-      alert('✍️ 正在发起签署流程：' + titles[type] + '\n\n签署链接已发送至您的邮箱。');
-      // 实际签署逻辑可对接e签宝等电子签章服务
-    }
-
-    // 填充当前日期
-    document.querySelectorAll('.contract-date').forEach(el => {
-      el.textContent = new Date().toLocaleDateString('zh-CN');
-    });
   </script>
 </body>
 </html>

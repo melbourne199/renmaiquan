@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html><body>
+<div id="canvas-container"></div>
+<script type="importmap">
+{
+  "imports": {
+    "three": "./libs/three@0.160.0/build/three.module.js",
+    "three/addons/": "./libs/three@0.160.0/examples/jsm/"
+  }
+}
+</script>
+<script type="module">
+window.addEventListener('error', function(e) {
+  console.error('PAGE ERROR:', e.message, 'at', e.filename, ':', e.lineno);
+});
+
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
+console.log('THREE loaded:', !!THREE);
+
+window.THREE = THREE;
+
+// Dynamic import script.js
+import('./script.js')
+  .then(m => {
+    console.log('script.js loaded');
+    window.__module = m;
+  })
+  .catch(e => console.error('script.js import error:', e.message));
+</script>
+</body></html>

@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html><body>
+<script type="importmap">
+{"imports":{"city": "./data/city-data.json"}}
+</script>
+<script type="module">
+import cityData from './data/city-data.json' assert { type: 'json' };
+console.log('cityData length:', cityData.length);
+window.cityData = cityData;
+</script>
+</body></html>

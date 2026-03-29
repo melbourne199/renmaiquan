@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html><body>
+<div id="canvas-container"></div>
+<script type="importmap">
+{
+  "imports": {
+    "three": "./libs/three@0.160.0/build/three.module.js",
+    "three/addons/": "./libs/three@0.160.0/examples/jsm/"
+  }
+}
+</script>
+<script type="module">
+import * as THREE from 'three';
+console.log('THREE loaded');
+
+window.THREE = THREE;
+window.initCalled = false;
+
+async function loadCityData() {
+  console.log('loadCityData called');
+  const response = await fetch('./data/city-data.json');
+  const data = await response.json();
+  console.log('cityData loaded:', data.length);
+  return data;
+}
+
+function init() {
+  console.log('init called');
+  window.initCalled = true;
+  
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+  camera.position.z = 126;
+  
+  const renderer = new THREE.WebGLRenderer({ antialias: true });
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  document.getElementById('canvas-container').appendChild(renderer.domElement);
+}
+
+loadCityData().then(() => {
+  init();
+});
+</script>
+</body></html>

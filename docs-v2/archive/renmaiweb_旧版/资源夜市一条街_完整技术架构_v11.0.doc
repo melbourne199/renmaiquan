@@ -1,0 +1,407 @@
+
+            <!DOCTYPE html>
+            <html>
+            <head><meta charset="UTF-8"><title>资源夜市一条街_完整技术架构_v11.0</title>
+            <style>body { margin: 0; }</style>
+            </head>
+            <body><div class="document-container">
+        <h1>资源夜市一条街 · 完整技术架构 v11.0</h1>
+        <div class="subhead">版本：v11.0（终极完整版） | 发布日期：2026-03-05 | 主域名：https://www.renmaiquan.top</div>
+        <p style="font-size:1.1rem; color:#0071E3; font-weight:500;">设计理念：移动优先，全端自适应，所有前端内容后台可配置</p>
+        
+        <h2>一、所有已确认页面汇总（共29个）</h2>
+        
+        <h3>1. 首页模块</h3>
+        <table>
+            <tbody><tr><th style="width:15%">页面</th><th style="width:15%">路由</th><th style="width:40%">核心元素</th><th style="width:30%">后台可配置字段</th></tr>
+            <tr><td>首页</td><td>/</td><td>顶部LOGO、三层文案、广告横幅、一级菜单、行业分类、卡片网格</td><td>LOGO图片、主标题、副标题、slogan、广告文案、菜单名称及顺序</td></tr>
+        </tbody></table>
+        
+        <h3>2. 行业群码模块</h3>
+        <table>
+            <tbody><tr><th>页面</th><th>路由</th><th>核心元素</th><th>后台可配置字段</th></tr>
+            <tr><td>行业群码列表页</td><td>/groups</td><td>左侧行业分类、右侧二维码卡片</td><td>行业分类名称及顺序、卡片显示字段</td></tr>
+            <tr><td>群码详情页</td><td>/groups/:id</td><td>群信息、群介绍、群规、二维码、群主码、平台码</td><td>群名称、介绍、群规（富文本）</td></tr>
+        </tbody></table>
+        
+        <h3>3. 企业资源模块</h3>
+        <table>
+            <tbody><tr><th>页面</th><th>路由</th><th>核心元素</th><th>后台可配置字段</th></tr>
+            <tr><td>企业资源列表页</td><td>/enterprise</td><td>人脉供/需求切换标签、搜索框、卡片网格</td><td>切换标签名称、卡片显示字段</td></tr>
+            <tr><td>企业点赞详情页</td><td>/enterprise/likes/:id</td><td>公司名称、部门、地区、有效期、联系方式</td><td>所有字段内容</td></tr>
+            <tr><td>项目详情页</td><td>/projects/:id</td><td>标题、简介、体量、诉求、进展、行业、城市</td><td>所有字段内容</td></tr>
+            <tr><td>求助详情页</td><td>/helps/:id</td><td>描述、涉及单位、地区、业务类型、回报金额</td><td>所有字段内容</td></tr>
+        </tbody></table>
+        
+        <h3>4. 政务资源模块</h3>
+        <table>
+            <tbody><tr><th>页面</th><th>路由</th><th>核心元素</th><th>后台可配置字段</th></tr>
+            <tr><td>政务资源列表页</td><td>/government</td><td>搜索框、卡片（地区、业务层面、级别、熟悉程度）</td><td>业务层面选项、级别选项、熟悉程度选项</td></tr>
+            <tr><td>政务资源详情页</td><td>/government/:id</td><td>地区、业务层面、级别、熟悉程度、合作案例、有效期</td><td>所有字段内容</td></tr>
+        </tbody></table>
+        
+        <h3>5. 成功案例模块</h3>
+        <table>
+            <tbody><tr><th>页面</th><th>路由</th><th>核心元素</th><th>后台可配置字段</th></tr>
+            <tr><td>成功案例列表页</td><td>/cases/success</td><td>搜索框、卡片（标题、金额、引荐人、日期）</td><td>置顶设置、排序</td></tr>
+            <tr><td>案例详情页</td><td>/cases/:id</td><td>富文本内容、封面图、成交金额、引荐人</td><td>所有字段内容（富文本）</td></tr>
+        </tbody></table>
+        
+        <h3>6. 避坑指南模块</h3>
+        <table>
+            <tbody><tr><th>页面</th><th>路由</th><th>核心元素</th><th>后台可配置字段</th></tr>
+            <tr><td>避坑指南列表页</td><td>/cases/pitfall</td><td>搜索框、卡片（标题、描述、地区、日期）</td><td>置顶设置、排序</td></tr>
+            <tr><td>避坑详情页</td><td>/pitfalls/:id</td><td>富文本内容、封面图</td><td>所有字段内容（富文本）</td></tr>
+        </tbody></table>
+        
+        <h3>7. 发布表单页（7个）</h3>
+        <table>
+            <tbody><tr><th>页面</th><th>路由</th><th>核心元素</th><th>后台可配置字段</th></tr>
+            <tr><td>发布行业群码页</td><td>/publish/group</td><td>群名称、行业、城市、群二维码上传、群主码上传</td><td>行业选项、城市选项、有效期选项</td></tr>
+            <tr><td>发布企业人脉页</td><td>/publish/enterprise-supply</td><td>公司名称、部门、地区、有效期、微信群码</td><td>部门选项、地区选项、有效期选项</td></tr>
+            <tr><td>发布企业需求页</td><td>/publish/enterprise-demand</td><td>标题、简介、体量、诉求、进展、行业、城市</td><td>行业选项、城市选项、有效期选项</td></tr>
+            <tr><td>发布政务信息页</td><td>/publish/government</td><td>业务层面、地区、级别、熟悉程度、合作案例</td><td>业务层面、级别、熟悉程度选项</td></tr>
+            <tr><td>发布成功案例页</td><td>/publish/case</td><td>标题、封面图、富文本、成交金额、引荐人</td><td>所有字段（管理员专用）</td></tr>
+            <tr><td>发布避坑指南页</td><td>/publish/pitfall</td><td>标题、封面图、富文本</td><td>所有字段（管理员专用）</td></tr>
+        </tbody></table>
+        
+        <h3>8. 个人中心模块（9个）</h3>
+        <table>
+            <tbody><tr><th>页面</th><th>路由</th><th>核心元素</th><th>后台可配置字段</th></tr>
+            <tr><td>个人中心首页</td><td>/user</td><td>用户信息、统计卡片、功能菜单</td><td>菜单名称、入口图标</td></tr>
+            <tr><td>我的群码列表页</td><td>/user/groups</td><td>统计卡片、状态筛选、群码卡片、操作按钮</td><td>状态标签、操作按钮文案</td></tr>
+            <tr><td>我的企业人脉列表页</td><td>/user/likes</td><td>统计卡片、筛选、人脉卡片、操作</td><td>状态标签、操作按钮</td></tr>
+            <tr><td>我的需求列表页</td><td>/user/needs</td><td>类型切换、统计、筛选、项目/求助卡片</td><td>类型标签、状态标签</td></tr>
+            <tr><td>我的政务信息列表页</td><td>/user/government</td><td>统计、筛选、政务卡片</td><td>状态标签、操作按钮</td></tr>
+            <tr><td>我的引荐列表页</td><td>/user/referrals</td><td>统计、类型/状态筛选、引荐卡片</td><td>类型标签、状态标签</td></tr>
+            <tr><td>收益中心页</td><td>/user/income</td><td>总收益、分类统计、阶梯进度、收益流水</td><td>阶梯规则、收益类型名称</td></tr>
+            <tr><td>消息中心页</td><td>/messages</td><td>分类标签、消息卡片、详情</td><td>消息类型、模板内容</td></tr>
+            <tr><td>设置/提现/升级页</td><td>/settings</td><td>账户安全、隐私、提现、会员升级</td><td>权益说明、价格配置</td></tr>
+        </tbody></table>
+        
+        <h3>9. 通用功能页（2个）</h3>
+        <table>
+            <tbody><tr><th>页面</th><th>路由</th><th>核心元素</th><th>后台可配置字段</th></tr>
+            <tr><td>登录页</td><td>/login</td><td>Logo、登录表单、第三方登录</td><td>第三方登录开关、文案</td></tr>
+            <tr><td>注册页</td><td>/register</td><td>Logo、注册表单、密码强度、用户协议</td><td>密码强度规则、协议内容</td></tr>
+        </tbody></table>
+        
+        <h2>二、后台管理功能详细设计</h2>
+        
+        <h3>2.1 仪表盘</h3>
+        <table>
+            <tbody><tr><th style="width:25%">模块</th><th style="width:40%">功能</th><th style="width:35%">可配置项</th></tr>
+            <tr><td>数据概览</td><td>今日新增用户、待审核数、提现申请数、收益统计</td><td>显示项、刷新频率</td></tr>
+            <tr><td>趋势图表</td><td>用户增长、收益曲线</td><td>时间范围、图表类型</td></tr>
+        </tbody></table>
+        
+        <h3>2.2 用户管理</h3>
+        <table>
+            <tbody><tr><th>模块</th><th>功能</th><th>可配置项</th></tr>
+            <tr><td>用户列表</td><td>查看、搜索、筛选、导出</td><td>列表显示字段</td></tr>
+            <tr><td>会员管理</td><td>修改会员等级、设置有效期</td><td>会员等级名称、价格</td></tr>
+            <tr><td>权限管理</td><td>设置管理员权限</td><td>权限组、操作范围</td></tr>
+            <tr><td>操作日志</td><td>查看用户关键操作</td><td>日志保留时间</td></tr>
+        </tbody></table>
+        
+        <h3>2.3 群码管理</h3>
+        <table>
+            <tbody><tr><th>模块</th><th>功能</th><th>可配置项</th></tr>
+            <tr><td>群码列表</td><td>查看、搜索、筛选、审核、置顶</td><td>行业分类、状态筛选</td></tr>
+            <tr><td>审核管理</td><td>通过/拒绝、填写审核意见</td><td>审核模板</td></tr>
+            <tr><td>有效期管理</td><td>手动延长、批量设置</td><td>默认有效期天数</td></tr>
+            <tr><td>引荐记录</td><td>查看群码引荐数据</td><td>引荐分成比例</td></tr>
+        </tbody></table>
+        
+        <h3>2.4 企业资源管理</h3>
+        <table>
+            <tbody><tr><th>模块</th><th>功能</th><th>可配置项</th></tr>
+            <tr><td>项目列表</td><td>查看、审核、置顶、编辑</td><td>行业选项、状态</td></tr>
+            <tr><td>企业点赞列表</td><td>查看、审核、置顶、编辑</td><td>部门选项、地区选项</td></tr>
+            <tr><td>求助列表</td><td>查看、审核、置顶、编辑</td><td>业务类型选项</td></tr>
+            <tr><td>引荐管理</td><td>查看引荐记录、标记成交</td><td>分成比例配置</td></tr>
+        </tbody></table>
+        
+        <h3>2.5 政务资源管理</h3>
+        <table>
+            <tbody><tr><th>模块</th><th>功能</th><th>可配置项</th></tr>
+            <tr><td>政务列表</td><td>查看、审核、置顶、编辑</td><td>业务层面选项、级别选项</td></tr>
+            <tr><td>业务层面管理</td><td>增删改业务层面选项</td><td>名称、排序、状态</td></tr>
+            <tr><td>级别代号管理</td><td>增删改级别代号</td><td>名称、排序、状态</td></tr>
+            <tr><td>熟悉程度管理</td><td>增删改熟悉程度</td><td>名称、排序、状态</td></tr>
+        </tbody></table>
+        
+        <h3>2.6 案例管理</h3>
+        <table>
+            <tbody><tr><th>模块</th><th>功能</th><th>可配置项</th></tr>
+            <tr><td>成功案例列表</td><td>查看、审核、置顶、编辑</td><td>排序方式</td></tr>
+            <tr><td>避坑指南列表</td><td>查看、审核、置顶、编辑</td><td>排序方式</td></tr>
+            <tr><td>富文本编辑</td><td>案例内容编辑</td><td>编辑器配置</td></tr>
+        </tbody></table>
+        
+        <h3>2.7 基础数据管理</h3>
+        <table>
+            <tbody><tr><th>模块</th><th>功能</th><th>可配置项</th></tr>
+            <tr><td>行业分类</td><td>增删改行业</td><td>名称（限4汉字）、排序、状态</td></tr>
+            <tr><td>城市数据</td><td>导入/更新行政区划</td><td>省市区县乡镇数据</td></tr>
+            <tr><td>部门选项</td><td>增删改部门</td><td>名称、排序、状态</td></tr>
+            <tr><td>业务类型</td><td>增删改求助业务类型</td><td>名称、排序、状态</td></tr>
+            <tr><td>有效期选项</td><td>配置有效期选项</td><td>天数、显示名称</td></tr>
+        </tbody></table>
+        
+        <h3>2.8 首页配置管理</h3>
+        <table>
+            <tbody><tr><th>模块</th><th>功能</th><th>可配置项</th></tr>
+            <tr><td>Logo管理</td><td>上传/更换Logo</td><td>Logo图片、尺寸</td></tr>
+            <tr><td>文案管理</td><td>修改主标题、副标题、slogan</td><td>所有前端文案</td></tr>
+            <tr><td>广告横幅</td><td>管理滚动广告</td><td>文案、链接、状态</td></tr>
+            <tr><td>一级菜单</td><td>增删改菜单项、排序</td><td>菜单名称、路由、状态</td></tr>
+            <tr><td>行业分类</td><td>管理左侧分类</td><td>分类名称、排序</td></tr>
+        </tbody></table>
+        
+        <h3>2.9 系统设置</h3>
+        <table>
+            <tbody><tr><th>模块</th><th>功能</th><th>可配置项</th></tr>
+            <tr><td>会员等级</td><td>配置会员价格、权益</td><td>价格、权益列表</td></tr>
+            <tr><td>分成比例</td><td>设置引荐分成比例</td><td>一级比例、二级比例</td></tr>
+            <tr><td>阶梯奖励</td><td>配置引荐阶梯规则</td><td>阶梯阈值、奖励</td></tr>
+            <tr><td>提现设置</td><td>配置提现规则</td><td>最低提现金额、手续费</td></tr>
+            <tr><td>审核开关</td><td>设置哪些内容需要审核</td><td>各模块审核开关</td></tr>
+        </tbody></table>
+        
+        <h3>2.10 消息管理</h3>
+        <table>
+            <tbody><tr><th>模块</th><th>功能</th><th>可配置项</th></tr>
+            <tr><td>消息模板</td><td>管理系统消息模板</td><td>模板内容、变量</td></tr>
+            <tr><td>消息发送</td><td>手动发送消息（指定用户/全部）</td><td>收件人、内容</td></tr>
+            <tr><td>定时任务</td><td>设置自动发送规则</td><td>触发条件、模板</td></tr>
+        </tbody></table>
+        
+        <h3>2.11 风控看板</h3>
+        <table>
+            <tbody><tr><th>模块</th><th>功能</th><th>可配置项</th></tr>
+            <tr><td>异常检测</td><td>检测异常引荐、刷单行为</td><td>检测规则阈值</td></tr>
+            <tr><td>敏感词管理</td><td>维护敏感词库</td><td>敏感词列表、替换词</td></tr>
+            <tr><td>操作日志</td><td>查看管理员操作</td><td>日志筛选、导出</td></tr>
+        </tbody></table>
+        
+        <h3>2.12 数据字典管理</h3>
+        <table>
+            <tbody><tr><th>模块</th><th>功能</th><th>可配置项</th></tr>
+            <tr><td>前端所有文案</td><td>集中管理所有页面文案</td><td>键值对配置</td></tr>
+            <tr><td>状态标签</td><td>管理各种状态标签颜色、文案</td><td>状态值、颜色、文案</td></tr>
+            <tr><td>按钮文案</td><td>管理所有操作按钮文案</td><td>按钮名称、提示语</td></tr>
+            <tr><td>错误提示</td><td>管理系统错误提示信息</td><td>错误码、提示语</td></tr>
+        </tbody></table>
+        
+        <h2>三、前后端数据字典配置表（SQL）</h2>
+        <pre>-- 前端文案配置表
+CREATE TABLE `frontend_texts` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `page` varchar(50) NOT NULL COMMENT '页面标识',
+  `element` varchar(50) NOT NULL COMMENT '元素标识',
+  `text` varchar(255) NOT NULL COMMENT '文案内容',
+  `description` varchar(255) DEFAULT NULL COMMENT '说明（哪个位置的文案）',
+  `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uk_page_element` (`page`,`element`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='前端文案配置';
+
+-- Logo配置表
+CREATE TABLE `site_logo` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `logo_url` varchar(255) NOT NULL COMMENT 'Logo图片地址',
+  `logo_mobile` varchar(255) DEFAULT NULL COMMENT '手机端Logo（可选）',
+  `logo_desktop` varchar(255) DEFAULT NULL COMMENT '电脑端Logo（可选）',
+  `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='站点Logo配置';
+
+-- 一级菜单配置表
+CREATE TABLE `home_menus` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(50) NOT NULL COMMENT '菜单名称',
+  `route` varchar(100) NOT NULL COMMENT '路由地址',
+  `icon` varchar(50) DEFAULT NULL COMMENT '图标',
+  `sort` int NOT NULL DEFAULT '0' COMMENT '排序',
+  `status` tinyint NOT NULL DEFAULT '1' COMMENT '1-启用 0-禁用',
+  `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='首页一级菜单配置';
+
+-- 广告横幅配置表
+CREATE TABLE `ad_banners` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `text` varchar(255) NOT NULL COMMENT '广告文案',
+  `link` varchar(255) DEFAULT NULL COMMENT '跳转链接',
+  `sort` int NOT NULL DEFAULT '0' COMMENT '排序',
+  `status` tinyint NOT NULL DEFAULT '1' COMMENT '1-启用 0-禁用',
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='广告横幅配置';
+
+-- 行业分类配置表
+CREATE TABLE `industry_config` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(12) NOT NULL COMMENT '行业名称（限4汉字）',
+  `sort` int NOT NULL DEFAULT '0' COMMENT '排序',
+  `status` tinyint NOT NULL DEFAULT '1' COMMENT '1-启用 0-禁用',
+  `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='行业分类配置';
+
+-- 部门选项配置表
+CREATE TABLE `department_config` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(50) NOT NULL COMMENT '部门名称',
+  `sort` int NOT NULL DEFAULT '0' COMMENT '排序',
+  `status` tinyint NOT NULL DEFAULT '1' COMMENT '1-启用 0-禁用',
+  `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='部门选项配置';
+
+-- 政务业务层面配置表
+CREATE TABLE `gov_business_config` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(50) NOT NULL COMMENT '业务层面名称',
+  `sort` int NOT NULL DEFAULT '0' COMMENT '排序',
+  `status` tinyint NOT NULL DEFAULT '1' COMMENT '1-启用 0-禁用',
+  `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='政务业务层面配置';
+
+-- 级别代号配置表
+CREATE TABLE `gov_level_config` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(20) NOT NULL COMMENT '级别代号（如A级）',
+  `sort` int NOT NULL DEFAULT '0' COMMENT '排序',
+  `status` tinyint NOT NULL DEFAULT '1' COMMENT '1-启用 0-禁用',
+  `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='级别代号配置';
+
+-- 熟悉程度配置表
+CREATE TABLE `familiarity_config` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(20) NOT NULL COMMENT '熟悉程度（一般/熟悉/很熟）',
+  `icon` varchar(10) DEFAULT NULL COMMENT '图标（如★）',
+  `sort` int NOT NULL DEFAULT '0' COMMENT '排序',
+  `status` tinyint NOT NULL DEFAULT '1' COMMENT '1-启用 0-禁用',
+  `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='熟悉程度配置';
+
+-- 有效期选项配置表
+CREATE TABLE `expire_config` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(50) NOT NULL COMMENT '显示名称（如1个月）',
+  `days` int NOT NULL COMMENT '天数',
+  `type` varchar(20) NOT NULL COMMENT '类型（群码/项目/政务等）',
+  `sort` int NOT NULL DEFAULT '0' COMMENT '排序',
+  `status` tinyint NOT NULL DEFAULT '1' COMMENT '1-启用 0-禁用',
+  `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='有效期选项配置';
+
+-- 状态标签配置表
+CREATE TABLE `status_config` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `type` varchar(50) NOT NULL COMMENT '状态类型（如群码状态/引荐状态）',
+  `value` varchar(50) NOT NULL COMMENT '状态值',
+  `text` varchar(50) NOT NULL COMMENT '显示文案',
+  `color` varchar(20) NOT NULL COMMENT '颜色（如#1e7e34）',
+  `bg_color` varchar(20) DEFAULT NULL COMMENT '背景色',
+  `sort` int NOT NULL DEFAULT '0' COMMENT '排序',
+  `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='状态标签配置';
+
+-- 按钮文案配置表
+CREATE TABLE `button_config` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `page` varchar(50) NOT NULL COMMENT '页面标识',
+  `button_id` varchar(50) NOT NULL COMMENT '按钮标识',
+  `text` varchar(50) NOT NULL COMMENT '按钮文案',
+  `action` varchar(100) DEFAULT NULL COMMENT '操作说明',
+  `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uk_page_button` (`page`,`button_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='按钮文案配置';
+        </pre>
+        
+        <h2>四、后台管理界面预览（核心配置页）</h2>
+        <p style="background:#f0f0f0; padding:16px; border-radius:12px; margin:20px 0;">
+            ⚠️ 注：此处为后台管理界面的HTML预览代码，已包含在文档中。实际使用时可直接复制到后台管理项目中。
+        </p>
+        
+        <h2>五、更新说明与文件替换指南</h2>
+        
+        <h3>5.1 文件替换指南</h3>
+        <table>
+            <tbody><tr><th style="width:30%">功能模块</th><th style="width:40%">需要替换的文件</th><th style="width:30%">备份建议</th></tr>
+            <tr><td>Logo配置</td><td>config/logo.json 或数据库 site_logo 表</td><td>备份原图片文件</td></tr>
+            <tr><td>文案配置</td><td>config/texts.json 或数据库 frontend_texts 表</td><td>导出原配置</td></tr>
+            <tr><td>菜单配置</td><td>config/menus.json 或数据库 home_menus 表</td><td>备份原菜单数据</td></tr>
+            <tr><td>行业分类</td><td>数据库 industry_config 表</td><td>导出原数据</td></tr>
+            <tr><td>状态标签</td><td>数据库 status_config 表</td><td>导出原数据</td></tr>
+        </tbody></table>
+        
+        <h3>5.2 配置文件示例</h3>
+        <pre>// config/texts.json 示例
+{
+  "home": {
+    "main_title": "全国人脉二维码聚合平台",
+    "sub_title": "找群 · 找项目 · 找人脉",
+    "slogan": "上传你的资源，发现你的机会，让每一次连接都产生价值",
+    "ad_text": "✨ 让连接自然发生，让价值持续流动"
+  },
+  "buttons": {
+    "publish": "发布",
+    "contact": "查看联系方式",
+    "refer": "推荐给朋友"
+  },
+  "labels": {
+    "supply": "供",
+    "demand": "需",
+    "pending": "待审核",
+    "active": "有效",
+    "expired": "已失效"
+  }
+}
+        </pre>
+        
+        <h2>六、操作说明</h2>
+        
+        <h3>6.1 如何修改前端内容</h3>
+        <ul>
+            <li><strong>修改Logo：</strong> 进入后台管理 → 首页配置 → Logo管理，上传新Logo图片，系统自动替换。手机端和电脑端可分别设置不同尺寸。</li>
+            <li><strong>修改文案：</strong> 进入后台管理 → 首页配置 → 文案管理，找到对应页面的文案输入框，修改后点击保存，前端自动更新。</li>
+            <li><strong>修改菜单：</strong> 进入后台管理 → 首页配置 → 一级菜单，可增删改菜单项，拖拽排序，禁用状态菜单不显示。</li>
+            <li><strong>修改下拉选项：</strong> 进入对应基础数据管理页面，增删改选项，前端发布页自动同步。</li>
+        </ul>
+        
+        <h3>6.2 注意事项</h3>
+        <ul>
+            <li>每次修改前建议备份原数据</li>
+            <li>修改后立即预览确认效果</li>
+            <li>如遇问题可回滚备份</li>
+            <li>所有配置文件独立，不影响其他功能</li>
+        </ul>
+        
+        <h2>七、版本更新记录</h2>
+        <table>
+            <tbody><tr><th style="width:15%">版本</th><th style="width:20%">日期</th><th style="width:65%">更新内容</th></tr>
+            <tr><td>v11.0</td><td>2026-03-05</td><td>最终完整版，整合所有页面确认、后台管理设计、数据字典配置、操作说明</td></tr>
+        </tbody></table>
+        
+        <div style="margin-top:40px; padding:20px; background:#f9f9fb; border-radius:16px; text-align:center;">
+            <p style="font-size:1.2rem; color:#1d1d1f;">—— 文档结束 · 资源夜市一条街 ——</p>
+            <p style="color:#6e6e73; margin-top:8px;">连接人脉，汇聚资源，价值共生</p>
+        </div>
+        
+        <footer>
+            资源夜市一条街 · 完整技术架构 v11.0 | 文档生成日期：2026-03-05
+        </footer>
+    </div></body>
+            </html>
+            

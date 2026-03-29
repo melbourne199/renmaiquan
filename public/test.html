@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head><title>Test</title></head>
+<body>
+<script type="importmap">
+{"imports":{"three":"http://127.0.0.1:8000/libs/three@0.160.0/build/three.module.js"}}
+</script>
+<script type="module">
+import * as THREE from 'three';
+window.THREE = THREE;
+console.log('THREE loaded:', THREE.REVISION);
+</script>
+</body>
+</html>

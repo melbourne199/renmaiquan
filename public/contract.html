@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <title>居间链合同签署 · 资源夜市</title>
+  <link rel="stylesheet" href="./style.css" />
+  <style>
+    .contract-page { max-width: 900px; margin: 0 auto; padding: 20px; }
+    .contract-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+    .contract-title { font-size: 20px; font-weight: bold; color: #fff; }
+    .btn { padding: 8px 16px; border: none; border-radius: 6px; cursor: pointer; font-size: 14px; }
+    .btn-primary { background: #4a9eff; color: #fff; }
+    .btn-secondary { background: #333; color: #fff; }
+    .btn-success { background: #2ecc71; color: #fff; }
+    .btn-warning { background: #f39c12; color: #fff; }
+    .btn-danger { background: #e74c3c; color: #fff; }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .contract-list { display: flex; flex-direction: column; gap: 12px; }
+    .contract-item { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 16px; cursor: pointer; transition: all 0.2s; }
+    .contract-item:hover { background: rgba(255,255,255,0.1); border-color: #4a9eff; }
+    .contract-item-header { display: flex; justify-content: space-between; margin-bottom: 8px; }
+    .contract-item-title { font-weight: bold; color: #fff; }
+    .contract-status { padding: 2px 8px; border-radius: 4px; font-size: 12px; color: #fff; }
+    .status-draft { background: #666; }
+    .status-pending { background: #f39c12; }
+    .status-signed { background: #2ecc71; }
+    .status-voting { background: #9b59b6; }
+    .contract-item-info { color: #aaa; font-size: 13px; }
+    .contract-item-parties { margin-top: 8px; display: flex; gap: 8px; flex-wrap: wrap; }
+    .party-tag { background: rgba(74,158,255,0.2); color: #4a9eff; padding: 2px 8px; border-radius: 4px; font-size: 12px; }
+    .contract-detail { display: none; }
+    .contract-detail.active { display: block; }
+    .back-btn { background: none; border: none; color: #4a9eff; cursor: pointer; font-size: 14px; margin-bottom: 16px; }
+    .back-btn:hover { text-decoration: underline; }
+    .contract-content { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 24px; margin-bottom: 20px; }
+    .contract-content h2 { text-align: center; margin-bottom: 20px; color: #fff; font-size: 18px; }
+    .contract-content h3 { color: #4a9eff; margin: 16px 0 8px; font-size: 15px; }
+    .contract-content p { color: #ccc; line-height: 1.6; margin: 8px 0; }
+    .contract-content ul { color: #ccc; padding-left: 20px; margin: 8px 0; }
+    .contract-content li { margin: 4px 0; }
+    .terms-section { margin: 20px 0; }
+    .terms-item { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; padding: 12px; margin-bottom: 10px; }
+    .terms-item-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+    .terms-item-title { color: #fff; font-weight: bold; font-size: 14px; }
+    .terms-item-edit { color: #4a9eff; cursor: pointer; font-size: 13px; }
+    .terms-item-content { color: #aaa; font-size: 13px; line-height: 1.5; }
+    .terms-edit-area { display: none; width: 100%; min-height: 80px; background: rgba(0,0,0,0.3); border: 1px solid #4a9eff; border-radius: 6px; color: #fff; padding: 10px; font-size: 13px; resize: vertical; box-sizing: border-box; }
+    .terms-edit-area.active { display: block; }
+    .terms-edit-actions { display: none; margin-top: 8px; gap: 8px; }
+    .terms-edit-actions.active { display: flex; }
+    .parties-confirm { display: flex; gap: 20px; margin: 20px 0; flex-wrap: wrap; }
+    .party-confirm-card { flex: 1; min-width: 200px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 16px; text-align: center; }
+    .party-confirm-card h4 { color: #fff; margin-bottom: 12px; }
+    .party-confirm-card .status { padding: 8px; border-radius: 6px; font-size: 14px; }
+    .party-confirm-card .status.pending { background: rgba(243,156,18,0.2); color: #f39c12; }
+    .party-confirm-card .status.approved { background: rgba(46,204,113,0.2); color: #2ecc71; }
+    .signature-section { margin: 20px 0; }
+    .signature-section h4 { color: #fff; margin-bottom: 12px; }
+    .signature-pad { background: #fff; border-radius: 8px; padding: 10px; margin-bottom: 10px; }
+    #signatureCanvas { width: 100%; height: 150px; border: 2px dashed #ccc; border-radius: 6px; cursor: crosshair; display: block; background: #fff; touch-action: none; }
+    .signature-actions { display: flex; gap: 10px; justify-content: center; }
+    .voting-section { margin: 20px 0; }
+    .voting-section h4 { color: #fff; margin-bottom: 12px; }
+    .voting-item { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; padding: 12px; margin-bottom: 10px; }
+    .voting-item-header { display: flex; justify-content: space-between; margin-bottom: 8px; }
+    .voting-item-term { color: #fff; font-size: 14px; }
+    .voting-item-votes { color: #aaa; font-size: 12px; }
+    .voting-progress { height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; margin-top: 8px; overflow: hidden; }
+    .voting-progress-bar { height: 100%; border-radius: 3px; transition: width 0.3s; }
+    .result-section { background: rgba(46,204,113,0.1); border: 1px solid rgba(46,204,113,0.3); border-radius: 10px; padding: 20px; margin: 20px 0; text-align: center; }
+    .result-section h3 { color: #2ecc71; margin-bottom: 10px; }
+    .result-section p { color: #ccc; }
+    .download-section { text-align: center; margin: 20px 0; }
+    .linked-project { background: rgba(74,158,255,0.1); border: 1px solid rgba(74,158,255,0.3); border-radius: 8px; padding: 12px; margin-bottom: 16px; }
+    .linked-project-title { color: #4a9eff; font-weight: bold; margin-bottom: 4px; }
+    .modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); z-index: 1000; justify-content: center; align-items: center; }
+    .modal-overlay.active { display: flex; }
+    .modal-content { background: #1a1a2e; border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 24px; max-width: 500px; width: 90%; max-height: 80vh; overflow-y: auto; }
+    .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+    .modal-header h3 { color: #fff; margin: 0; }
+    .modal-close { background: none; border: none; color: #aaa; font-size: 24px; cursor: pointer; }
+    .modal-footer { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; }
+    .form-group { margin-bottom: 12px; }
+    .form-group label { display: block; color: #aaa; margin-bottom: 4px; font-size: 13px; }
+    .form-group input, .form-group textarea { width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; color: #fff; padding: 8px 12px; font-size: 14px; box-sizing: border-box; }
+    .form-group textarea { min-height: 80px; resize: vertical; }
+    .create-contract-section { display: none; }
+    .create-contract-section.active { display: block; }
+    .lock-notice { background: rgba(243,156,18,0.1); border: 1px solid rgba(243,156,18,0.3); border-radius: 8px; padding: 12px; margin-bottom: 16px; color: #f39c12; font-size: 13px; text-align: center; }
+    .lock-notice.signed { background: rgba(46,204,113,0.1); border-color: rgba(46,204,113,0.3); color: #2ecc71; }
+    .empty-state { text-align: center; padding: 60px 20px; color: #666; }
+    .escort-link-section { margin: 20px 0; }
+    .escort-link-btn { background: rgba(74,158,255,0.2); border: 1px dashed #4a9eff; color: #4a9eff; padding: 12px; border-radius: 8px; cursor: pointer; width: 100%; font-size: 14px; }
+    .escort-link-btn:hover { background: rgba(74,158,255,0.3); }
+    .linked-escort { background: rgba(155,89,182,0.1); border: 1px solid rgba(155,89,182,0.3); border-radius: 8px; padding: 12px; margin-bottom: 16px; }
+    .linked-escort-title { color: #9b59b6; font-weight: bold; margin-bottom: 4px; }
+    .signer-name-input { margin-bottom: 10px; }
+    .signer-name-input input { width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #ccc; background: #fff; color: #333; box-sizing: border-box; }
+  </style>
+</head>
+<body>
+  <div id="canvas-container"></div>
+  <div id="earth-interaction"></div>
+
+  <div class="ui-overlay">
+    <div class="navbar">
+      <div class="navbar-brand desktop-brand"><div class="navbar-brand-icon">🌌</div>资源夜市</div>
+      <div class="desktop-nav-links">
+        <a class="nav-item" href="index.html">首页</a>
+        <a class="nav-item" href="groups.html">行业群码</a>
+        <a class="nav-item" href="gov-list.html">政企资源</a>
+        <a class="nav-item" href="help-detail.html">最新求助</a>
+        <a class="nav-item" href="finance.html">民企金融</a>
+        <a class="nav-item" href="escort.html">居间护航</a>
+        <a class="nav-item" href="case-list.html">资源案例</a>
+      </div>
+      <div class="navbar-menu-btn" id="menuBtn" onclick="toggleMenu()"><span></span><span></span><span></span></div>
+    </div>
+
+    <div class="navbar-menu-overlay" id="menuOverlay" onclick="toggleMenu()"></div>
+    <div class="navbar-menu-panel" id="menuPanel">
+      <a class="nav-item" href="index.html">首页</a>
+      <a class="nav-item" href="groups.html">行业群码</a>
+      <a class="nav-item" href="gov-list.html">政企资源</a>
+      <a class="nav-item" href="help-detail.html">最新求助</a>
+      <a class="nav-item" href="finance.html">民企金融</a>
+      <a class="nav-item" href="escort.html">居间护航</a>
+      <a class="nav-item" href="case-list.html">资源案例</a>
+    </div>
+
+    <div class="hero-section" style="min-height: auto; padding: 20px;">
+      <div class="hero-content">
+        <h1 class="hero-title" style="font-size: 24px;">📜 居间链电子合同签署</h1>
+        <p class="hero-subtitle">U型居间链锁定后自动生成 · 支持手机签名 · 条款投票</p>
+      </div>
+    </div>
+
+    <div class="contract-page">
+      <!-- 合同列表 -->
+      <div id="contractListSection">
+        <div class="contract-header">
+          <span class="contract-title">合同列表</span>
+          <button class="btn btn-primary" onclick="showCreateContract()">+ 创建合同</button>
+        </div>
+        <div id="contractList" class="contract-list"></div>
+      </div>
+
+      <!-- 创建合同表单 -->
+      <div id="createContractSection" class="create-contract-section">
+        <button class="back-btn" onclick="hideCreateContract()">← 返回列表</button>
+        <div class="contract-content">
+          <h2>新建居间合同</h2>
+          <div class="form-group">
+            <label>合同名称</label>
+            <input type="text" id="newContractName" placeholder="例如：XX项目居间合作协议" />
+          </div>
+          <div class="form-group">
+            <label>甲方名称</label>
+            <input type="text" id="newContractPartyA" placeholder="甲方（委托方）" />
+          </div>
+          <div class="form-group">
+            <label>乙方名称</label>
+            <input type="text" id="newContractPartyB" placeholder="乙方（居间方）" />
+          </div>
+          <div class="form-group">
+            <label>关联项目描述</label>
+            <textarea id="newContractProject" placeholder="项目基本信息（可选）"></textarea>
+          </div>
+          <div style="text-align: center; margin-top: 20px;">
+            <button class="btn btn-primary" onclick="createContract()">创建合同</button>
+            <button class="btn btn-secondary" onclick="hideCreateContract()">取消</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 合同详情 -->
+      <div id="contractDetailSection" class="contract-detail">
+        <button class="back-btn" onclick="showContractList()">← 返回列表</button>
+        <div id="lockNotice" class="lock-notice"></div>
+        <div id="linkedEscortSection" class="linked-escort" style="display: none;">
+          <div class="linked-escort-title">🔗 关联居间链</div>
+          <div id="linkedEscortInfo"></div>
+        </div>
+
+        <div class="contract-content">
+          <h2 id="contractTitle">居间合作合同</h2>
+          <div style="text-align: center; color:#888; font-size: 12px; margin-bottom: 20px;">
+            合同编号：<span id="contractId"></span> | 创建时间：<span id="contractTime"></span>
+          </div>
+          
+          <div id="linkedProjectInfo" class="linked-project" style="display: none;">
+            <div class="linked-project-title" id="linkedProjectTitle"></div>
+            <div style="color: #aaa; font-size: 13px;" id="linkedProjectDesc"></div>
+          </div>
+
+          <div id="contractParties" class="parties-section" style="margin: 20px 0;"></div>
+          
+          <div class="terms-section">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+              <h3 style="margin: 0;">📋 合同条款</h3>
+              <button class="btn btn-secondary" style="padding: 4px 10px; font-size: 12px;" onclick="addTerm()">+ 添加条款</button>
+            </div>
+            <div id="termsList"></div>
+          </div>
+
+          <div class="escort-link-section" id="escortLinkSection">
+            <div id="escortLinkBtn" class="escort-link-btn" onclick="showEscortLinkModal()">🔗 关联居间链（锁定合同）</div>
+            <div id="escortLinkInfo" style="display: none; margin-top: 10px;"></div>
+          </div>
+
+          <div class="voting-section" id="votingSection">
+            <h4>🗳️ 条款投票</h4>
+            <div id="votingList"></div>
+          </div>
+
+          <div class="parties-confirm" id="partiesConfirm"></div>
+
+          <div class="signature-section" id="signatureSection">
+            <h4>✍️ 签名确认</h4>
+            <div class="signer-name-input">
+              <input type="text" id="signerName" placeholder="请输入您的姓名" />
+            </div>
+            <div class="signature-pad">
+              <canvas id="signatureCanvas"></canvas>
+            </div>
+            <div class="signature-actions">
+              <button class="btn btn-warning" onclick="clearSignature()">重写</button>
+              <button class="btn btn-success" onclick="saveSignature()">确认签名</button>
+            </div>
+          </div>
+
+          <div id="signStatus" style="text-align: center; margin-top: 20px;"></div>
+        </div>
+
+        <div class="result-section" id="resultSection" style="display: none;"></div>
+        <div class="download-section" id="downloadSection" style="display: none;">
+          <button class="btn btn-primary" onclick="downloadContract()">📥 下载合同</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 关联居间链弹窗 -->
+  <div id="escortLinkModal" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>🔗 关联居间链</h3>
+        <button class="modal-close" onclick="closeEscortLinkModal()">&times;</button>
+      </div>
+      <p style="color: #aaa; margin-bottom: 16px; font-size: 13px;">关联后将锁定合同内容，居间链成为签署各方见证</p>
+      <div class="form-group">
+        <label>U型居间链ID</label>
+        <input type="text" id="escortChainId" placeholder="输入居间链ID" />
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeEscortLinkModal()">取消</button>
+        <button class="btn btn-primary" onclick="linkEscortChain()">确认关联</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 添加条款弹窗 -->
+  <div id="addTermModal" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>📋 添加条款</h3>
+        <button class="modal-close" onclick="closeAddTermModal()">&times;</button>
+      </div>
+      <div class="form-group">
+        <label>条款标题</label>
+        <input type="text" id="newTermTitle" placeholder="条款标题" />
+      </div>
+      <div class="form-group">
+        <label>条款内容</label>
+        <textarea id="newTermContent" placeholder="条款详细描述..."></textarea>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeAddTermModal()">取消</button>
+        <button class="btn btn-primary" onclick="submitNewTerm()">添加</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 选择居间链弹窗 -->
+  <div id="selectEscortModal" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>🔗 选择居间链</h3>
+        <button class="modal-close" onclick="closeSelectEscortModal()">&times;</button>
+      </div>
+      <div id="escortList" style="max-height: 300px; overflow-y: auto;"></div>
+    </div>
+  </div>
+
+  <script>
+    // ========== 全局变量 ==========
+    let contracts = JSON.parse(localStorage.getItem('contracts') || '[]');
+    let currentContractId = null;
+    let signatureData = null;
+    let canvas, ctx;
+    let isDrawing = false;
+    let lastX = 0, lastY = 0;
+
+    // ========== URL参数解析 ==========
+    function getUrlParam(name) {
+      const params = new URLSearchParams(window.location.search);
+      return params.get(name);
+    }
+
+    // ========== 合同类型配置 ==========
+    const CONTRACT_TYPES = {
+      consult: {
+        title: '甲乙双方咨询协议',
+        subtitle: '咨询服务类合作',
+        name: '甲乙双方咨询协议',
+        partyAPlaceholder: '甲方（委托方）',
+        partyBPlaceholder: '乙方（咨询方）',
+        desc: '明确甲方委托乙方提供咨询服务的权利义务、费用标准、保密条款等。'
+      },
+      broker: {
+        title: '居间协议(含追诉条款)',
+        subtitle: '居间服务+法律追诉',
+        name: '居间协议(含追诉条款)',
+        partyAPlaceholder: '甲方（委托方）',
+        partyBPlaceholder: '乙方（居间方）',
+        desc: '含追诉权条款，甲方违约可追究法律责任，有律师团队支持执行。'
+      }
+    };
+
+    // ========== 初始化 ==========
+    document.addEventListener('DOMContentLoaded', function() {
+      renderContractList();
+      checkU型Lock();
+
+      // 检查URL参数，自动打开对应合同类型
+      const type = getUrlParam('type');
+      if (type && CONTRACT_TYPES[type]) {
+        setTimeout(() => {
+          showCreateContract();
+          const config = CONTRACT_TYPES[type];
+          document.getElementById('newContractName').value = config.name;
+          document.getElementById('newContractName').placeholder = config.name;
+          document.getElementById('newContractPartyA').placeholder = config.partyAPlaceholder;
+          document.getElementById('newContractPartyB').placeholder = config.partyBPlaceholder;
+          // 显示类型提示
+          const createSection = document.getElementById('createContractSection');
+          let typeHint = createSection.querySelector('.type-hint');
+          if (!typeHint) {
+            typeHint = document.createElement('div');
+            typeHint.className = 'type-hint';
+            typeHint.style.cssText = 'background:rgba(74,158,255,0.15);border:1px solid rgba(74,158,255,0.4);border-radius:8px;padding:12px;margin-bottom:16px;color:#4a9eff;font-size:14px;text-align:center;';
+            createSection.querySelector('h2').after(typeHint);
+          }
+          typeHint.innerHTML = `<strong>${config.title}</strong><br><span style="opacity:0.8">${config.desc}</span>`;
+        }, 100);
+      }
+    });
+
+    // ========== U型锁检查 ==========
+    function checkU型Lock() {
+      const u型锁定 = localStorage.getItem('u型锁定');
+      if (u型锁定) {
+        console.log('检测到U型居间链已锁定:', u型锁定);
+      }
+    }
+
+    // ========== 合同列表渲染 ==========
+    function renderContractList() {
+      const list = document.getElementById('contractList');
+      if (contracts.length === 0) {
+        list.innerHTML = '<div class="empty-state">暂无合同，点击上方"创建合同"发起</div>';
+        return;
+      }
+      list.innerHTML = contracts.map(c => `
+        <div class="contract-item" onclick="showContractDetail('${c.id}')">
+          <div class="contract-item-header">
+            <span class="contract-item-title">${c.name}</span>
+            <span class="contract-status status-${c.status}">${getStatusText(c.status)}</span>
+          </div>
+          <div class="contract-item-info">
+            ${c.partyA} ↔ ${c.partyB}
+          </div>
+          <div class="contract-item-parties">
+            ${(c.parties || []).map(p => `<span class="party-tag">${p.name}: ${p.signed ? '✓已签' : '待签'}</span>`).join('')}
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function getStatusText(status) {
+      const map = { draft: '草稿', pending: '待签署', voting: '投票中', signed: '已签署' };
+      return map[status] || status;
+    }
+
+    // ========== 显示/隐藏各区块 ==========
+    function showCreateContract() {
+      document.getElementById('contractListSection').style.display = 'none';
+      document.getElementById('contractDetailSection').classList.remove('active');
+      document.getElementById('createContractSection').classList.add('active');
+    }
+
+    function hideCreateContract() {
+      document.getElementById('createContractSection').classList.remove('active');
+      document.getElementById('contractListSection').style.display = 'block';
+    }
+
+    function showContractList() {
+      document.getElementById('contractDetailSection').classList.remove('active');
+      document.getElementById('contractListSection').style.display = 'block';
+      currentContractId = null;
+    }
+
+    function showContractDetail(id) {
+      currentContractId = id;
+      const contract = contracts.find(c => c.id === id);
+      if (!contract) return;
+
+      document.getElementById('contractListSection').style.display = 'none';
+      document.getElementById('contractDetailSection').classList.add('active');
+
+      document.getElementById('contractTitle').textContent = contract.name;
+      document.getElementById('contractId').textContent = contract.id;
+      document.getElementById('contractTime').textContent = new Date(contract.createdAt).toLocaleString('zh-CN');
+
+      // 关联项目
+      if (contract.project) {
+        document.getElementById('linkedProjectInfo').style.display = 'block';
+        document.getElementById('linkedProjectTitle').textContent = '📁 ' + contract.name;
+        document.getElementById('linkedProjectDesc').textContent = contract.project;
+      } else {
+        document.getElementById('linkedProjectInfo').style.display = 'none';
+      }
+
+      // 锁定通知
+      const lockNotice = document.getElementById('lockNotice');
+      if (contract.escortId) {
+        lockNotice.className = 'lock-notice signed';
+        lockNotice.innerHTML = '🔒 居间链已锁定，合同不可修改';
+      } else {
+        lockNotice.className = 'lock-notice';
+        lockNotice.innerHTML = '⚠️ 未锁定居间链';
+      }
+
+      // 关联居间链
+      if (contract.escortId) {
+        document.getElementById('escortLinkSection').style.display = 'none';
+        document.getElementById('linkedEscortSection').style.display = 'block';
+        document.getElementById('linkedEscortInfo').innerHTML = `居间链ID: ${contract.escortId}`;
+      } else {
+        document.getElementById('escortLinkSection').style.display = 'block';
+        document.getElementById('linkedEscortSection').style.display = 'none';
+      }
+
+      // 条款
+      renderTerms(contract);
+
+      // 签署方确认卡片
+      renderPartiesConfirm(contract);
+
+      // 签名区
+      initSignature();
+
+      // 签署状态
+      updateSignStatus(contract);
+    }
+
+    // ========== 创建合同 ==========
+    function createContract() {
+      const name = document.getElementById('newContractName').value.trim();
+      const partyA = document.getElementById('newContractPartyA').value.trim();
+      const partyB = document.getElementById('newContractPartyB').value.trim();
+      const project = document.getElementById('newContractProject').value.trim();
+
+      if (!name || !partyA || !partyB) {
+        alert('请填写必填项');
+        return;
+      }
+
+      const contract = {
+        id: 'HT' + Date.now(),
+        name: name,
+        partyA: partyA,
+        partyB: partyB,
+        project: project,
+        status: 'draft',
+        createdAt: Date.now(),
+        terms: [
+          { id: 1, title: '居间服务内容', content: '乙方为甲方提供项目居间撮合服务，协助甲方与项目方达成合作。', votes: {}, agree: 0, disagree: 0 },
+          { id: 2, title: '居间费用', content: '居间成功后，甲方按项目实际收益的5%支付居间服务费。', votes: {}, agree: 0, disagree: 0 },
+          { id: 3, title: '保密条款', content: '双方对合作内容负有保密义务，未经对方同意不得向第三方透露。', votes: {}, agree: 0, disagree: 0 }
+        ],
+        parties: [
+          { name: partyA, signed: false, signature: null, signedAt: null },
+          { name: partyB, signed: false, signature: null, signedAt: null }
+        ],
+        escortId: null,
+        result: null
+      };
+
+      contracts.push(contract);
+      saveContracts();
+      hideCreateContract();
+      showContractDetail(contract.id);
+    }
+
+    // ========== 条款管理 ==========
+    function renderTerms(contract) {
+      const termsList = document.getElementById('termsList');
+      termsList.innerHTML = contract.terms.map(t => `
+        <div class="terms-item" id="term-${t.id}">
+          <div class="terms-item-header">
+            <span class="terms-item-title">${t.title}</span>
+            ${contract.status === 'draft' ? `<span class="terms-item-edit" onclick="editTerm(${t.id})">编辑</span>` : ''}
+          </div>
+          <div class="terms-item-content" id="term-content-${t.id}">${t.content}</div>
+          <textarea class="terms-edit-area" id="term-edit-${t.id}" placeholder="编辑条款内容...">${t.content}</textarea>
+          <div class="terms-edit-actions" id="term-actions-${t.id}">
+            <button class="btn btn-primary" style="padding: 4px 10px; font-size: 12px;" onclick="saveTerm(${t.id})">保存</button>
+            <button class="btn btn-secondary" style="padding: 4px 10px; font-size: 12px;" onclick="cancelEditTerm(${t.id})">取消</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function editTerm(termId) {
+      document.getElementById(`term-content-${termId}`).style.display = 'none';
+      document.getElementById(`term-edit-${termId}`).classList.add('active');
+      document.getElementById(`term-actions-${termId}`).classList.add('active');
+    }
+
+    function cancelEditTerm(termId) {
+      document.getElementById(`term-content-${termId}`).style.display = 'block';
+      document.getElementById(`term-edit-${termId}`).classList.remove('active');
+      document.getElementById(`term-actions-${termId}`).classList.remove('active');
+    }
+
+    function saveTerm(termId) {
+      const contract = contracts.find(c => c.id === currentContractId);
+      if (!contract || contract.escortId) return;
+
+      const term = contract.terms.find(t => t.id === termId);
+      if (!term) return;
+
+      term.content = document.getElementById(`term-edit-${termId}`).value;
+      saveContracts();
+      renderTerms(contract);
+    }
+
+    function addTerm() {
+      document.getElementById('addTermModal').classList.add('active');
+    }
+
+    function closeAddTermModal() {
+      document.getElementById('addTermModal').classList.remove('active');
+      document.getElementById('newTermTitle').value = '';
+      document.getElementById('newTermContent').value = '';
+    }
+
+    function submitNewTerm() {
+      const title = document.getElementById('newTermTitle').value.trim();
+      const content = document.getElementById('newTermContent').value.trim();
+      if (!title || !content) { alert('请填写完整'); return; }
+
+      const contract = contracts.find(c => c.id === currentContractId);
+      if (!contract || contract.escortId) return;
+
+      const newId = Math.max(...contract.terms.map(t => t.id)) + 1;
+      contract.terms.push({ id: newId, title, content, votes: {}, agree: 0, disagree: 0 });
+      saveContracts();
+      renderTerms(contract);
+      closeAddTermModal();
+    }
+
+    // ========== 居间链关联 ==========
+    function showEscortLinkModal() {
+      document.getElementById('escortLinkModal').classList.add('active');
+    }
+
+    function closeEscortLinkModal() {
+      document.getElementById('escortLinkModal').classList.remove('active');
+      document.getElementById('escortChainId').value = '';
+    }
+
+    function linkEscortChain() {
+      const escortId = document.getElementById('escortChainId').value.trim();
+      if (!escortId) { alert('请输入居间链ID'); return; }
+
+      const contract = contracts.find(c => c.id === currentContractId);
+      if (!contract) return;
+
+      contract.escortId = escortId;
+      contract.status = 'pending';
+      saveContracts();
+      closeEscortLinkModal();
+      showContractDetail(currentContractId);
+    }
+
+    // ========== 签署方确认 ==========
+    function renderPartiesConfirm(contract) {
+      const container = document.getElementById('partiesConfirm');
+      container.innerHTML = contract.parties.map((p, i) => `
+        <div class="party-confirm-card">
+          <h4>${p.name}</h4>
+          <div class="status ${p.signed ? 'approved' : 'pending'}">
+            ${p.signed ? '✓ 已签署' : '⏳ 待签署'}
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // ========== 签名 ==========
+    function initSignature() {
+      canvas = document.getElementById('signatureCanvas');
+      ctx = canvas.getContext('2d');
+      
+      // 设置画布尺寸
+      canvas.width = canvas.offsetWidth;
+      canvas.height = canvas.offsetHeight;
+      
+      ctx.strokeStyle = '#333';
+      ctx.lineWidth = 2;
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+
+      // 鼠标事件
+      canvas.addEventListener('mousedown', startDrawing);
+      canvas.addEventListener('mousemove', draw);
+      canvas.addEventListener('mouseup', stopDrawing);
+      canvas.addEventListener('mouseout', stopDrawing);
+
+      // 触摸事件
+      canvas.addEventListener('touchstart', handleTouchStart, { passive: false });
+      canvas.addEventListener('touchmove', handleTouchMove, { passive: false });
+      canvas.addEventListener('touchend', stopDrawing);
+    }
+
+
+    function startDrawing(e) {
+      isDrawing = true;
+      const rect = canvas.getBoundingClientRect();
+      lastX = e.clientX - rect.left;
+      lastY = e.clientY - rect.top;
+    }
+
+    function draw(e) {
+      if (!isDrawing) return;
+      const rect = canvas.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      ctx.beginPath();
+      ctx.moveTo(lastX, lastY);
+      ctx.lineTo(x, y);
+      ctx.stroke();
+      lastX = x;
+      lastY = y;
+    }
+
+    function stopDrawing() {
+      isDrawing = false;
+    }
+
+    function handleTouchStart(e) {
+      e.preventDefault();
+      const touch = e.touches[0];
+      const rect = canvas.getBoundingClientRect();
+      isDrawing = true;
+      lastX = touch.clientX - rect.left;
+      lastY = touch.clientY - rect.top;
+    }
+
+    function handleTouchMove(e) {
+      e.preventDefault();
+      if (!isDrawing) return;
+      const touch = e.touches[0];
+      const rect = canvas.getBoundingClientRect();
+      const x = touch.clientX - rect.left;
+      const y = touch.clientY - rect.top;
+      ctx.beginPath();
+      ctx.moveTo(lastX, lastY);
+      ctx.lineTo(x, y);
+      ctx.stroke();
+      lastX = x;
+      lastY = y;
+    }
+
+    function clearSignature() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      signatureData = null;
+    }
+
+    function saveSignature() {
+      const signerName = document.getElementById('signerName').value.trim();
+      if (!signerName) {
+        alert('请输入您的姓名');
+        return;
+      }
+      
+      signatureData = {
+        name: signerName,
+        data: canvas.toDataURL(),
+        signedAt: Date.now()
+      };
+      
+      const contract = contracts.find(c => c.id === currentContractId);
+      if (!contract) return;
+
+      // 找到当前签署方
+      const partyIndex = contract.parties.findIndex(p => p.name === signerName);
+      if (partyIndex === -1) {
+        alert('签署方名称不在合同中，请使用合同中的甲方或乙方名称');
+        return;
+      }
+
+      contract.parties[partyIndex].signed = true;
+      contract.parties[partyIndex].signature = signatureData;
+      contract.parties[partyIndex].signedAt = Date.now();
+
+      // 检查是否全部签署
+      const allSigned = contract.parties.every(p => p.signed);
+      if (allSigned) {
+        contract.status = 'signed';
+        contract.result = '签署完成';
+      }
+
+      saveContracts();
+      updateSignStatus(contract);
+      alert('签名已保存');
+    }
+
+    function updateSignStatus(contract) {
+      const statusEl = document.getElementById('signStatus');
+      const resultSection = document.getElementById('resultSection');
+      const downloadSection = document.getElementById('downloadSection');
+      const signatureSection = document.getElementById('signatureSection');
+
+      if (contract.status === 'signed') {
+        signatureSection.style.display = 'none';
+        resultSection.style.display = 'block';
+        resultSection.innerHTML = `
+          <h3>✓ 合同已签署完成</h3>
+          <p>所有签署方已完成签署，合同生效</p>
+          <p style="margin-top: 10px; color: #2ecc71;">
+            ${contract.parties.map(p => `${p.name}: ${p.signed ? '✓ 已签署' : '未签署'}`).join(' | ')}
+          </p>
+        `;
+        downloadSection.style.display = 'block';
+      } else {
+        statusEl.innerHTML = `
+          <p style="color: #aaa;">
+            待签署: ${contract.parties.filter(p => !p.signed).map(p => p.name).join(', ') || '无'}
+          </p>
+        `;
+      }
+    }
+
+    function downloadContract() {
+      const contract = contracts.find(c => c.id === currentContractId);
+      if (!contract) return;
+
+      const content = `
+居间合作合同
+合同编号: ${contract.id}
+创建时间: ${new Date(contract.createdAt).toLocaleString('zh-CN')}
+
+甲方: ${contract.partyA}
+乙方: ${contract.partyB}
+
+${contract.escortId ? `关联居间链ID: ${contract.escortId}` : ''}
+
+合同条款:
+${contract.terms.map(t => `${t.id}. ${t.title}: ${t.content}`).join('\n')}
+
+签署方:
+${contract.parties.map(p => `- ${p.name}: ${p.signed ? '已签署 (' + new Date(p.signedAt).toLocaleString('zh-CN') + ')' : '未签署'}`).join('\n')}
+
+${contract.status === 'signed' ? '\n本合同已签署完成，具有法律效力。' : ''}
+      `.trim();
+
+      const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `合同_${contract.id}.txt`;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    function saveContracts() {
+      localStorage.setItem('contracts', JSON.stringify(contracts));
+    }
+
+    function showSelectEscortModal() {
+      document.getElementById('selectEscortModal').classList.add('active');
+      renderEscortList();
+    }
+
+    function closeSelectEscortModal() {
+      document.getElementById('selectEscortModal').classList.remove('active');
+    }
+
+    function renderEscortList() {
+      const u型数据 = JSON.parse(localStorage.getItem('u型数据') || '[]');
+      const container = document.getElementById('escortList');
+      
+      if (u型数据.length === 0) {
+        container.innerHTML = '<p style="color: #aaa; text-align: center;">暂无居间链数据</p>';
+        return;
+      }
+
+      container.innerHTML = u型数据.slice(0, 10).map(e => `
+        <div class="escort-item" style="padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.1); cursor: pointer;" onclick="selectEscort('${e.id}')">
+          <div style="color: #fff; font-weight: bold;">居间链 ${e.id}</div>
+          <div style="color: #aaa; font-size: 12px;">${e.nodes ? e.nodes.length : 0} 个节点</div>
+        </div>
+      `).join('');
+    }
+
+    function selectEscort(escortId) {
+      document.getElementById('escortChainId').value = escortId;
+      closeSelectEscortModal();
+    }
+
+    function toggleMenu() {
+      document.getElementById('menuOverlay').classList.toggle('active');
+      document.getElementById('menuPanel').classList.toggle('active');
+    }
+  </script>
+</body>
+</html>
