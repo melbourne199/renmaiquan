@@ -146,16 +146,17 @@
     .fee-label { font-size: 0.72rem; color: var(--text-muted); margin-top: 2px; }
 
     /* 一级居间人行 */
-    .uchain-level1 { display: flex; justify-content: space-between; align-items: center; position: relative; z-index: 1; margin: 24px 40px; }
-    .level1-node { display: flex; flex-direction: column; align-items: center; }
+    .uchain-level1 { position: relative; z-index: 1; margin: 24px 0; height: 100px; }
+    .level1-node { display: flex; flex-direction: column; align-items: center; width: 140px; position: absolute; top: 0; }
+    .level1-node.left { left: 0; }
+    .level1-node.right { right: 0; }
     .level1-avatar { width: 52px; height: 52px; border-radius: 50%; background: rgba(255,107,157,0.12); border: 2px solid rgba(255,107,157,0.5); display: flex; align-items: center; justify-content: center; font-size: 1.2rem; position: relative; transition: all 0.3s var(--ease-spring); }
     .level1-avatar.filled { background: linear-gradient(135deg, rgba(255,107,157,0.3), rgba(196,77,255,0.2)); }
     .level1-avatar.highlight { transform: scale(1.15); box-shadow: 0 0 30px rgba(245,158,11,0.5); border-color: var(--gold); }
     .level1-avatar.empty { border-style: dashed; opacity: 0.5; }
     .level1-label { margin-top: 6px; font-size: 0.85rem; font-weight: 500; color: var(--accent-blue); }
     .level1-percent { font-size: 0.82rem; color: var(--gold); font-weight: 600; }
-    .level1-line { flex: 1; height: 3px; background: linear-gradient(90deg, rgba(255,107,157,0.6), rgba(196,77,255,0.4), rgba(255,107,157,0.6)); border-radius: 2px; margin: 0 16px; position: relative; }
-    .level1-line::after { content: '一级60%'; position: absolute; top: -20px; left: 50%; transform: translateX(-50%); font-size: 0.82rem; color: rgba(255,107,157,0.8); font-weight: 600; white-space: nowrap; }
+    .level1-line { position: absolute; left: 140px; right: 140px; top: 26px; height: 3px; background: linear-gradient(90deg, rgba(255,107,157,0.6), rgba(196,77,255,0.4), rgba(255,107,157,0.6)); border-radius: 2px; }
 
     /* 二级居间人行 */
     .uchain-level2 { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; position: relative; z-index: 1; margin: 64px 20px 12px; }
@@ -675,13 +676,13 @@
 
             <!-- 一级居间人 -->
             <div class="uchain-level1">
-              <div class="level1-node">
+              <div class="level1-node left">
                 <div class="level1-avatar empty" id="l1a"><span>👤</span></div>
                 <div class="level1-label">甲方一级居间人</div>
                 <div class="level1-percent" id="l1PercentA">—</div>
               </div>
               <div class="level1-line"></div>
-              <div class="level1-node">
+              <div class="level1-node right">
                 <div class="level1-avatar empty" id="l1b"><span>👤</span></div>
                 <div class="level1-label">乙方一级居间人</div>
                 <div class="level1-percent" id="l1PercentB">—</div>
