@@ -864,7 +864,6 @@
       <div class="cta-title">🚀 开始你的居间之旅</div>
       <div class="cta-desc">双一级居间人共拿60%、二级居间人分40%，规则透明无克扣</div>
       <div class="cta-buttons">
-        <button class="btn btn-gold" onclick="openQuiz()">🎯 角色自测</button>
         <button class="btn btn-gold" onclick="openCreateProject()">➕ 创建项目</button>
         <button class="btn btn-primary" onclick="openJoinProject()">🔗 加入项目</button>
       </div>
@@ -961,26 +960,13 @@
         <button class="modal-close" onclick="closeCreateProject()">×</button>
       </div>
       <div class="modal-body">
-        <div class="tip-box gold">📌 创建项目后，你自动成为甲方拍板人</div>
         <div class="form-group">
           <label class="form-label">项目名称 *</label>
           <input type="text" class="form-input" id="projectTitle" placeholder="例如：某设备采购项目">
         </div>
         <div class="form-group">
-          <label class="form-label">居间费总额(元) *</label>
-          <input type="number" class="form-input" id="projectFee" placeholder="例如：300000">
-        </div>
-        <div class="form-group">
-          <label class="form-label">一级居间人模式</label>
-          <div style="display:flex;gap:12px;margin-top:8px;">
-            <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:0.9rem;color:var(--text-secondary);">
-              <input type="radio" name="l1Mode" value="1" checked style="accent-color:var(--accent-blue);"> 双边一级（甲乙各1人，共60%）
-            </label>
-            <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:0.9rem;color:var(--text-secondary);">
-              <input type="radio" name="l1Mode" value="0" style="accent-color:var(--accent-blue);"> 单边一级（只需1人，30%）
-            </label>
-          </div>
-          <div class="form-hint">单边一级：只需甲乙任一方有引荐人即可闭环；双边一级：需双方各有一名引荐人</div>
+          <label class="form-label">居间费总额(万元) *</label>
+          <input type="number" class="form-input" id="projectFee" placeholder="例如：300" min="0.01">
         </div>
         <div class="form-group">
           <label class="form-label">甲方简称（脱敏）</label>
@@ -994,6 +980,31 @@
         <div class="form-group">
           <label class="form-label">项目说明</label>
           <textarea class="form-input" id="projectDesc" rows="3" placeholder="简要描述项目背景和需求"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">你的身份角色 *</label>
+          <div class="tip-box" style="background:rgba(245,158,11,0.1);border-color:var(--gold);margin-bottom:10px;">⚠️ 诚信是你的唯一护城河，本着公开透明的原则选择真实角色</div>
+          <div class="form-hint" style="margin-bottom:10px;">逐级选择你的身份</div>
+          <div style="margin-top:8px;">
+            <div style="margin-bottom:12px;">
+              <div class="quiz-question" style="font-size:0.9rem;margin-bottom:6px;">你是总拍板人吗？</div>
+              <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:0.85rem;color:var(--text-secondary);padding:6px 10px;border:1px solid var(--border-card);border-radius:8px;margin-right:10px;">
+                <input type="radio" name="isDecisionMaker" value="yes" style="accent-color:var(--accent-blue);"> 是，我是最终决策人
+              </label>
+              <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:0.85rem;color:var(--text-secondary);padding:6px 10px;border:1px solid var(--border-card);border-radius:8px;">
+                <input type="radio" name="isDecisionMaker" value="no" style="accent-color:var(--accent-blue);"> 不是，我帮忙牵线
+              </label>
+            </div>
+            <div id="secondQuestion" style="display:none;margin-bottom:12px;">
+              <div class="quiz-question" style="font-size:0.9rem;margin-bottom:6px;">你能直接与拍板人沟通吗？</div>
+              <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:0.85rem;color:var(--text-secondary);padding:6px 10px;border:1px solid var(--border-card);border-radius:8px;margin-right:10px;">
+                <input type="radio" name="directContact" value="yes" style="accent-color:var(--accent-blue);"> 可以，我直接跟拍板人对话（一级居间人）
+              </label>
+              <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:0.85rem;color:var(--text-secondary);padding:6px 10px;border:1px solid var(--border-card);border-radius:8px;">
+                <input type="radio" name="directContact" value="no" style="accent-color:var(--accent-blue);"> 不行，需要别人转达（二级居间人）
+              </label>
+            </div>
+          </div>
         </div>
         <div class="form-actions">
           <button class="btn btn-outline" onclick="closeCreateProject()">取消</button>
@@ -1192,6 +1203,12 @@
     // 创建项目
     function openCreateProject() {
       document.getElementById('createModal').classList.add('open');
+      // 监听第一个问题，自动显示/隐藏第二个问题
+      document.querySelectorAll('input[name="isDecisionMaker"]').forEach(radio => {
+        radio.addEventListener('change', function() {
+          document.getElementById('secondQuestion').style.display = this.value === 'no' ? 'block' : 'none';
+        });
+      });
     }
 
     function closeCreateProject() {
@@ -1204,11 +1221,30 @@
       const party_a_name = document.getElementById('partyA').value.trim() || '甲方';
       const party_b_name = document.getElementById('partyB').value.trim() || '乙方';
       const description = document.getElementById('projectDesc').value.trim();
-      const l1_required = parseInt(document.querySelector('input[name="l1Mode"]:checked').value);
+      const isDecisionMaker = document.querySelector('input[name="isDecisionMaker"]:checked')?.value;
+      const directContact = document.querySelector('input[name="directContact"]:checked')?.value;
 
-      if (!title || !total_fee) {
-        alert('请填写必填项');
+      if (!title || !total_fee || parseFloat(total_fee) <= 0) {
+        alert('请填写必填项，且居间费必须大于0');
         return;
+      }
+
+      if (!isDecisionMaker) {
+        alert('请选择你是不是总拍板人');
+        return;
+      }
+
+      if (isDecisionMaker === 'no' && !directContact) {
+        alert('请选择你能否直接与拍板人沟通');
+        return;
+      }
+
+      // 根据回答推断角色
+      let userRole = 'level2';
+      if (isDecisionMaker === 'yes') {
+        userRole = 'party_a'; // 默认甲方拍板人
+      } else if (directContact === 'yes') {
+        userRole = 'level1_a'; // 核心引荐人
       }
 
       if (!token) {
@@ -1224,7 +1260,7 @@
             'Content-Type': 'application/json',
             'Authorization': 'Bearer ' + token
           },
-          body: JSON.stringify({ title, total_fee, party_a_name, party_b_name, description, l1_required })
+          body: JSON.stringify({ title, total_fee, party_a_name, party_b_name, description, user_role: userRole, is_decision_maker: isDecisionMaker, direct_contact: directContact })
         });
 
         if (res.status === 401) {
