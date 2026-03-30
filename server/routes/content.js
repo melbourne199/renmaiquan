@@ -1,11 +1,15 @@
 const express = require('express');
 const { Group, EnterpriseLike, Project, HelpRequest, GovernmentResource } = require('../models');
 const { authenticate } = require('../middleware/auth');
+const { sensitiveWordFilter } = require('../middleware/sensitiveWords');
 
 const router = express.Router();
 
 // 所有内容路由都需要登录
 router.use(authenticate);
+
+// 敏感词过滤中间件（应用于所有 POST 请求）
+router.use(sensitiveWordFilter);
 
 // ===== 发布群码 =====
 

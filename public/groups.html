@@ -7,16 +7,16 @@
   <style>
     :root {
       --bg-deep: #01060f;
-      --bg-card: rgba(90, 200, 250, 0.06);
-      --bg-card-hover: rgba(90, 200, 250, 0.12);
+      --bg-card: rgba(15, 30, 50, 0.85);
+      --bg-card-hover: rgba(20, 40, 65, 0.9);
       --border-card: rgba(90, 200, 250, 0.15);
       --border-card-hover: rgba(90, 200, 250, 0.35);
       --accent-blue: #5ac8fa;
       --accent-blue-light: #72d2ff;
       --accent-blue-dark: #0071E3;
-      --text-primary: rgba(228, 240, 252, 0.96);
-      --text-secondary: rgba(180, 200, 220, 0.75);
-      --text-muted: rgba(150, 180, 210, 0.6);
+      --text-primary: rgba(200, 220, 240, 0.92);
+      --text-secondary: rgba(160, 185, 210, 0.80);
+      --text-muted: rgba(130, 155, 185, 0.65);
       --gold: #F59E0B;
       --gold-light: #FCD34D;
       --success: #34C759;
@@ -568,42 +568,37 @@
       const grid = document.getElementById('cardsGrid');
 
       if (groups.length === 0) {
-        grid.innerHTML = `
-          <div class="empty-state">
-            <div class="empty-state-icon">📭</div>
-            <div class="empty-state-text">该分类下暂无群码</div>
-          </div>
-        `;
+        grid.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📭</div><div class="empty-state-text">该分类下暂无群码</div></div>';
         return;
       }
 
-      grid.innerHTML = groups.map(g => {
+      let html = '';
+      groups.forEach(g => {
         const tags = getTags(g);
         const timeAgo = getTimeAgo(g.created_at);
         const blurred = !isLoggedIn || viewCount >= viewQuota;
         const canView = !blurred;
+        const viewBtn = canView ? '查看详情' : '今日额度已用完';
+        const qrClass = blurred ? 'blurred' : '';
+        const qrSrc = g.qrcode || '/img/qr-placeholder.png';
 
-        return `
-          <div class="group-card" onclick="viewDetail(${g.id}, ${canView})">
-            <div class="card-qr ${blurred ? 'blurred' : ''}">
-              <img src="${g.qrcode || '/img/qr-placeholder.png'}" alt="群二维码" onerror="this.src='/img/qr-placeholder.png'">
-              <div class="card-qr-overlay">
-                <div class="desc">${g.description || '暂无简介'}</div>
-                ${canView ? '<div class="view-btn">查看详情</div>' : '<div class="view-btn">今日额度已用完</div>'}
-              </div>
-            </div>
-            <div class="card-body">
-              <div class="card-tags">${tags}</div>
-              <div class="card-name">${g.name}</div>
-              <div class="card-meta">
-                <span>👥 ${g.member_count || 0}人</span>
-                <span>📍 ${g.region || '全国'}</span>
-                <span>⏰ ${timeAgo}</span>
-              </div>
-            </div>
-          </div>
-        `;
-      }).join('');
+        html += '<div class="group-card" onclick="viewDetail(' + g.id + ',' + canView + ')">' +
+          '<div class="card-qr ' + qrClass + '">' +
+          '<img src="' + qrSrc + '" alt="群二维码" onerror="this.src=\'/img/qr-placeholder.png\'">' +
+          '<div class="card-qr-overlay">' +
+          '<div class="desc">' + (g.description || '暂无简介') + '</div>' +
+          '<div class="view-btn">' + viewBtn + '</div>' +
+          '</div></div>' +
+          '<div class="card-body">' +
+          '<div class="card-tags">' + tags + '</div>' +
+          '<div class="card-name">' + g.name + '</div>' +
+          '<div class="card-meta">' +
+          '<span>👥 ' + (g.member_count || 0) + '人</span>' +
+          '<span>📍 ' + (g.region || '全国') + '</span>' +
+          '<span>⏰ ' + timeAgo + '</span>' +
+          '</div></div></div>';
+      });
+      grid.innerHTML = html;
     }
 
     // ===== 获取标签 =====
