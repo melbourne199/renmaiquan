@@ -24,6 +24,8 @@
     }
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif; background: var(--bg-deep); color: var(--text-primary); min-height: 100vh; }
+    .back-btn { position: fixed; top: 70px; left: 16px; display: flex; align-items: center; gap: 6px; padding: 8px 16px; background: rgba(90,200,250,0.1); border: 1px solid rgba(90,200,250,0.2); border-radius: 20px; color: var(--accent-blue); font-size: 0.85rem; text-decoration: none; cursor: pointer; transition: 0.2s; z-index: 100; }
+    .back-btn:hover { background: rgba(90,200,250,0.2); transform: translateX(-2px); }
     .navbar { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 12px 24px; background: rgba(1, 6, 15, 0.8); backdrop-filter: var(--glass-blur); border-bottom: 1px solid var(--border-card); }
     .navbar-brand { display: flex; align-items: center; gap: 10px; color: var(--text-primary); text-decoration: none; font-size: 1.1rem; font-weight: 600; }
     .navbar-links { display: flex; gap: 24px; }
@@ -129,10 +131,44 @@
     .publish-fab { position: fixed; bottom: 32px; right: 32px; width: 56px; height: 56px; border-radius: 50%; background: var(--accent-blue); color: #000; font-size: 1.5rem; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 8px 30px rgba(90, 200, 250, 0.4); transition: all 0.3s var(--ease-spring); border: none; z-index: 50; }
     .publish-fab:hover { transform: scale(1.1); }
 
+    /* ===== 实时留言板 ===== */
+    .chat-board-wrap { margin-top: 32px; margin-bottom: 48px; }
+    .chat-board-title { display: flex; align-items: center; gap: 10px; font-size: 1.05rem; font-weight: 600; color: var(--text-primary); margin-bottom: 14px; padding: 0 4px; }
+    .live-dot { width: 10px; height: 10px; border-radius: 50%; background: #ff4757; animation: livePulse 1.5s ease infinite; }
+    @keyframes livePulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(0.8)} }
+    .chat-board { background: var(--bg-card); border: 1px solid var(--border-card); border-radius: 20px; overflow: hidden; backdrop-filter: var(--glass-blur); }
+    .chat-msgs { height: 280px; overflow-y: auto; padding: 14px 16px; display: flex; flex-direction: column; gap: 10px; scroll-behavior: smooth; }
+    .chat-msgs::-webkit-scrollbar { width: 4px; }
+    .chat-msgs::-webkit-scrollbar-track { background: transparent; }
+    .chat-msgs::-webkit-scrollbar-thumb { background: rgba(90,200,250,0.3); border-radius: 4px; }
+    .chat-msg { display: flex; gap: 10px; animation: msgSlideIn 0.35s var(--ease-spring); }
+    @keyframes msgSlideIn { from{opacity:0;transform:translateY(12px) scale(0.97)} to{opacity:1;transform:translateY(0) scale(1)} }
+    .chat-avatar { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; flex-shrink: 0; }
+    .chat-avatar.user { background: rgba(90,200,250,0.2); color: var(--accent-blue); }
+    .chat-avatar.bot { background: rgba(52,199,89,0.2); color: var(--success); }
+    .chat-bubble { flex: 1; background: rgba(90,200,250,0.05); border: 1px solid rgba(90,200,250,0.1); border-radius: 14px 14px 14px 4px; padding: 9px 14px; font-size: 0.88rem; line-height: 1.55; color: var(--text-primary); }
+    .chat-bubble.bot-bubble { background: rgba(52,199,89,0.06); border-color: rgba(52,199,89,0.15); border-radius: 14px 14px 4px 14px; }
+    .chat-bubble .q-tag { font-size: 0.72rem; color: var(--accent-blue); font-weight: 600; margin-bottom: 3px; display: block; }
+    .chat-bubble .a-label { font-size: 0.72rem; color: var(--success); font-weight: 600; margin-bottom: 3px; display: block; }
+    .typing-wrap { display: flex; gap: 10px; align-items: center; padding: 0 4px; }
+    .typing-dot { display: flex; gap: 3px; }
+    .typing-dot span { width: 6px; height: 6px; border-radius: 50%; background: var(--text-muted); animation: typingBounce 1.2s ease infinite; }
+    .typing-dot span:nth-child(2){animation-delay:0.15s} .typing-dot span:nth-child(3){animation-delay:0.3s}
+    @keyframes typingBounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-5px)} }
+    .typing-text { font-size: 0.78rem; color: var(--text-muted); }
+    .chat-input-row { display: flex; gap: 10px; padding: 12px 16px; border-top: 1px solid var(--border-card); background: rgba(90,200,250,0.03); }
+    .chat-input { flex: 1; background: rgba(90,200,250,0.06); border: 1px solid rgba(90,200,250,0.15); border-radius: 24px; padding: 10px 16px; color: var(--text-primary); font-size: 0.88rem; outline: none; transition: border-color 0.2s; }
+    .chat-input:focus { border-color: rgba(90,200,250,0.4); background: rgba(90,200,250,0.1); }
+    .chat-input::placeholder { color: var(--text-muted); }
+    .chat-send { padding: 10px 20px; border-radius: 24px; background: var(--accent-blue); color: #000; font-size: 0.88rem; font-weight: 600; border: none; cursor: pointer; transition: all 0.2s; white-space: nowrap; }
+    .chat-send:hover { background: var(--accent-blue-light); transform: scale(1.02); }
+    .chat-send:disabled { opacity: 0.5; cursor: default; transform: none; }
+
     @media (max-width: 800px) { .cards-grid { grid-template-columns: 1fr; } .navbar-links { display: none; } .game-board { flex-direction: column; gap: 16px; } .game-container { padding: 14px; } }
   </style>
 </head>
 <body>
+  <a href="index.html" class="back-btn">← 返回首页</a>
   <nav class="navbar">
     <a href="index.html" class="navbar-brand"><span>🌌</span><span>资源夜市</span></a>
     <div class="navbar-links">
@@ -243,6 +279,26 @@
           </div>
           <div style="margin-top:10px; font-size:0.75rem; color:var(--text-muted); text-align:center;">📖 根据中国机构编制网公开资料整理 · 本栏目不提供内部信息/编制运作/违规中介</div>
           <div style="margin-top:6px; font-size:0.72rem; color:var(--text-muted); text-align:center;">⚠️ 本编制科普小站仅为公开知识科普，无任何内部信息、无敏感内容，来源：中国机构编制网</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 实时留言板 -->
+    <div class="chat-board-wrap">
+      <div class="chat-board-title">
+        <span class="live-dot"></span>
+        现场留言板
+        <span style="font-size:0.8rem;font-weight:400;color:var(--text-muted);">· 匿名提问 · AI现场解答 · 信息脱敏</span>
+      </div>
+      <div class="chat-board">
+        <div class="chat-msgs" id="chatMsgs"></div>
+        <div class="typing-wrap" id="typingWrap" style="display:none;padding:8px 16px;">
+          <div class="typing-dot"><span></span><span></span><span></span></div>
+          <span class="typing-text">政企顾问正在回复...</span>
+        </div>
+        <div class="chat-input-row">
+          <input class="chat-input" id="chatInput" placeholder="输入您关于政企资源的问题..." maxlength="200" />
+          <button class="chat-send" id="chatSend">发送</button>
         </div>
       </div>
     </div>
@@ -926,6 +982,192 @@ document.querySelectorAll('.tab').forEach(tab => {
 });
 
 loadGov();
+
+// ===== 实时留言板 =====
+const chatMsgsEl = document.getElementById('chatMsgs');
+const chatInput = document.getElementById('chatInput');
+const chatSend = document.getElementById('chatSend');
+const typingWrap = document.getElementById('typingWrap');
+
+const NAMES = ['王总','李总','张总','刘总','陈总','赵总','周总','吴总','黄总','杨总','何总','林总','孙总','马总','徐总'];
+const DEPTS = ['发改委','教育局','民政局','财政局','人社局','自然资源局','生态环境局','住建局','交通局','水利局','农业农村局','商务局','文旅局','卫健委','应急局','审计局','市场监管局','税务局','公安局','司法局'];
+constQUES = [
+  '县级农业农村局的职能是什么？',
+  '发改委和商务部有什么区别？',
+  '想咨询一下市场准入负面清单在哪查？',
+  '乡镇自然资源所主要负责什么？',
+  '应急管理局是做什么的？',
+  '如何查询某个政府部门的职能介绍？',
+  '市级商务局和县级商务局是什么关系？',
+  '生态环境局的投诉电话是多少？',
+  '县级市场监督管理局能管什么？',
+  '住建局负责哪些审批事项？',
+  '交通运输局的项目招标在哪查？',
+  '水利局对水资源收费吗？',
+  '我想了解乡村振兴局的最新政策？',
+  '教育体育局管校外培训机构吗？',
+  '民政局的社会救助包括哪些？',
+  '财政局怎么申请专项资金？',
+  '人社局可以办理哪些证件？',
+  '文化广电旅游局负责非遗申报吗？',
+  '卫健委的投诉渠道有哪些？',
+  '审计局的审计报告公开吗？'
+];
+const REPLIES = [
+  '县级农业农村局主要负责：农业产业发展、农村经济管理、乡村振兴战略实施、农业技术推广、农产品质量安全监管、新型经营主体培育、农业产业化经营、农村改革等与「三农」相关的工作。',
+  '发改委（全称：发展和改革委员会）主要负责宏观经济调控、发展规划制定、投资项目管理、价格改革等「长远规划」工作；商务部主要负责国内外贸易、对外经济合作、市场秩序等「流通贸易」工作。简单说：发改委管「总量和发展」，商务部管「买卖和合作」。',
+  '市场准入负面清单可在中国政府网（www.gov.cn）或国家发改委官网查询。国家层面的《市场准入负面清单》列明了各类市场主体禁止或限制进入的行业、领域、业务，2024版已同步上线。',
+  '乡镇自然资源所是县自然资源局的派出机构，主要负责：辖区内土地资源调查与监测、国土空间规划实施监督、耕地保护、宅基地审批、地质灾害防治、自然资源执法协助等工作。',
+  '应急管理局主要负责：安全生产综合监督管理、应急救援体系建设、自然灾害防治（防汛抗旱、地震救灾等）、消防救援队伍协调、应急预案编制与演练、救灾物资储备等工作。遇到突发事件第一时间拨打119或110。',
+  '您可以在本平台点击任意机构卡片查看详细介绍，或直接访问中国机构编制网（www.scopsr.gov.cn）查询各部门的「三定方案」（职能配置、内设机构、人员编制）。',
+  '市级商务局是县级商务局的上级主管部门。县级商务局执行市级下达的任务，并负责本县的具体商贸流通、招商引资、对外贸易等日常工作。业务上受市级指导和监督。',
+  '全国生态环保投诉热线为12345（政务服务热线）或12369（环保举报热线），部分省份已整合为12345。您也可以通过「全国生态环境投诉举报平台」官网在线提交。',
+  '县级市场监督管理局主要负责：本县范围内的市场秩序维护、营业执照登记注册、产品质量监督、食品安全监管、药品医疗器械监管特种设备安全、广告监管、知识产权保护、反不正当竞争执法等。',
+  '住建局（住房和城乡建设局）主要负责：建筑工程施工许可审批、房地产市场监管、建设工程质量安全监督、物业管理、城镇基础设施规划建设、住房保障（公租房、经适房）等。',
+  '交通类项目招标信息可在「全国公共资源交易平台」（www.ggzy.gov.cn）或各省政府采购网、交通运输厅官网查询，输入项目关键词即可检索。',
+  '水资源费已改为水资源税，由税务部门征收。具体征收标准按省份和用水类型（农业、工业、城镇生活等）不同，一般为每立方米0.1-2元不等，居民用水有优惠政策。具体标准可咨询当地水利局或税务局。',
+  '乡村振兴局最新政策可在农业农村部官网（www.moa.gov.cn）或各省农业农村厅官网查询。目前重点支持：乡村产业发展、脱贫成果巩固、农村人居环境整治、数字乡村建设等。可关注本平台政策中心。',
+  '是的，校外培训机构监管归口教育体育局（教育部）。2021年国家出台「双减」政策后，学科类培训机构已全面压减，艺术体育类需取得办学许可证方可经营，由县区教育局审批监管。',
+  '民政局的社会救助主要包括：城乡低保、特困人员供养、临时救助、医疗救助、教育救助、住房救助、司法救助以及最低生活保障家庭认定等。具体申请可到户籍所在地街道/乡镇民政窗口办理。',
+  '申请财政局专项资金一般流程：①查阅省/市财政局官网的「专项资金申报指南」；②符合条件的企业向县级财政部门提交申报材料；③财政部门审核后报上级审批。重点关注：中小企业发展专项资金、科技创新基金、农业综合开发资金等。',
+  '人社局（人力资源和社会保障局）可办理的主要证件包括：社保卡（医保卡）、就业创业证、失业登记、劳动合同备案、职业技能等级证书、退休审批、职称评审等。部分业务已下沉到街道/乡镇便民服务中心。',
+  '文化广电旅游局负责非物质文化遗产的申报与管理。申报流程：个人/团体向县级文旅局提交申请→县级审核→市级复审→省级评审→国家级审批。目前已公布四批国家级非遗目录，可在文旅部官网查询。',
+  '卫健委（卫生健康委员会）的投诉渠道包括：12320（全国卫生热线）、12345政务服务热线、到医院医务科或卫健委信访部门反映，亦可通过「国家卫健委官网」在线投诉平台提交。',
+  '审计局的审计报告通常会在审计完成后向社会公告，可登录当地政府官网「政务公开」栏目或审计局官网「审计结果公告」专栏查询。企业领导干部经济责任审计结果一般会在内部通报。'
+];
+
+let chatHistory = [];
+let autoTimer = null;
+let isBotTyping = false;
+
+// 初始化预载一些历史消息（脱敏）
+function initChat() {
+  chatHistory = [
+    { q: '县级农业农村局的职能是什么？', a: '主要负责：农业产业发展、农村经济管理、乡村振兴战略实施、农业技术推广、农产品质量安全监管、新型经营主体培育等工作。', name: '李总', dept: '农业局' },
+    { q: '如何查询某个政府部门的职能介绍？', a: '可在本平台点击任意机构卡片查看详细介绍，或访问中国机构编制网（www.scopsr.gov.cn）查询各部门「三定方案」。', name: '王总', dept: '发改委' },
+    { q: '生态环境局的投诉电话是多少？', a: '全国生态环保投诉热线：12369（环保举报）或12345（政务服务热线），也可通过全国生态环境投诉举报平台在线提交。', name: '张总', dept: '企业' },
+    { q: '住建局负责哪些审批事项？', a: '住建局主要负责：建筑工程施工许可审批、房地产市场监管、建设工程质量安全监督、物业管理、城镇基础设施规划建设、住房保障（公租房、经适房）等。', name: '赵总', dept: '企业' },
+    { q: '人社局可以办理哪些证件？', a: '人社局可办理：社保卡、就业创业证、失业登记、劳动合同备案、职业技能等级证书、退休审批、职称评审等。部分业务已下沉到街道/乡镇便民服务中心。', name: '刘总', dept: '民企' },
+    { q: '民政局的社会救助包括哪些？', a: '主要包括：城乡低保、特困人员供养、临时救助、医疗救助、教育救助、住房救助、司法救助以及最低生活保障家庭认定等。', name: '陈总', dept: '公益' },
+    { q: '应急管理局是做什么的？', a: '主要负责：安全生产综合监督管理、应急救援体系建设、自然灾害防治（防汛抗旱、地震救灾等）、消防救援队伍协调、应急预案编制与演练、救灾物资储备。', name: '周总', dept: '企业' },
+    { q: '我想了解乡村振兴局的最新政策？', a: '可在农业农村部官网（www.moa.gov.cn）或各省农业农村厅官网查询。目前重点支持：乡村产业发展、脱贫成果巩固、农村人居环境整治、数字乡村建设等。', name: '吴总', dept: '农业' },
+    { q: '想咨询一下市场准入负面清单在哪查？', a: '可在「中国政府网」（www.gov.cn）或国家发改委官网查询。国家层面《市场准入负面清单》列明禁止或限制进入的行业、领域、业务。', name: '黄总', dept: '商务' },
+    { q: '发改委和商务部有什么区别？', a: '发改委管「总量和发展」（宏观经济调控、发展规划、投资管理）；商务部管「买卖和合作」（国内外贸易、对外经济合作）。简单说：发改委规划未来，商务部促进流通。', name: '杨总', dept: '企业' },
+  ];
+  chatHistory.forEach(item => addChatMsg(item.name, item.dept, item.q, item.a, false));
+  startAutoPlay();
+}
+
+function addChatMsg(name, dept, q, a, animate = true) {
+  const delay = animate ? 80 : 0;
+  setTimeout(() => {
+    // 用户问题
+    const qEl = document.createElement('div');
+    qEl.className = 'chat-msg';
+    qEl.innerHTML = `<div class="chat-avatar user">${name[0]}</div>
+      <div class="chat-bubble">
+        <span class="q-tag">💬 ${name}（${dept}）</span>
+        ${q}
+      </div>`;
+    chatMsgsEl.appendChild(qEl);
+
+    // 机器人回复
+    const aEl = document.createElement('div');
+    aEl.className = 'chat-msg';
+    aEl.innerHTML = `<div class="chat-avatar bot">🤖</div>
+      <div class="chat-bubble bot-bubble">
+        <span class="a-label">✅ 政企顾问 · 脱敏解答</span>
+        ${a}
+      </div>`;
+    setTimeout(() => chatMsgsEl.appendChild(aEl), 120);
+    chatMsgsEl.scrollTop = chatMsgsEl.scrollHeight;
+  }, delay);
+}
+
+function startAutoPlay() {
+  if (autoTimer) clearInterval(autoTimer);
+  autoTimer = setInterval(() => {
+    if (isBotTyping) return;
+    const roll = Math.random();
+    if (roll < 0.35) {
+      // 随机新问答
+      const qi = Math.floor(Math.random() * DEPTS.length);
+      const ni = Math.floor(Math.random() * NAMES.length);
+      const q = `${DEPTS[qi]}相关的问题在哪里咨询？`;
+      const name = NAMES[ni];
+      const dept = DEPTS[Math.floor(Math.random() * DEPTS.length)];
+      isBotTyping = true;
+      typingWrap.style.display = 'flex';
+      chatMsgsEl.scrollTop = chatMsgsEl.scrollHeight;
+      setTimeout(() => {
+        typingWrap.style.display = 'none';
+        addChatMsg(name, dept, q, REPLIES[qi % REPLIES.length]);
+        isBotTyping = false;
+      }, 1800 + Math.random() * 1000);
+    }
+  }, 5000);
+}
+
+// 发送消息
+async function sendChat() {
+  const q = chatInput.value.trim();
+  if (!q || isBotTyping) return;
+  const name = '您';
+  const dept = '访客';
+  chatInput.value = '';
+  isBotTyping = true;
+  typingWrap.style.display = 'flex';
+  chatMsgsEl.scrollTop = chatMsgsEl.scrollHeight;
+
+  // 添加用户消息
+  const qEl = document.createElement('div');
+  qEl.className = 'chat-msg';
+  qEl.innerHTML = `<div class="chat-avatar user">${name[0]}</div>
+    <div class="chat-bubble"><span class="q-tag">💬 ${name}</span>${q}</div>`;
+  chatMsgsEl.appendChild(qEl);
+
+  setTimeout(() => {
+    typingWrap.style.display = 'none';
+    // 简单关键字匹配回复
+    let reply = '感谢您的提问！关于政企职能的更多问题，您可以在本平台点击「编制科普」小游戏进行学习，或联系一街之长获取专业咨询。我们的AI顾问会不断学习提升，为您提供更精准的解答。';
+    const ql = q.toLowerCase();
+    if (ql.includes('农业') || ql.includes('农村')) reply = REPLIES[0];
+    else if (ql.includes('发改委') || ql.includes('商务部')) reply = REPLIES[1];
+    else if (ql.includes('负面清单') || ql.includes('市场准入')) reply = REPLIES[8];
+    else if (ql.includes('自然') && ql.includes('资源')) reply = REPLIES[3];
+    else if (ql.includes('应急') || ql.includes('救援')) reply = REPLIES[6];
+    else if (ql.includes('查询') && ql.includes('职能')) reply = REPLIES[5];
+    else if (ql.includes('商务')) reply = REPLIES[7];
+    else if (ql.includes('生态') || ql.includes('环境') || ql.includes('投诉')) reply = REPLIES[2];
+    else if (ql.includes('住建') || ql.includes('建筑') || ql.includes('住房')) reply = REPLIES[4];
+    else if (ql.includes('人社') || ql.includes('社保') || ql.includes('就业')) reply = REPLIES[9];
+    else if (ql.includes('民政') || ql.includes('救助') || ql.includes('低保')) reply = REPLIES[5];
+    else if (ql.includes('教育') || ql.includes('培训')) reply = REPLIES[13];
+    else if (ql.includes('乡村') || ql.includes('振兴')) reply = REPLIES[7];
+    else if (ql.includes('财政') || ql.includes('专项') || ql.includes('资金')) reply = REPLIES[14];
+    else if (ql.includes('文化') || ql.includes('非遗') || ql.includes('文物')) reply = REPLIES[17];
+    else if (ql.includes('卫健') || ql.includes('医疗') || ql.includes('健康')) reply = REPLIES[18];
+    else if (ql.includes('审计') || ql.includes('报告')) reply = REPLIES[19];
+    else if (ql.includes('交通') || ql.includes('运输')) reply = REPLIES[10];
+    else if (ql.includes('水利') || ql.includes('水资')) reply = REPLIES[11];
+
+    const aEl = document.createElement('div');
+    aEl.className = 'chat-msg';
+    aEl.innerHTML = `<div class="chat-avatar bot">🤖</div>
+      <div class="chat-bubble bot-bubble">
+        <span class="a-label">✅ 政企顾问 · 脱敏解答</span>
+        ${reply}
+      </div>`;
+    chatMsgsEl.appendChild(aEl);
+    chatMsgsEl.scrollTop = chatMsgsEl.scrollHeight;
+    isBotTyping = false;
+  }, 1200 + Math.random() * 800);
+}
+
+chatSend.addEventListener('click', sendChat);
+chatInput.addEventListener('keydown', e => { if (e.key === 'Enter') sendChat(); });
+
+initChat();
 </script>
 </body>
 </html>

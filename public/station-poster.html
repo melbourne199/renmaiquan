@@ -23,9 +23,11 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 24px 16px;
+      padding: 60px 16px 24px;
       color: var(--text-primary);
     }
+    .back-btn { position: fixed; top: 16px; left: 16px; display: flex; align-items: center; gap: 6px; padding: 8px 16px; background: rgba(90,200,250,0.1); border: 1px solid rgba(90,200,250,0.2); border-radius: 20px; color: var(--accent-blue); font-size: 0.85rem; text-decoration: none; cursor: pointer; transition: 0.2s; z-index: 100; }
+    .back-btn:hover { background: rgba(90,200,250,0.2); transform: translateX(-2px); }
     .page-title { font-size: 1.1rem; color: var(--accent-blue); margin-bottom: 16px; text-align: center; }
     .page-desc { font-size: 0.85rem; color: var(--text-muted); text-align: center; margin-bottom: 20px; max-width: 400px; }
 
@@ -138,6 +140,7 @@
   </style>
 </head>
 <body>
+  <a href="station.html" class="back-btn">← 返回站长入驻</a>
   <div class="page-title">🎨 站长专属推广海报</div>
   <div class="page-desc">生成您的专属推广海报，长按保存图片分享到朋友圈</div>
 
