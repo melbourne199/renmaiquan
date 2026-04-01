@@ -6,7 +6,8 @@
   <title>居间链合同签署 · 资源夜市</title>
   <link rel="stylesheet" href="./style.css" />
   <style>
-    .contract-page { max-width: 900px; margin: 0 auto; padding: 20px; }
+    .contract-page { max-width: 900px; margin: 0 auto; padding: 20px; padding-top: 80px; overflow-y: auto; height: calc(100vh - 60px); }
+    body.contract-body { overflow-y: auto !important; }
     .contract-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
     .contract-title { font-size: 20px; font-weight: bold; color: #fff; }
     .btn { padding: 8px 16px; border: none; border-radius: 6px; cursor: pointer; font-size: 14px; }
@@ -24,6 +25,7 @@
     .contract-status { padding: 2px 8px; border-radius: 4px; font-size: 12px; color: #fff; }
     .status-draft { background: #666; }
     .status-pending { background: #f39c12; }
+    .status-ready { background: #4a9eff; }
     .status-signed { background: #2ecc71; }
     .status-voting { background: #9b59b6; }
     .contract-item-info { color: #aaa; font-size: 13px; }
@@ -83,7 +85,8 @@
     .modal-footer { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; }
     .form-group { margin-bottom: 12px; }
     .form-group label { display: block; color: #aaa; margin-bottom: 4px; font-size: 13px; }
-    .form-group input, .form-group textarea { width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; color: #fff; padding: 8px 12px; font-size: 14px; box-sizing: border-box; }
+    .form-group input, .form-group textarea, .form-group select { width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; color: #fff; padding: 8px 12px; font-size: 14px; box-sizing: border-box; }
+    .form-group select option { background: #1a1a2e; color: #fff; }
     .form-group textarea { min-height: 80px; resize: vertical; }
     .create-contract-section { display: none; }
     .create-contract-section.active { display: block; }
@@ -99,7 +102,7 @@
     .signer-name-input input { width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #ccc; background: #fff; color: #333; box-sizing: border-box; }
   </style>
 </head>
-<body>
+<body class="contract-body">
   <div id="canvas-container"></div>
   <div id="earth-interaction"></div>
 
@@ -151,9 +154,16 @@
         <button class="back-btn" onclick="hideCreateContract()">← 返回列表</button>
         <div class="contract-content">
           <h2>新建居间合同</h2>
+          <div id="lockedProjectNotice" class="lock-notice" style="display:none;">
+            ✅ 检测到已锁定的居间链项目，创建后将自动填充项目信息和合同模板
+          </div>
           <div class="form-group">
             <label>合同名称</label>
-            <input type="text" id="newContractName" placeholder="例如：XX项目居间合作协议" />
+            <select id="newContractName" onchange="checkLockedProject()">
+              <option value="">请选择合同类型</option>
+              <option value="甲乙双方咨询协议">甲乙双方咨询协议</option>
+              <option value="居间协议(含追诉条款)">居间协议(含追诉条款)</option>
+            </select>
           </div>
           <div class="form-group">
             <label>甲方名称</label>
@@ -316,7 +326,20 @@
         name: '甲乙双方咨询协议',
         partyAPlaceholder: '甲方（委托方）',
         partyBPlaceholder: '乙方（咨询方）',
-        desc: '明确甲方委托乙方提供咨询服务的权利义务、费用标准、保密条款等。'
+        desc: '明确甲方委托乙方提供咨询服务的权利义务、费用标准、保密条款等。',
+        terms: [
+          { id: 1, title: '委托事项与目标（保密化约定）', content: '1.1 甲方委托乙方办理下列事务，以下简称"【项目代号：__________】"。\n\n1.2 本项目具体委托内容、目标、验收标准、完成时限等，均由双方以书面附件形式确认，附件名称为《项目任务书》（附件一）。附件一为本合同不可分割的组成部分，与本合同具有同等法律效力。\n\n1.3 双方确认：附件一所载内容均为双方核心商业秘密。未经对方书面同意，任何一方不得以任何形式向任何第三方披露附件内容，亦不得用于本合同目的之外的任何用途。\n\n1.4 乙方声明：已通过附件一充分理解委托事项要求，并确认具备完成委托事项所需的全部资质、资源及专业能力。', votes: {}, agree: 0, disagree: 0 },
+          { id: 2, title: '服务费用及支付', content: '2.1 本项目服务费总额为人民币（大写）________________元整（¥___________）。\n\n2.2 支付方式：甲方应于本合同签署后____个工作日内，一次性支付全部服务费至乙方指定账户。乙方收款前应向甲方开具合法有效的增值税发票，发票项目为"咨询费"或"服务费"。\n\n2.3 双方确认：本协议项下费用为甲方委托乙方完成特定目标的预付对价，并非借款或投资款。若委托事项成功达成，则乙方有权保留该费用作为合法报酬；若委托事项未能达成，则按本合同第四条处理。', votes: {}, agree: 0, disagree: 0 },
+          { id: 3, title: '双方权利义务', content: '3.1 甲方权利义务：\n（1）按照委托事项推进的需要，及时向乙方提供必要的资料、文件、授权及配合；\n（2）对乙方提出的需甲方决策的事项，在合理期限内予以答复；\n（3）按约定支付服务费用；\n（4）有权随时了解委托事项进展情况，乙方应如实通报。\n\n3.2 乙方权利义务：\n（1）按照附件一约定的目标、时限及质量标准完成委托事项；\n（2）定期向甲方书面汇报进展，重要节点即时沟通；\n（3）对知悉的甲方商业秘密及附件一内容承担无限期保密义务；\n（4）不得将委托事项转委托或分包给任何第三方，双方另有书面约定除外。', votes: {}, agree: 0, disagree: 0 },
+          { id: 4, title: '履约保障与退款机制', content: '4.1 乙方承诺：若在本合同附件一约定的完成时限届满时，委托事项未达成附件一约定的全部目标（以下简称"未达标"），乙方应于收到甲方书面通知后____个工作日内，向甲方全额退还已收取的全部服务费用，并同时向甲方支付违约金。\n\n4.2 上述退款及违约金支付义务，不以乙方是否存在过错为前提。乙方不得以任何理由（包括但不限于第三方原因、政策变化、成本已支出等）拒绝或迟延履行。\n\n4.3 甲方有权直接从乙方应付其他款项中抵扣，或向乙方追索。乙方放弃依据《民法典》第五百八十五条请求调低违约金的权利。', votes: {}, agree: 0, disagree: 0 },
+          { id: 5, title: '甲方原因导致无法完成的特别约定', content: '5.1 若因甲方原因（包括但不限于：未按约定提供必要资料、文件、授权或配合；变更委托事项目标；单方中止或终止委托；未在合理期限内对乙方待决事项作出决策；未按附件一约定履行甲方应尽义务；以及其他可归责于甲方的情形）导致委托事项无法在约定时限内完成或已无继续履行必要的，乙方有权以书面形式通知甲方解除本合同或免除继续履行义务。\n\n5.2 发生前款情形时，甲方已支付的全部服务费用不予退还，作为乙方已投入人力、资源及机会成本的补偿。同时乙方无需承担任何违约责任，甲方不得再向乙方主张任何形式的赔偿或补偿。\n\n5.3 若因甲方原因导致委托事项部分完成，乙方有权就已完成的合格工作部分主张相应报酬，甲方不得要求退款。', votes: {}, agree: 0, disagree: 0 },
+          { id: 6, title: '保密义务', content: '6.1 双方承诺对因履行本合同而知悉的对方商业秘密、技术信息、项目资料、附件一内容及其他未公开信息承担保密义务，不得向任何第三方泄露，亦不得用于本合同目的之外的任何用途。\n\n6.2 未经甲方书面同意，乙方不得以任何形式（包括但不限于宣传、投标、案例展示等）公开或暗示其承接过本项目。\n\n6.3 保密义务不因本合同终止或解除而免除，具有永久性约束力。\n\n6.4 任何一方违反保密义务，应向守约方支付人民币____万元违约金，违约金不足以弥补守约方损失的，守约方有权继续追偿。', votes: {}, agree: 0, disagree: 0 },
+          { id: 7, title: '违约责任', content: '7.1 除本合同特别约定的退款及违约金责任外，任何一方违反本合同项下其他义务，给对方造成损失的，应赔偿对方全部直接损失及可预见的间接损失。\n\n7.2 若甲方逾期支付服务费，每逾期一日，应按应付未付金额的万分之五向乙方支付违约金。', votes: {}, agree: 0, disagree: 0 },
+          { id: 8, title: '争议解决', content: '8.1 因本合同发生的一切争议，双方应友好协商解决；协商不成的，任何一方均有权向甲方住所地人民法院提起诉讼。', votes: {}, agree: 0, disagree: 0 },
+          { id: 9, title: '通知与送达', content: '9.1 双方确认以下地址为有效送达地址：\n甲方送达地址：________________________________________\n联系人：________ 电话：________ 电子邮箱：________\n\n乙方送达地址：________________________________________\n联系人：________ 电话：________ 电子邮箱：________\n\n9.2 采用电子邮件方式送达的，自邮件进入对方指定邮箱系统时视为送达。', votes: {}, agree: 0, disagree: 0 },
+          { id: 10, title: '其他约定', content: '10.1 本合同自双方签字盖章之日起生效，一式____份，双方各执____份，具有同等法律效力。\n\n10.2 附件一《项目任务书》为本合同不可分割的组成部分，与本合同具有同等法律效力。', votes: {}, agree: 0, disagree: 0 },
+          { id: 11, title: '附件一：项目任务书', content: '项目代号：［____________________］\n\n具体委托内容描述：（请使用客观、可验证的表述。为保护商业秘密，可使用内部编码、模糊化指标，但必须确保双方理解一致。）\n________________________\n\n完成标准/可验证成果：（例如：促成甲方与XX公司签署正式合作协议；取得XX部门核发的XX许可证；完成XX标的资产交割等。）\n________________________\n\n完成时限：自本合同签署之日起____个工作日/月，或于［____］年［____］月［____］日前完成。\n\n其他特别约定：________________________________', votes: {}, agree: 0, disagree: 0 }
+        ]
       },
       broker: {
         title: '居间协议(含追诉条款)',
@@ -324,7 +347,21 @@
         name: '居间协议(含追诉条款)',
         partyAPlaceholder: '甲方（委托方）',
         partyBPlaceholder: '乙方（居间方）',
-        desc: '含追诉权条款，甲方违约可追究法律责任，有律师团队支持执行。'
+        desc: '含追诉权条款，甲方违约可追究法律责任，有律师团队支持执行。',
+        terms: [
+          { id: 1, title: '主合同关联信息', content: '主合同名称：《______合同》\n主合同编号：_______________\n签订日期：____年____月____日\n甲方（委托方/资本端）：____________________\n乙方（受托方/执行端）：____________________\n项目名称：____________________\n项目金额：人民币________元（￥__________）\n\n本《举荐人规则及附加协议》作为上述主合同的附件，与主合同具有同等法律效力。', votes: {}, agree: 0, disagree: 0 },
+          { id: 2, title: '重要法律声明：关于追诉对象的特别约定', content: '1. 甲方/乙方支付责任限制：甲方/乙方的支付义务仅限于按照本协议第三条第1款将居间服务费总额支付至指定监管账户。一旦完成此支付，甲方/乙方对款项的后续分配不承担任何责任。\n\n2. 禁止不当追诉：任何举荐人不得以任何理由将甲方或乙方作为分配纠纷的共同被告或第三人，除非能证明甲方/乙方故意不支付或欺诈性转移居间服务费总额。\n\n3. 错误追诉赔偿：若任何举荐人违反本约定，在甲方/乙方已履行总额支付义务的情况下仍将其列为被告或第三人，该举荐人需赔偿甲方/乙方因此产生的全部损失（含律师费、诉讼费、误工损失等），并承担不低于索赔金额30%的违约金。', votes: {}, agree: 0, disagree: 0 },
+          { id: 3, title: '附件一：举荐团队双级分配规则', content: '【角色分级】\n一级举荐人：指甲方或乙方拍板决策人存在直接私人关系，并能够将项目机会直接触达决策层的关键人员。\n- 甲方侧：一级资源人\n- 乙方侧：一级居间人\n\n二级举荐人：除一级举荐人之外，所有通过举荐链条参与项目的其他人员，负责信息传递、关系扩散及落地支持等工作。\n\n【居间费分配规则】\n设本项目居间服务费总额为T（T为主合同约定的居间服务费总额）。\n- 一级分配：占总额60%，由两名一级举荐人共享，原则上各占30%，如另有书面约定则按约定执行。\n- 二级分配：占总额40%，由全部二级举荐人平均分配，不因人数变化而调整比例。', votes: {}, agree: 0, disagree: 0 },
+          { id: 4, title: '举荐人身份确认', content: '1. 本项目所有举荐人身份需在项目启动前由一级举荐人共同确认并书面记录。\n\n2. 二级举荐人名单应在第一笔居间服务费支付前最终确定，后续不再增减。\n\n3. 每个举荐人需提供真实有效的身份信息及收款账户，因信息错误导致的支付问题由本人承担。\n\n4. 举荐人链条清单（见附件三）为本协议组成部分，与协议正文具有同等法律效力。', votes: {}, agree: 0, disagree: 0 },
+          { id: 5, title: '支付责任与流程', content: '1. 甲方应按照主合同约定的居间服务费支付条款，在收到乙方支付款项后3个工作日内，将居间服务费总额T支付至一级举荐人指定的共同监管账户，并向所有举荐人发送付款凭证复印件。\n\n2. 甲方完成上述支付后，其在本协议项下的支付义务即告完全履行完毕，不对后续分配承担任何责任。\n\n3. 一级举荐人作为分配执行人，应在收到全款后5个工作日内完成分配，并向所有举荐人发送分配明细表。\n\n4. 分配流程：优先支付二级举荐人分配总额（40% T）平均分配给所有二级举荐人，剩余部分（60% T）由两名一级举荐人按约定比例分配。', votes: {}, agree: 0, disagree: 0 },
+          { id: 6, title: '错误追诉的防范与责任（核心保护条款）', content: '4.1 责任隔离机制：各方明确确认，甲方/乙方的责任仅限于将居间服务费总额支付至指定账户。款项进入监管账户后，即视为甲方/乙方完全履行了支付义务。\n\n4.2 禁止滥用诉权：任何举荐人不得以以下理由将甲方/乙方列为追诉对象：一级举荐人未及时分配款项；一级举荐人分配不公；一级举荐人挪用、侵占款项；其他与甲方/乙方总额支付义务无关的事由。\n\n4.3 错误追诉的严重后果：若任何举荐人违反上述约定，在甲方/乙方已提供付款凭证的情况下仍将其列为被告，则：\n- 该举荐人需在起诉后15日内向甲方/乙方支付维权保证金人民币50,000元；\n- 如甲方/乙方胜诉或案件被驳回，该保证金不予退还；\n- 该举荐人需承担甲方/乙方因此产生的全部律师费、诉讼费、保全费、差旅费及误工损失；\n- 该举荐人需向甲方/乙方支付不低于其索赔金额30%的违约金。', votes: {}, agree: 0, disagree: 0 },
+          { id: 7, title: '款项未收到时的正确追诉程序', content: '1. 若任何举荐人未收到款项，应首先核对甲方是否已提供付款凭证。如甲方已提供凭证，则追诉对象仅限一级举荐人。\n\n2. 如甲方未提供付款凭证或凭证显示未付款，举荐人可先书面催告甲方履行总额支付义务。\n\n3. 一级举荐人承担连带支付责任，未收到款项的举荐人有权向任意一名或两名一级举荐人追索。\n\n4. 具体追诉流程：书面催告（7日）→向一级举荐人提起诉讼→要求支付欠款及违约金（每日千分之一）。\n\n5. 在任何情况下，不得以"施压"、"加快推进"等为由将甲方/乙方列为共同被告，否则承担本协议规定的全部违约责任。', votes: {}, agree: 0, disagree: 0 },
+          { id: 8, title: '链条清单的法律效力', content: '1. 附件三《举荐人链条清单》为本协议核心附件，清单中列明的举荐人为有权参与分配的唯一合法主体。\n\n2. 链条清单的确认需经各方签字或盖章，任何口头承诺或未经确认的加入均无效。\n\n3. 链条清单确认后，任何修改需经全体一级举荐人及受影响方书面同意。\n\n4. 如发生争议，链条清单作为确定各方权利义务的首要依据。', votes: {}, agree: 0, disagree: 0 },
+          { id: 9, title: '保密义务', content: '1. 所有举荐人应对本协议内容、分配比例、个人所得等敏感信息严格保密。\n\n2. 不得向任何与本项目无关的第三方透露举荐人链条结构及具体分配方案。\n\n3. 保密义务持续至本项目完全结束且所有款项分配完成后两年。', votes: {}, agree: 0, disagree: 0 },
+          { id: 10, title: '争议解决', content: '1. 因本协议引起的或与本协议有关的任何争议，各方应友好协商解决。\n\n2. 协商不成的，任何一方均有权向主合同约定的管辖法院提起诉讼。\n\n3. 管辖权异议与移送：如任何举荐人违反本协议规定，在错误管辖法院起诉，其他方有权提出管辖权异议，要求移送至本协议约定的法院。\n\n4. 律师费转付：败诉方需承担胜诉方全部合理的律师费、诉讼费、保全费、鉴定费等维权成本。', votes: {}, agree: 0, disagree: 0 },
+          { id: 11, title: '合同份数与电子档', content: '1. 本合同一式____份，其中甲方、乙方各执一份，一级举荐人（2人）各执一份，二级举荐人代表执一份，见证人留存一份，具有同等法律效力。\n\n2. 本合同签署后七个工作日内，甲方（或一级举荐人指定人员）应向所有举荐人提供一份与本协议纸质版内容完全一致的电子档（PDF格式）。\n\n3. 电子档与纸质原件具有同等法律效力。', votes: {}, agree: 0, disagree: 0 },
+          { id: 12, title: '其他约定', content: '1. 本协议作为主合同的附件，与主合同具有同等法律效力。\n\n2. 独立责任条款：本协议关于"错误追诉责任"为独立条款，无论本协议其他条款是否有效，该条款始终有效。\n\n3. 司法认知条款：各方同意，在可能发生的诉讼中，可将本协议内容作为证据提交，以证明甲方/乙方的责任范围。\n\n4. 本协议自所有举荐人签字之日起生效，有效期与主合同一致。', votes: {}, agree: 0, disagree: 0 }
+        ]
       }
     };
 
@@ -389,7 +426,7 @@
     }
 
     function getStatusText(status) {
-      const map = { draft: '草稿', pending: '待签署', voting: '投票中', signed: '已签署' };
+      const map = { draft: '草稿', pending: '待签署', voting: '投票中', signed: '已签署', ready: '待签署' };
       return map[status] || status;
     }
 
@@ -398,6 +435,25 @@
       document.getElementById('contractListSection').style.display = 'none';
       document.getElementById('contractDetailSection').classList.remove('active');
       document.getElementById('createContractSection').classList.add('active');
+      checkLockedProject();
+    }
+
+    function checkLockedProject() {
+      const lockedProject = localStorage.getItem('lockedProject');
+      const notice = document.getElementById('lockedProjectNotice');
+      if (lockedProject) {
+        try {
+          const projectData = JSON.parse(lockedProject);
+          if (notice) notice.style.display = 'block';
+          if (projectData.party_a_name) document.getElementById('newContractPartyA').value = projectData.party_a_name;
+          if (projectData.party_b_name) document.getElementById('newContractPartyB').value = projectData.party_b_name;
+          if (projectData.title) document.getElementById('newContractProject').value = projectData.title;
+        } catch(e) {
+          if (notice) notice.style.display = 'none';
+        }
+      } else {
+        if (notice) notice.style.display = 'none';
+      }
     }
 
     function hideCreateContract() {
@@ -477,24 +533,63 @@
         return;
       }
 
+      // 根据合同名称获取对应的条款模板
+      const contractType = Object.keys(CONTRACT_TYPES).find(key =>
+        CONTRACT_TYPES[key].name === name || CONTRACT_TYPES[key].title === name
+      );
+      const templateTerms = contractType ? CONTRACT_TYPES[contractType].terms : [];
+
+      // 检查是否有锁定的项目数据
+      const lockedProject = localStorage.getItem('lockedProject');
+      let projectData = null;
+      if (lockedProject) {
+        try {
+          projectData = JSON.parse(lockedProject);
+        } catch(e) {}
+      }
+
+      // 填充项目信息（如果有锁定项目）
+      if (projectData) {
+        partyA = projectData.party_a_name || partyA;
+        partyB = projectData.party_b_name || partyB;
+        project = projectData.title || project;
+      }
+
+      // 处理模板条款，替换占位符
+      let processedTerms = [];
+      if (templateTerms.length > 0) {
+        processedTerms = templateTerms.map(term => {
+          let content = term.content;
+          if (projectData) {
+            content = content.replace(/【项目代号：__________】/g, `【项目代号：${projectData.title || '__________'}】`);
+            content = content.replace(/人民币________元（￥__________）/g, `人民币${(projectData.total_fee || 0).toLocaleString()}元（￥${projectData.total_fee || 0}）`);
+            content = content.replace(/居间服务费总额.*?T.*?为[\d.]+/g, match => {
+              const fee = projectData.total_fee || 0;
+              const brokerFee = fee * 0.2; // 居间费按20%计算
+              return match.replace(/[\d.]+/g, (n) => {
+                if (n.includes('.')) return (brokerFee * parseFloat(n)).toFixed(2);
+                return brokerFee.toFixed(2);
+              }).replace(/T.*?为[\d.]+/, `T为${brokerFee.toFixed(2)}`);
+            });
+          }
+          return { ...term, content, votes: {}, agree: 0, disagree: 0 };
+        });
+      }
+
       const contract = {
         id: 'HT' + Date.now(),
         name: name,
         partyA: partyA,
         partyB: partyB,
         project: project,
-        status: 'draft',
+        status: projectData ? 'ready' : 'draft',
         createdAt: Date.now(),
-        terms: [
-          { id: 1, title: '居间服务内容', content: '乙方为甲方提供项目居间撮合服务，协助甲方与项目方达成合作。', votes: {}, agree: 0, disagree: 0 },
-          { id: 2, title: '居间费用', content: '居间成功后，甲方按项目实际收益的5%支付居间服务费。', votes: {}, agree: 0, disagree: 0 },
-          { id: 3, title: '保密条款', content: '双方对合作内容负有保密义务，未经对方同意不得向第三方透露。', votes: {}, agree: 0, disagree: 0 }
-        ],
+        terms: processedTerms,
         parties: [
           { name: partyA, signed: false, signature: null, signedAt: null },
           { name: partyB, signed: false, signature: null, signedAt: null }
         ],
-        escortId: null,
+        escortId: projectData ? projectData.id : null,
         result: null
       };
 
@@ -511,9 +606,9 @@
         <div class="terms-item" id="term-${t.id}">
           <div class="terms-item-header">
             <span class="terms-item-title">${t.title}</span>
-            ${contract.status === 'draft' ? `<span class="terms-item-edit" onclick="editTerm(${t.id})">编辑</span>` : ''}
+            ${(contract.status === 'draft' || contract.status === 'ready') ? `<span class="terms-item-edit" onclick="editTerm(${t.id})">编辑</span>` : ''}
           </div>
-          <div class="terms-item-content" id="term-content-${t.id}">${t.content}</div>
+          <div class="terms-item-content" id="term-content-${t.id}" style="white-space:pre-wrap;">${t.content.replace(/\n/g, '<br>')}</div>
           <textarea class="terms-edit-area" id="term-edit-${t.id}" placeholder="编辑条款内容...">${t.content}</textarea>
           <div class="terms-edit-actions" id="term-actions-${t.id}">
             <button class="btn btn-primary" style="padding: 4px 10px; font-size: 12px;" onclick="saveTerm(${t.id})">保存</button>

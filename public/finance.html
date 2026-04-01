@@ -48,19 +48,12 @@
     .page-content { display: block; }
     .page-content.hidden { display: none; }
     /* ── HERO ── */
-    .fin-hero { background: linear-gradient(180deg, rgba(90,200,250,0.08) 0%, rgba(90,200,250,0.02) 100%); border: 1px solid rgba(90,200,250,0.12); border-radius: 24px; padding: 48px 40px 40px; text-align: center; margin-bottom: 32px; position: relative; overflow: hidden; }
-    .fin-hero::before { content: ''; position: absolute; top: -60px; left: 50%; transform: translateX(-50%); width: 300px; height: 300px; background: radial-gradient(circle, rgba(90,200,250,0.08) 0%, transparent 70%); pointer-events: none; }
-    .fin-hero-badge { display: inline-block; background: rgba(90,200,250,0.12); border: 1px solid rgba(90,200,250,0.2); color: var(--accent-blue); font-size: 0.78rem; padding: 5px 16px; border-radius: 20px; margin-bottom: 20px; letter-spacing: 1px; }
-    .fin-hero-title { font-size: 1.8rem; font-weight: 700; margin-bottom: 14px; line-height: 1.4; background: linear-gradient(135deg, #fff 30%, rgba(90,200,250,0.9) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-    .fin-hero-sub { font-size: 0.95rem; color: var(--text-secondary); margin-bottom: 20px; line-height: 1.7; max-width: 600px; margin-left: auto; margin-right: auto; }
-    .fin-hero-body { font-size: 0.88rem; color: var(--text-muted); line-height: 1.9; max-width: 680px; margin: 0 auto 24px; }
-    .fin-hero-cta { display: inline-flex; align-items: center; gap: 8px; background: linear-gradient(135deg, var(--gold) 0%, var(--gold-light) 100%); color: #000; font-weight: 600; padding: 12px 28px; border-radius: 30px; font-size: 0.9rem; margin-bottom: 16px; cursor: pointer; border: none; transition: all 0.25s var(--ease-spring); text-decoration: none; }
-    .fin-hero-cta:hover { transform: scale(1.03); box-shadow: 0 8px 25px rgba(245,158,11,0.3); }
-    .fin-hero-guide { font-size: 0.82rem; color: var(--text-muted); }
-    .fin-hero-stats { display: flex; justify-content: center; gap: 40px; margin-top: 28px; flex-wrap: wrap; }
-    .fin-hero-stat { text-align: center; }
-    .fin-hero-stat-val { font-size: 1.5rem; font-weight: 700; color: var(--gold); }
-    .fin-hero-stat-label { font-size: 0.75rem; color: var(--text-muted); margin-top: 2px; }
+    .fin-hero { background: #FAFAFA; border: 1px solid rgba(0,0,0,0.06); border-radius: 24px; padding: 0; text-align: center; margin-bottom: 32px; position: relative; overflow: hidden; min-height: 200px; display: flex; flex-direction: column; justify-content: center; }
+    .fin-hero-svg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
+    .fin-hero-content { position: relative; z-index: 1; padding: 40px 60px; display: flex; flex-direction: column; align-items: center; gap: 12px; width: 100%; max-width: 800px; margin: 0 auto; }
+    .fin-hero-headline { font-size: 32px; font-weight: 600; color: #1D1D1F; line-height: 1.2; margin: 0; letter-spacing: -0.02em; }
+    .fin-hero-subhead { font-size: 18px; font-weight: 400; color: #86868B; line-height: 1.4; margin: 0; }
+    .fin-hero-tagline { font-size: 15px; font-weight: 500; color: #E05A20; line-height: 1.5; margin: 8px 0 0 0; }
     /* ── PRODUCTS ── */
     .products-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; margin-bottom: 32px; }
     .product-card { background: var(--bg-card); border: 1px solid var(--border-card); border-radius: 20px; padding: 28px; transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); position: relative; overflow: hidden; }
@@ -286,6 +279,13 @@
       .result-dimensions { grid-template-columns: 1fr; }
       .eval-scopes { gap: 12px; }
     }
+    @media (max-width: 768px) {
+      .fin-hero { min-height: 180px; }
+      .fin-hero-content { padding: 32px 24px; align-items: center; }
+      .fin-hero-headline { font-size: 26px; }
+      .fin-hero-subhead { font-size: 15px; }
+      .fin-hero-tagline { font-size: 13px; }
+    }
     @media (max-width: 480px) {
       .container { padding: 76px 12px 32px; }
       .product-card { padding: 20px; }
@@ -312,8 +312,6 @@
       <div class="nav-dropdown">
         <span class="nav-link active">民企金融 ▼</span>
         <div class="nav-dropdown-menu">
-          <a href="about.html" class="nav-dropdown-item">关于我们</a>
-          <a href="about.html#contact" class="nav-dropdown-item">联系方式</a>
         </div>
       </div>
       <a href="escort.html" class="nav-link">居间护航</a>
@@ -328,33 +326,66 @@
   <div class="container">
     <!-- 温情首屏 -->
     <div class="fin-hero">
-      <div class="fin-hero-badge">💰 民企金融 · 专业融资顾问</div>
-      <h1 class="fin-hero-title">致每一位负重前行的民营企业家</h1>
-      <p class="fin-hero-sub">融资，是企业发展的必由之路；选对路径，方能少走弯路、不涉险滩。</p>
-      <p class="fin-hero-body">
-        您躬身入局，扛企业前行，担时代重任；<br>
-        您拓土开疆，谋长远布局，守万家安康。<br><br>
-        我们以专业为尺，以合规为纲，<br>
-        甄选正规资金，定制稳健方案，规避市场暗流，<br>
-        做企业发展路上最可靠的财务护航者。
-      </p>
-      <div class="fin-hero-cta" onclick="switchTab('selftest')">
-        🎯 先做融资能力自测
-      </div>
-      <p class="fin-hero-guide">先自测融资能力，再匹配最优方案，不走弯路、不花冤枉钱，安心融资。</p>
-      <div class="fin-hero-stats">
-        <div class="fin-hero-stat">
-          <div class="fin-hero-stat-val">¥0</div>
-          <div class="fin-hero-stat-label">自测费用</div>
-        </div>
-        <div class="fin-hero-stat">
-          <div class="fin-hero-stat-val">2分钟</div>
-          <div class="fin-hero-stat-label">出具报告</div>
-        </div>
-        <div class="fin-hero-stat">
-          <div class="fin-hero-stat-val">36+</div>
-          <div class="fin-hero-stat-label">合作资金方</div>
-        </div>
+      <!-- SVG 动画特效 -->
+      <svg class="fin-hero-svg" viewBox="0 0 1400 160" preserveAspectRatio="xMidYMid slice">
+        <defs>
+          <linearGradient id="goldFlow" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#F59E0B" stop-opacity="0"/>
+            <stop offset="25%" stop-color="#F59E0B" stop-opacity="0.12"/>
+            <stop offset="50%" stop-color="#FCD34D" stop-opacity="0.2"/>
+            <stop offset="75%" stop-color="#F59E0B" stop-opacity="0.12"/>
+            <stop offset="100%" stop-color="#F59E0B" stop-opacity="0"/>
+          </linearGradient>
+          <linearGradient id="blueFlow" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#5ac8fa" stop-opacity="0"/>
+            <stop offset="40%" stop-color="#5ac8fa" stop-opacity="0.06"/>
+            <stop offset="60%" stop-color="#72d2ff" stop-opacity="0.1"/>
+            <stop offset="100%" stop-color="#5ac8fa" stop-opacity="0"/>
+          </linearGradient>
+          <filter id="softGlow" x="-30%" y="-30%" width="160%" height="160%">
+            <feGaussianBlur stdDeviation="6" result="blur"/>
+            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+        </defs>
+
+        <!-- 底部金色光流 -->
+        <path d="M-50,140 Q175,100 350,140 T700,120 T1050,150 T1450,110" fill="none" stroke="url(#goldFlow)" stroke-width="50" opacity="0.7" filter="url(#softGlow)">
+          <animate attributeName="d" values="M-50,140 Q175,100 350,140 T700,120 T1050,150 T1450,110;M-50,110 Q175,160 350,110 T700,150 T1050,110 T1450,160;M-50,140 Q175,100 350,140 T700,120 T1050,150 T1450,110" dur="10s" repeatCount="indefinite"/>
+        </path>
+
+        <!-- 顶部蓝色流光 -->
+        <path d="M-50,25 Q175,55 350,30 T700,50 T1050,20 T1450,55" fill="none" stroke="url(#blueFlow)" stroke-width="25" opacity="0.6" filter="url(#softGlow)">
+          <animate attributeName="d" values="M-50,25 Q175,55 350,30 T700,50 T1050,20 T1450,55;M-50,50 Q175,20 350,55 T700,25 T1050,60 T1450,20;M-50,25 Q175,55 350,30 T700,50 T1050,20 T1450,55" dur="8s" repeatCount="indefinite"/>
+        </path>
+
+        <!-- 上升粒子 -->
+        <circle cx="180" cy="160" r="2" fill="#F59E0B" opacity="0.5">
+          <animate attributeName="cy" values="160;25;160" dur="5.5s" repeatCount="indefinite"/>
+          <animate attributeName="opacity" values="0;0.6;0" dur="5.5s" repeatCount="indefinite"/>
+        </circle>
+        <circle cx="420" cy="160" r="1.5" fill="#FCD34D" opacity="0.45">
+          <animate attributeName="cy" values="160;40;160" dur="6.5s" repeatCount="indefinite" begin="0.8s"/>
+          <animate attributeName="opacity" values="0;0.55;0" dur="6.5s" repeatCount="indefinite" begin="0.8s"/>
+        </circle>
+        <circle cx="700" cy="160" r="2.2" fill="#F59E0B" opacity="0.5">
+          <animate attributeName="cy" values="160;30;160" dur="5s" repeatCount="indefinite" begin="1.5s"/>
+          <animate attributeName="opacity" values="0;0.6;0" dur="5s" repeatCount="indefinite" begin="1.5s"/>
+        </circle>
+        <circle cx="980" cy="160" r="1.8" fill="#FCD34D" opacity="0.45">
+          <animate attributeName="cy" values="160;50;160" dur="7s" repeatCount="indefinite" begin="2.5s"/>
+          <animate attributeName="opacity" values="0;0.52;0" dur="7s" repeatCount="indefinite" begin="2.5s"/>
+        </circle>
+        <circle cx="1250" cy="160" r="2" fill="#F59E0B" opacity="0.48">
+          <animate attributeName="cy" values="160;35;160" dur="6s" repeatCount="indefinite" begin="3.5s"/>
+          <animate attributeName="opacity" values="0;0.58;0" dur="6s" repeatCount="indefinite" begin="3.5s"/>
+        </circle>
+      </svg>
+
+      <!-- 内容层 -->
+      <div class="fin-hero-content">
+        <h1 class="fin-hero-headline">民企金融</h1>
+        <p class="fin-hero-subhead">以资为翼，助企腾跃破万难<br>以策为盾，护航致远跨千关</p>
+        <p class="fin-hero-tagline">融资从非终点，而是企业执梦前行、跨越山海的全新起点</p>
       </div>
     </div>
 

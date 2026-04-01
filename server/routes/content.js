@@ -94,6 +94,30 @@ router.post('/helps', async (req, res) => {
   }
 });
 
+// ===== 快捷发布需求（搜索无结果时使用） =====
+
+router.post('/quick-help', async (req, res) => {
+  try {
+    const { keyword, region, business_type } = req.body;
+    if (!keyword) return res.status(400).json({ error: '关键词不能为空' });
+
+    // 生成描述
+    const description = `求找：${region || ''} ${business_type || ''} ${keyword} 相关人脉`;
+
+    const help = await HelpRequest.create({
+      user_id: req.user.id,
+      description,
+      region: region || '全国',
+      business_type: business_type || '未知行业',
+      status: 0,
+      expire_date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) // 默认30天
+    });
+    res.json({ success: true, help, message: '需求发布成功，审核通过后展示' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // ===== 发布政务资源 =====
 
 router.post('/government', async (req, res) => {

@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>站长入驻 · 共建资源生态 - 资源夜市</title>
+  <style>
+    :root {
+      --bg-deep: #01060f;
+      --bg-card: rgba(15, 30, 50, 0.85);
+      --bg-card-hover: rgba(20, 40, 65, 0.9);
+      --border-card: rgba(90, 200, 250, 0.15);
+      --border-card-hover: rgba(90, 200, 250, 0.35);
+      --accent-blue: #5ac8fa;
+      --accent-blue-light: #72d2ff;
+      --text-primary: rgba(200, 220, 240, 0.92);
+      --text-secondary: rgba(160, 185, 210, 0.80);
+      --text-muted: rgba(130, 155, 185, 0.65);
+      --gold: #F59E0B;
+      --success: #34C759;
+      --glass-blur: blur(20px);
+      --shadow-card: 0 12px 40px rgba(0, 0, 0, 0.4), 0 0 30px rgba(90, 200, 250, 0.08);
+      --shadow-card-hover: 0 20px 50px rgba(0, 0, 0, 0.5), 0 0 40px rgba(90, 200, 250, 0.15);
+      --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif; background: var(--bg-deep); color: var(--text-primary); min-height: 100vh; }
+
+    .navbar { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 12px 24px; background: rgba(1, 6, 15, 0.8); backdrop-filter: var(--glass-blur); border-bottom: 1px solid var(--border-card); }
+    .navbar-brand { display: flex; align-items: center; gap: 10px; color: var(--text-primary); text-decoration: none; font-size: 1.1rem; font-weight: 600; }
+    .navbar-links { display: flex; gap: 24px; }
+    .nav-link { color: var(--text-secondary); text-decoration: none; font-size: 0.9rem; cursor: pointer; transition: color 0.2s; }
+    .nav-link:hover, .nav-link.active { color: var(--accent-blue); }
+    .navbar-actions { display: flex; gap: 12px; }
+    .btn { padding: 8px 18px; border-radius: 20px; font-size: 0.85rem; cursor: pointer; transition: all 0.25s var(--ease-spring); border: none; text-decoration: none; display: inline-block; }
+    .btn-primary { background: var(--accent-blue); color: #000; font-weight: 600; }
+    .btn-primary:hover { background: var(--accent-blue-light); transform: scale(1.02); }
+    .btn-outline { background: transparent; color: var(--accent-blue); border: 1px solid var(--border-card); }
+    .btn-outline:hover { border-color: var(--accent-blue); background: var(--bg-card); }
+
+    .container { max-width: 1000px; margin: 0 auto; padding: 84px 20px 60px; }
+
+    /* Hero */
+    .hero { text-align: center; padding: 60px 20px 40px; position: relative; }
+    .hero::before { content: ''; position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 600px; height: 400px; background: radial-gradient(ellipse, rgba(90, 200, 250, 0.12) 0%, transparent 70%); pointer-events: none; }
+    .hero-badge { display: inline-block; background: rgba(90, 200, 250, 0.1); border: 1px solid var(--accent-blue); padding: 6px 20px; border-radius: 40px; font-size: 0.85rem; color: var(--accent-blue); margin-bottom: 20px; }
+    .hero h1 { font-size: 2.2rem; font-weight: 700; margin-bottom: 16px; background: linear-gradient(135deg, #fff, #72d2ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .hero p { font-size: 1rem; color: var(--text-secondary); max-width: 600px; margin: 0 auto; line-height: 1.6; }
+
+    /* Card */
+    .card { background: var(--bg-card); border: 1px solid var(--border-card); border-radius: 20px; padding: 28px; margin-bottom: 24px; backdrop-filter: var(--glass-blur); }
+    .card-title { font-size: 1.15rem; font-weight: 600; margin-bottom: 20px; color: var(--accent-blue); display: flex; align-items: center; gap: 8px; }
+    .card-title::before { content: ''; width: 4px; height: 20px; background: var(--accent-blue); border-radius: 2px; }
+
+    /* Fee */
+    .fee-badge { text-align: center; padding: 24px; }
+    .fee-price { font-size: 3rem; font-weight: 800; color: #ff6b6b; margin: 12px 0; }
+    .fee-price span { font-size: 1.2rem; font-weight: 400; color: var(--text-muted); }
+    .fee-note { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px; }
+    .fee-includes { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; }
+    .fee-item { background: rgba(90, 200, 250, 0.05); border: 1px solid rgba(90, 200, 250, 0.1); border-radius: 12px; padding: 14px; text-align: center; }
+    .fee-item .icon { font-size: 1.5rem; margin-bottom: 6px; }
+    .fee-item .label { font-size: 0.85rem; color: var(--text-secondary); }
+
+    /* Reason list */
+    .reason-list, .rights-list, .duty-list { list-style: none; }
+    .reason-list li, .rights-list li, .duty-list li { padding: 12px 0 12px 32px; position: relative; border-bottom: 1px solid rgba(90, 200, 250, 0.06); font-size: 0.95rem; color: var(--text-secondary); }
+    .reason-list li:last-child, .rights-list li:last-child, .duty-list li:last-child { border-bottom: none; }
+    .reason-list li::before { content: '✨'; position: absolute; left: 0; }
+    .rights-list li::before { content: '✔'; position: absolute; left: 0; color: var(--success); font-weight: bold; }
+    .duty-list li::before { content: '⚖'; position: absolute; left: 0; color: var(--gold); }
+
+    /* Two column */
+    .grid-2col { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+
+    /* Income box */
+    .income-box { background: rgba(90, 200, 250, 0.05); border: 1px solid rgba(90, 200, 250, 0.15); border-radius: 16px; padding: 20px; }
+    .income-box p { margin-bottom: 12px; color: var(--text-secondary); font-size: 0.95rem; }
+    .income-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid rgba(90, 200, 250, 0.08); }
+    .income-row:last-child { border-bottom: none; }
+    .income-label { color: var(--text-secondary); font-size: 0.9rem; }
+    .income-value { font-weight: 700; color: var(--gold); font-size: 1.1rem; }
+
+    /* Guide steps */
+    .guide-steps { display: flex; flex-wrap: wrap; gap: 10px; }
+    .guide-step { background: rgba(90, 200, 250, 0.08); border: 1px solid rgba(90, 200, 250, 0.15); border-radius: 40px; padding: 8px 16px; font-size: 0.85rem; color: var(--text-secondary); display: flex; align-items: center; gap: 6px; }
+    .guide-step .num { background: var(--accent-blue); color: #000; width: 20px; height: 20px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 700; }
+
+    /* Form */
+    .apply-form { background: rgba(15, 30, 50, 0.6); border: 1px solid rgba(90, 200, 250, 0.15); border-radius: 20px; padding: 28px; }
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .form-group { margin-bottom: 16px; }
+    .form-group.full { grid-column: 1 / -1; }
+    .form-group label { display: block; font-weight: 600; margin-bottom: 8px; color: var(--text-primary); font-size: 0.9rem; }
+    .form-group input, .form-group textarea { width: 100%; padding: 12px 16px; border: 1px solid var(--border-card); border-radius: 12px; font-size: 0.95rem; background: rgba(1, 6, 15, 0.6); color: var(--text-primary); transition: 0.2s; }
+    .form-group input:focus, .form-group textarea:focus { outline: none; border-color: var(--accent-blue); box-shadow: 0 0 0 3px rgba(90, 200, 250, 0.1); }
+    .form-group textarea { resize: vertical; min-height: 80px; border-radius: 16px; }
+    .form-group input::placeholder, .form-group textarea::placeholder { color: var(--text-muted); }
+    .btn-submit { width: 100%; padding: 16px; background: var(--accent-blue); color: #000; border: none; border-radius: 40px; font-size: 1rem; font-weight: 700; cursor: pointer; transition: all 0.25s var(--ease-spring); margin-top: 8px; }
+    .btn-submit:hover { background: var(--accent-blue-light); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(90, 200, 250, 0.3); }
+
+    /* Admin contact */
+    .admin-contact { background: rgba(90, 200, 250, 0.05); border: 1px dashed rgba(90, 200, 250, 0.3); border-radius: 16px; padding: 20px; margin-bottom: 20px; text-align: center; }
+    .admin-contact p { color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 8px; }
+    .admin-wechat { display: inline-flex; align-items: center; gap: 12px; background: rgba(90, 200, 250, 0.1); padding: 10px 20px; border-radius: 40px; margin-top: 10px; }
+    .admin-wechat span { font-weight: 700; color: var(--accent-blue); font-size: 1.1rem; }
+    .admin-wechat .copy-btn { background: var(--accent-blue); color: #000; padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; cursor: pointer; font-weight: 600; }
+    .admin-wechat .copy-btn:hover { background: var(--accent-blue-light); }
+
+    /* Steps */
+    .apply-steps { display: flex; gap: 12px; margin-bottom: 24px; flex-wrap: wrap; }
+    .apply-step { flex: 1; min-width: 140px; background: rgba(90, 200, 250, 0.05); border: 1px solid rgba(90, 200, 250, 0.1); border-radius: 12px; padding: 14px; text-align: center; }
+    .apply-step .step-num { width: 28px; height: 28px; background: var(--accent-blue); color: #000; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.85rem; margin-bottom: 8px; }
+    .apply-step .step-text { font-size: 0.85rem; color: var(--text-secondary); line-height: 1.4; }
+
+    /* Poster preview */
+    .poster-preview { text-align: center; margin-top: 24px; padding: 20px; background: rgba(90, 200, 250, 0.03); border-radius: 16px; }
+    .poster-preview a { color: var(--accent-blue); text-decoration: none; font-size: 0.9rem; }
+    .poster-preview a:hover { text-decoration: underline; }
+
+    /* Footer */
+    .footnote { text-align: center; padding: 24px; color: var(--text-muted); font-size: 0.8rem; border-top: 1px solid var(--border-card); margin-top: 32px; }
+    .footnote p { margin-bottom: 6px; }
+
+    @media (max-width: 768px) {
+      .grid-2col { grid-template-columns: 1fr; }
+      .form-grid { grid-template-columns: 1fr; }
+      .hero h1 { font-size: 1.6rem; }
+      .navbar-links { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <a href="index.html" class="navbar-brand"><span>🌌</span><span>资源夜市</span></a>
+    <div class="navbar-links">
+      <a href="index.html" class="nav-link">首页</a>
+      <a href="groups.html" class="nav-link">行业群码</a>
+      <a href="gov-list.html" class="nav-link">政企资源</a>
+      <a href="finance.html" class="nav-link">民企金融</a>
+      <a href="escort.html" class="nav-link">居间护航</a>
+      <span class="nav-link active">站长入驻</span>
+    </div>
+    <div class="navbar-actions">
+      <a href="login.html" class="btn btn-outline">登录</a>
+      <a href="register.html" class="btn btn-primary">注册</a>
+    </div>
+  </nav>
+
+  <div class="container">
+    <!-- Hero -->
+    <div class="hero">
+      <div class="hero-badge">🌟 限量招募中</div>
+      <h1>站长入驻 · 共建资源生态</h1>
+      <p>加入资源夜市，成为区域/行业站长，共享成熟系统，链接真实商机，让资源流动创造价值。</p>
+    </div>
+
+    <!-- 入驻费用 -->
+    <div class="card">
+      <div class="card-title">入驻费用</div>
+      <div class="fee-badge">
+        <div class="fee-price">299<span>元 · 一次性</span></div>
+        <div class="fee-note">不足五杯咖啡的投入，换一个长期运营的平台系统</div>
+        <div class="fee-includes">
+          <div class="fee-item">
+            <div class="icon">🚀</div>
+            <div class="label">成熟稳定平台</div>
+          </div>
+          <div class="fee-item">
+            <div class="icon">💼</div>
+            <div class="label">团队分成机制</div>
+          </div>
+          <div class="fee-item">
+            <div class="icon">🌐</div>
+            <div class="label">资源共享生态圈</div>
+          </div>
+          <div class="fee-item">
+            <div class="icon">📄</div>
+            <div class="label">首创居间工具</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 为什么要成为站长 -->
+    <div class="card">
+      <div class="card-title">为什么要成为站长</div>
+      <ul class="reason-list">
+        <li>无需自己搭建平台，低成本拥有成熟系统，聚焦资源对接本身。</li>
+        <li>可自由发布资源、需求，展示个人业务与实力，提升个人影响力。</li>
+        <li>可分享资源到朋友圈，邀请朋友发布信息，信息互通即商机。</li>
+        <li>可查看、对接平台全部政企资源，拓展人脉与合作边界。</li>
+        <li>一次开通，长期享有资源运营权限，价值远超投入。</li>
+      </ul>
+    </div>
+
+    <!-- 权益 + 义务 -->
+    <div class="grid-2col">
+      <div class="card" style="margin-bottom:0">
+        <div class="card-title">站长核心权益</div>
+        <ul class="rights-list">
+          <li>拥有个人站长中心，可管理自己发布的信息。</li>
+          <li>可上传、更换个人广告宣传页，打造专属品牌展示。</li>
+          <li>可上传、展示自己的微信二维码，方便资源方直接联系。</li>
+          <li>可查看团队下级成员列表与相关数据，清晰掌握团队结构。</li>
+          <li>享有全站资源查看、对接、合作权限，高效撮合政企需求。</li>
+        </ul>
+      </div>
+      <div class="card" style="margin-bottom:0">
+        <div class="card-title">站长义务</div>
+        <ul class="duty-list">
+          <li>保证信息真实、合法、合规，共同维护平台公信力。</li>
+          <li>不发布违规、虚假内容，拒绝任何误导性宣传。</li>
+          <li>维护平台秩序，合规推广，营造良性互动生态。</li>
+          <li>遵守平台规则，配合平台管理，共建健康资源环境。</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- 收益机制 -->
+    <div class="card">
+      <div class="card-title">站长收益机制</div>
+      <div class="income-box">
+        <p>📊 基于平台协作激励体系，站长可通过自身推广与团队建设获得合理回馈：</p>
+        <div class="income-row">
+          <span class="income-label">直接推荐用户产生的有效贡献</span>
+          <span class="income-value">奖励 30%</span>
+        </div>
+        <div class="income-row">
+          <span class="income-label">下级团队净贡献（扣除佣金后）</span>
+          <span class="income-value">各享 50%</span>
+        </div>
+        <div class="income-row">
+          <span class="income-label">居间服务 / 咨询费</span>
+          <span class="income-value">自定 · 上不封顶</span>
+        </div>
+        <p style="margin-top:12px; font-size:0.85rem; color:var(--text-muted);">* 具体结算规则以站长中心协议为准，平台保障公平透明。</p>
+      </div>
+    </div>
+
+    <!-- 功能操作指引 -->
+    <div class="card">
+      <div class="card-title">功能操作位置说明</div>
+      <div class="guide-steps">
+        <div class="guide-step"><span class="num">1</span> 站长申请 → 页面底部表单提交</div>
+        <div class="guide-step"><span class="num">2</span> 功能查看 → 个人中心 → 站长中心</div>
+        <div class="guide-step"><span class="num">3</span> 广告上传 → 站长中心 → 素材管理</div>
+        <div class="guide-step"><span class="num">4</span> 团队查看 → 站长中心 → 我的团队</div>
+        <div class="guide-step"><span class="num">5</span> 收益明细 → 站长中心 → 收益记录</div>
+      </div>
+    </div>
+
+    <!-- 申请流程 -->
+    <div class="card">
+      <div class="card-title">申请流程</div>
+      <div class="apply-steps">
+        <div class="apply-step">
+          <div class="step-num">1</div>
+          <div class="step-text">填写申请信息并提交</div>
+        </div>
+        <div class="apply-step">
+          <div class="step-num">2</div>
+          <div class="step-text">添加管理员微信确认资质</div>
+        </div>
+        <div class="apply-step">
+          <div class="step-num">3</div>
+          <div class="step-text">支付299元入驻费用</div>
+        </div>
+        <div class="apply-step">
+          <div class="step-num">4</div>
+          <div class="step-text">后台开通权限，即享全部权益</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 立即申请 -->
+    <div class="card">
+      <div class="card-title">立即申请站长</div>
+
+      <div class="admin-contact">
+        <p>📱 申请前请先添加管理员微信（请备注"站长申请+您的姓名"）</p>
+        <div class="admin-wechat">
+          <span>ziyuanyeshi</span>
+          <span class="copy-btn" id="copyWechat">复制</span>
+        </div>
+        <p style="margin-top:10px; font-size:0.8rem;">人工审核周期1-2个工作日，请耐心等待。</p>
+      </div>
+
+      <div class="apply-form">
+        <form id="stationApplyForm">
+          <div class="form-grid">
+            <div class="form-group">
+              <label>真实姓名 *</label>
+              <input type="text" id="realName" placeholder="请输入真实姓名" required>
+            </div>
+            <div class="form-group">
+              <label>手机号码 *</label>
+              <input type="tel" id="mobile" placeholder="用于审核联系" required>
+            </div>
+            <div class="form-group">
+              <label>微信号（选填）</label>
+              <input type="text" id="wechat" placeholder="便于快速沟通">
+            </div>
+            <div class="form-group">
+              <label>所在区域</label>
+              <input type="text" id="region" placeholder="如：广东省深圳市">
+            </div>
+            <div class="form-group full">
+              <label>资源/业务背景（选填）</label>
+              <textarea id="background" placeholder="简单介绍您的资源或业务方向（可选）"></textarea>
+            </div>
+          </div>
+          <button type="submit" class="btn-submit">提交申请 · 等待管理员审核</button>
+          <p style="text-align:center; font-size:0.8rem; color:var(--text-muted); margin-top:12px;">提交后请主动联系管理员微信完成资质确认</p>
+        </form>
+      </div>
+
+      <div class="poster-preview">
+        <p>📣 推广素材：<a href="station-poster.html" target="_blank">生成专属推广海报 →</a></p>
+      </div>
+    </div>
+
+    <div class="footnote">
+      <p>© 资源夜市 · 站长入驻计划 | 所有权利义务以签署协议为准。</p>
+      <p>合规提示：平台不承诺任何投资收益，收益基于真实资源对接贡献，严禁夸大宣传。</p>
+    </div>
+  </div>
+
+<script>
+  const form = document.getElementById('stationApplyForm');
+  if (form) {
+    form.addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const name = document.getElementById('realName').value.trim();
+      const mobile = document.getElementById('mobile').value.trim();
+      const wechat = document.getElementById('wechat').value.trim();
+      const region = document.getElementById('region').value.trim();
+      const background = document.getElementById('background').value.trim();
+
+      if (!name || !mobile) {
+        alert('请填写姓名和手机号码');
+        return;
+      }
+      if (!/^1[0-9]{10}$/.test(mobile)) {
+        alert('请填写正确的11位手机号码');
+        return;
+      }
+
+      try {
+        const res = await fetch('/api/station/apply', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, mobile, wechat, region, background })
+        });
+        const data = await res.json();
+        if (res.ok) {
+          alert(`✅ 申请已提交！${name} 您好！\n\n请添加管理员微信：ziyuanyeshi（备注"站长申请"），工作人员将尽快与您确认。`);
+          form.reset();
+        } else {
+          alert('提交失败：' + (data.error || '请重试'));
+        }
+      } catch (err) {
+        alert('网络错误，请稍后重试');
+      }
+    });
+  }
+
+  const copyBtn = document.getElementById('copyWechat');
+  if (copyBtn) {
+    copyBtn.addEventListener('click', () => {
+      navigator.clipboard.writeText('ziyuanyeshi').then(() => {
+        copyBtn.textContent = '已复制';
+        setTimeout(() => { copyBtn.textContent = '复制'; }, 2000);
+      }).catch(() => {
+        prompt('请手动复制微信号:', 'ziyuanyeshi');
+      });
+    });
+  }
+</script>
+</body>
+</html>

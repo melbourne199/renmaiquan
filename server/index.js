@@ -12,6 +12,7 @@ const publicRoutes = require('./routes/public');
 const contentRoutes = require('./routes/content');
 const escortRoutes = require('./routes/escort');
 const aiRoutes = require('./routes/ai');
+const stationRoutes = require('./routes/station');
 
 const app = express();
 
@@ -34,6 +35,7 @@ app.use('/api/content', contentRoutes);   // 用户发布内容
 app.use('/api/admin', adminRoutes);       // 后台管理
 app.use('/api/ai', aiRoutes);             // AI解析（Groq）
 app.use('/api/escort', escortRoutes);    // 居间护航
+app.use('/api/station', stationRoutes);   // 站长申请
 
 // 404 处理
 app.get('*', (req, res) => {

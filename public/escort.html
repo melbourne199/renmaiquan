@@ -7,44 +7,42 @@
   <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
   <style>
     :root {
-      --bg-deep: #01060f;
-      --bg-card: rgba(90, 200, 250, 0.06);
-      --bg-card-hover: rgba(90, 200, 250, 0.12);
-      --border-card: rgba(90, 200, 250, 0.15);
-      --border-card-hover: rgba(90, 200, 250, 0.35);
-      --accent-blue: #5ac8fa;
-      --accent-blue-light: #72d2ff;
-      --text-primary: rgba(228, 240, 252, 0.96);
-      --text-secondary: rgba(180, 200, 220, 0.75);
-      --text-muted: rgba(150, 180, 210, 0.6);
-      --gold: #F59E0B;
-      --gold-light: #FCD34D;
+      --bg-deep: #FFFFFF;
+      --bg-card: #FFFFFF;
+      --bg-card-hover: #F5F5F7;
+      --border-card: #D1D1D6;
+      --border-card-hover: #B8B8BF;
+      --text-primary: #1D1D1F;
+      --text-secondary: #424245;
+      --text-muted: #86868B;
+      --accent: #0071E3;
+      --accent-light: #007AFF;
       --success: #34C759;
       --danger: #FF3B30;
-      --glass-blur: blur(20px);
-      --shadow-card: 0 12px 40px rgba(0, 0, 0, 0.4), 0 0 30px rgba(90, 200, 250, 0.08);
-      --shadow-card-hover: 0 20px 50px rgba(0, 0, 0, 0.5), 0 0 40px rgba(90, 200, 250, 0.15);
+      --glass-blur: blur(12px);
+      --shadow-card: 0 2px 12px rgba(0,0,0,0.04);
+      --shadow-card-hover: 0 6px 24px rgba(0,0,0,0.08);
       --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
     }
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif; background: var(--bg-deep); color: var(--text-primary); min-height: 100vh; }
-    .navbar { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 12px 24px; background: rgba(1, 6, 15, 0.8); backdrop-filter: var(--glass-blur); border-bottom: 1px solid var(--border-card); }
+    .navbar { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 12px 24px; background: rgba(255,255,255,0.92); backdrop-filter: var(--glass-blur); border-bottom: 1px solid var(--border-card); }
     .navbar-brand { display: flex; align-items: center; gap: 10px; color: var(--text-primary); text-decoration: none; font-size: 1.1rem; font-weight: 600; }
     .navbar-links { display: flex; gap: 24px; }
     .nav-link { color: var(--text-secondary); text-decoration: none; font-size: 0.9rem; cursor: pointer; }
-    .nav-link:hover, .nav-link.active { color: var(--accent-blue); }
+    .nav-link:hover, .nav-link.active { color: var(--text-primary); }
     .navbar-actions { display: flex; gap: 12px; }
     .btn { padding: 8px 18px; border-radius: 20px; font-size: 0.85rem; cursor: pointer; transition: all 0.25s var(--ease-spring); border: none; text-decoration: none; }
-    .btn-primary { background: var(--accent-blue); color: #000; font-weight: 600; }
-    .btn-primary:hover { background: var(--accent-blue-light); transform: scale(1.02); }
-    .btn-outline { background: transparent; color: var(--accent-blue); border: 1px solid var(--border-card); }
-    .btn-outline:hover { border-color: var(--accent-blue); background: var(--bg-card); }
-    .btn-gold { background: var(--gold); color: #000; font-weight: 600; }
-    .btn-gold:hover { background: var(--gold-light); transform: scale(1.02); }
+    .btn-primary { background: var(--text-primary); color: #FFF; font-weight: 500; }
+    .btn-primary:hover { background: #000; transform: scale(1.02); }
+    .btn-outline { background: transparent; color: var(--text-primary); border: 1px solid var(--border-card); }
+    .btn-outline:hover { border-color: var(--text-primary); background: var(--bg-card-hover); }
+    .btn-gold { background: var(--text-primary); color: #FFF; font-weight: 500; }
+    .btn-gold:hover { background: #000; transform: scale(1.02); }
     .container { max-width: 1200px; margin: 0 auto; padding: 84px 20px 40px; }
 
     /* 核心说明区 */
-    .intro-section { background: linear-gradient(135deg, rgba(90, 200, 250, 0.1) 0%, rgba(90, 200, 250, 0.03) 100%); border: 1px solid var(--border-card); border-radius: 24px; padding: 32px; margin-bottom: 32px; }
+    .intro-section { background: var(--bg-card); border: 1px solid var(--border-card); border-radius: 24px; padding: 32px; margin-bottom: 32px; }
     .intro-title { font-size: 1.3rem; font-weight: 700; text-align: center; margin-bottom: 24px; }
     .intro-content { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; }
     .intro-card { background: var(--bg-card); border: 1px solid var(--border-card); border-radius: 16px; padding: 20px; }
@@ -57,12 +55,37 @@
     .section-title { font-size: 1.1rem; font-weight: 600; text-align: center; margin-bottom: 24px; }
     .profit-rules { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
     .rule-card { background: var(--bg-card-hover); border: 1px solid var(--border-card); border-radius: 16px; padding: 20px; text-align: center; }
-    .rule-percent { font-size: 2rem; font-weight: 700; color: var(--gold); margin-bottom: 8px; }
+    .rule-percent { font-size: 2rem; font-weight: 700; color: var(--text-primary); margin-bottom: 8px; }
     .rule-title { font-size: 0.95rem; font-weight: 600; margin-bottom: 4px; }
     .rule-desc { font-size: 0.8rem; color: var(--text-muted); }
 
     /* U型链路可视化 - 全新版 */
-    .uchain-section { background: var(--bg-card); border: 1px solid var(--border-card); border-radius: 20px; padding: 28px; margin-bottom: 32px; width: 100%; max-width: 100%; overflow: hidden; box-sizing: border-box; }
+    .uchain-section { background: #0D1B2A; border: 1px solid rgba(255,255,255,0.12); border-radius: 20px; padding: 28px; margin-bottom: 32px; width: 100%; max-width: 100%; overflow: hidden; box-sizing: border-box; }
+    /* 深色背景下所有文字用亮色 */
+    .uchain-section,
+    .uchain-section * { color: #E8EEF4 !important; }
+    .uchain-section .fee-card-title,
+    .uchain-section .fee-row,
+    .uchain-section .fee-pool-label,
+    .uchain-section .fee-pool-lg,
+    .uchain-section .fee-label,
+    .uchain-section .fee-row-lg,
+    .uchain-section .fee-row-bold,
+    .uchain-section .lbl,
+    .uchain-section .val,
+    .uchain-section .val-gold,
+    .uchain-section .val-blue,
+    .uchain-section .val-gold-lg,
+    .uchain-section .val-blue-lg { color: #E8EEF4 !important; }
+    .uchain-section .fee-rules-title { color: #ffffff !important; }
+    .uchain-section .fee-rule-item { color: rgba(220,235,250,0.9) !important; }
+    .uchain-section .fee-rule-desc { color: rgba(200,220,240,0.7) !important; }
+    .uchain-section .level1-label { color: #E8EEF4 !important; }
+    .uchain-section .level2-tag { color: #ffd60a !important; }
+    .uchain-section .chain-status { color: #ffffff !important; }
+    .uchain-section .section-title { color: #ffffff !important; }
+    .uchain-section .party-name,
+    .uchain-section .party-role { color: #E8EEF4 !important; }
     .uchain-outer { display: flex; gap: 24px; align-items: flex-start; }
     /* 左侧U链容器：fee-rules + uchain-wrap，fee-rules展开时自动撑开 */
     .uchain-left { position: relative; flex: 1; min-width: 0; width: 100%; }
@@ -70,42 +93,42 @@
     .fee-sidebar { width: 272px; flex-shrink: 0; align-self: stretch; display: flex; flex-direction: column; }
     .fee-sidebar-card {
       flex: 1;
-      background: rgba(90, 200, 250, 0.08);
+      background: rgba(255, 255, 255, 0.08);
       backdrop-filter: blur(24px);
       -webkit-backdrop-filter: blur(24px);
-      border: 1px solid rgba(90, 200, 250, 0.25);
+      border: 1px solid rgba(255, 255, 255, 0.15);
       border-radius: 14px;
       padding: 14px 16px;
-      box-shadow: 0 12px 48px rgba(0,0,0,0.5), 0 0 30px rgba(90,200,250,0.12);
+      box-shadow: 0 12px 48px rgba(0,0,0,0.5);
       display: flex;
       flex-direction: column;
       gap: 0;
       overflow: hidden;
     }
-    .fee-card-title { font-size: 0.85rem !important; color: var(--accent-blue); font-weight: 600; margin-bottom: 8px; letter-spacing: 0.5px; flex-shrink: 0; }
+    .fee-card-title { font-size: 0.85rem !important; color: var(--text-primary); font-weight: 600; margin-bottom: 8px; letter-spacing: 0.5px; flex-shrink: 0; }
     .fee-section { display: flex; flex-direction: column; gap: 1px; }
     .fee-row { display: flex; justify-content: space-between; align-items: center; font-size: 0.78rem !important; color: var(--text-secondary); line-height: 1.3; flex-shrink: 0; min-height: 0; }
     .fee-row .lbl { color: var(--text-muted); font-size: 0.76rem; }
     .fee-row .val { color: var(--text-primary); font-weight: 500; font-size: 0.78rem; }
-    .fee-row .val-gold { color: var(--gold); font-weight: 700; }
-    .fee-row .val-blue { color: var(--accent-blue); font-weight: 600; }
-    .fee-divider { border: none; border-top: 1px solid rgba(90,200,250,0.10); margin: 5px 0; flex-shrink: 0; }
+    .fee-row .val-gold { color: var(--text-primary); font-weight: 700; }
+    .fee-row .val-blue { color: var(--text-primary); font-weight: 600; }
+    .fee-divider { border: none; border-top: 1px solid rgba(255,255,255,0.08); margin: 5px 0; flex-shrink: 0; }
     .fee-row-lg { font-size: 0.82rem !important; padding: 2px 0; min-height: 0; }
-    .fee-pool-lg { font-size: 0.78rem !important; font-weight: 700; color: var(--accent-blue); margin-bottom: 2px; }
+    .fee-pool-lg { font-size: 0.78rem !important; font-weight: 700; color: var(--text-primary); margin-bottom: 2px; }
     .fee-hint-lg { font-size: 0.72rem !important; }
-    .val-gold-lg { color: var(--gold) !important; font-weight: 700; font-size: 0.82rem !important; }
-    .val-blue-lg { color: var(--accent-blue) !important; font-weight: 700; font-size: 0.82rem !important; }
-    .fee-row-bold { font-weight: 600; border-top: 1px dashed rgba(90,200,250,0.1); padding-top: 3px; margin-top: 2px; }
-    .fee-pool-label { font-size: 0.78rem; color: var(--accent-blue); font-weight: 600; margin-bottom: 2px; letter-spacing: 0.2px; flex-shrink: 0; line-height: 1.3; }
+    .val-gold-lg { color: var(--text-primary) !important; font-weight: 700; font-size: 0.82rem !important; }
+    .val-blue-lg { color: var(--text-primary) !important; font-weight: 700; font-size: 0.82rem !important; }
+    .fee-row-bold { font-weight: 600; border-top: 1px dashed rgba(255,255,255,0.08); padding-top: 3px; margin-top: 2px; }
+    .fee-pool-label { font-size: 0.78rem; color: var(--text-primary); font-weight: 600; margin-bottom: 2px; letter-spacing: 0.2px; flex-shrink: 0; line-height: 1.3; }
     .fee-formula-hint { font-size: 0.70rem; color: var(--text-muted); font-style: italic; flex-shrink: 0; line-height: 1.3; }
-    .fee-total { font-size: 1rem; font-weight: 700; color: var(--gold); }
+    .fee-total { font-size: 1rem; font-weight: 700; color: var(--text-primary); }
     .fee-label { font-size: 0.68rem; color: var(--text-muted); margin-top: 1px; }
 
     /* SVG U型线条 */
     .uchain-svg { width: 100%; height: 100%; position: absolute; top: 0; left: 0; pointer-events: none; z-index: 0; }
-    .uchain-path-bg { fill: none; stroke: rgba(90,200,250,0.08); stroke-width: 3; }
-    .uchain-path-main { fill: none; stroke: url(#chainGrad); stroke-width: 3; stroke-dasharray: 8 4; animation: chainFlow 1.5s linear infinite; }
-    .uchain-path-close { fill: none; stroke: var(--success); stroke-width: 3; opacity: 0; transition: opacity 0.8s ease; }
+    .uchain-path-bg { fill: none; stroke: rgba(255,255,255,0.35); stroke-width: 4; }
+    .uchain-path-main { fill: none; stroke: url(#chainGrad); stroke-width: 5; stroke-dasharray: 8 4; animation: chainFlow 1.5s linear infinite; filter: drop-shadow(0 0 6px #FF1493); }
+    .uchain-path-close { fill: none; stroke: #FFD700; stroke-width: 5; opacity: 0; transition: opacity 0.8s ease; filter: drop-shadow(0 0 8px #FFD700); }
     .uchain-path-close.active { opacity: 1; stroke-dasharray: none; }
     @keyframes chainFlow { to { stroke-dashoffset: -24; } }
 
@@ -115,7 +138,7 @@
     .party-avatar { width: 64px; height: 64px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; font-weight: 700; position: relative; transition: all 0.3s var(--ease-spring); }
     .party-avatar.side-a { background: linear-gradient(135deg, #ff6b9d, #c44dff); border: 3px solid rgba(255,107,157,0.5); box-shadow: 0 0 24px rgba(255,107,157,0.3); }
     .party-avatar.side-b { background: linear-gradient(135deg, #5ac8fa, #0071e3); border: 3px solid rgba(90,200,250,0.5); box-shadow: 0 0 24px rgba(90,200,250,0.3); }
-    .party-avatar.highlight { transform: scale(1.12); box-shadow: 0 0 40px rgba(245,158,11,0.6); border-color: var(--gold); }
+    .party-avatar.highlight { transform: scale(1.12); box-shadow: 0 0 40px rgba(0,0,0,0.3); border-color: var(--text-primary); }
     .party-avatar .avatar-letter { color: #fff; text-shadow: 0 2px 8px rgba(0,0,0,0.4); }
     .party-name { margin-top: 8px; font-size: 0.95rem; font-weight: 600; }
     .party-role { font-size: 0.82rem; color: var(--text-muted); margin-top: 2px; }
@@ -123,26 +146,26 @@
     /* 顶部中间费用 - 独立浮动卡 */
     .uchain-fee-center { position: absolute; left: 50%; top: 8px; transform: translateX(-50%); text-align: center; z-index: 10; width: 420px; }
     .fee-glass-card {
-      background: rgba(90, 200, 250, 0.1);
+      background: rgba(255, 255, 255, 0.08);
       backdrop-filter: blur(24px);
       -webkit-backdrop-filter: blur(24px);
-      border: 1px solid rgba(90, 200, 250, 0.25);
+      border: 1px solid rgba(255, 255, 255, 0.15);
       border-radius: 14px;
       padding: 12px 16px;
-      box-shadow: 0 12px 48px rgba(0,0,0,0.5), 0 0 30px rgba(90,200,250,0.12);
+      box-shadow: 0 12px 48px rgba(0,0,0,0.5), 0 0 30px rgba(255,255,255,0.1);
     }
-    .fee-card-title { font-size: 0.72rem; color: var(--accent-blue); font-weight: 600; margin-bottom: 6px; letter-spacing: 0.5px; }
+    .fee-card-title { font-size: 0.72rem; color: var(--text-primary); font-weight: 600; margin-bottom: 6px; letter-spacing: 0.5px; }
     .fee-section { margin-bottom: 4px; }
     .fee-row { display: flex; justify-content: space-between; align-items: center; font-size: 0.68rem; color: var(--text-secondary); margin-bottom: 2px; line-height: 1.3; }
     .fee-row .lbl { color: var(--text-muted); }
     .fee-row .val { color: var(--text-primary); font-weight: 500; }
-    .fee-row .val-gold { color: var(--gold); font-weight: 700; }
-    .fee-row .val-blue { color: var(--accent-blue); font-weight: 600; }
-    .fee-divider { border: none; border-top: 1px solid rgba(90,200,250,0.12); margin: 5px 0; }
-    .fee-row-bold { font-weight: 600; border-top: 1px dashed rgba(90,200,250,0.1); padding-top: 3px; margin-top: 3px; }
-    .fee-pool-label { font-size: 0.85rem !important; color: var(--accent-blue); font-weight: 600; margin-bottom: 3px; letter-spacing: 0.3px; }
+    .fee-row .val-gold { color: var(--text-primary); font-weight: 700; }
+    .fee-row .val-blue { color: var(--text-primary); font-weight: 600; }
+    .fee-divider { border: none; border-top: 1px solid rgba(255,255,255,0.1); margin: 5px 0; }
+    .fee-row-bold { font-weight: 600; border-top: 1px dashed rgba(255,255,255,0.08); padding-top: 3px; margin-top: 3px; }
+    .fee-pool-label { font-size: 0.85rem !important; color: var(--text-primary); font-weight: 600; margin-bottom: 3px; letter-spacing: 0.3px; }
     .fee-formula-hint { font-size: 0.75rem !important; color: var(--text-muted); margin-bottom: 2px; margin-top: 1px; font-style: italic; }
-    .fee-total { font-size: 1.2rem; font-weight: 700; color: var(--gold); }
+    .fee-total { font-size: 1.2rem; font-weight: 700; color: var(--text-primary); }
     .fee-label { font-size: 0.72rem; color: var(--text-muted); margin-top: 2px; }
 
     /* 一级居间人行 */
@@ -152,41 +175,41 @@
     .level1-node.right { right: 0; }
     .level1-avatar { width: 52px; height: 52px; border-radius: 50%; background: rgba(255,107,157,0.12); border: 2px solid rgba(255,107,157,0.5); display: flex; align-items: center; justify-content: center; font-size: 1.2rem; position: relative; transition: all 0.3s var(--ease-spring); }
     .level1-avatar.filled { background: linear-gradient(135deg, rgba(255,107,157,0.3), rgba(196,77,255,0.2)); }
-    .level1-avatar.highlight { transform: scale(1.15); box-shadow: 0 0 30px rgba(245,158,11,0.5); border-color: var(--gold); }
+    .level1-avatar.highlight { transform: scale(1.15); box-shadow: 0 0 30px rgba(245,158,11,0.5); border-color: var(--text-primary); }
     .level1-avatar.empty { border-style: dashed; opacity: 0.5; }
-    .level1-label { margin-top: 6px; font-size: 0.85rem; font-weight: 500; color: var(--accent-blue); }
-    .level1-percent { font-size: 0.82rem; color: var(--gold); font-weight: 600; }
+    .level1-label { margin-top: 6px; font-size: 0.85rem; font-weight: 500; color: var(--text-primary); }
+    .level1-percent { font-size: 0.82rem; color: var(--text-primary); font-weight: 600; }
     .level1-line { position: absolute; left: 140px; right: 140px; top: 26px; height: 3px; background: linear-gradient(90deg, rgba(255,107,157,0.6), rgba(196,77,255,0.4), rgba(255,107,157,0.6)); border-radius: 2px; }
 
     /* 二级居间人行 */
     .uchain-level2 { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; position: relative; z-index: 1; margin: 64px 20px 12px; }
     .level2-node { display: flex; flex-direction: column; align-items: center; }
     .level2-avatar { width: 46px; height: 46px; background: rgba(245,158,11,0.08); border: 2px solid rgba(245,158,11,0.35); display: flex; align-items: center; justify-content: center; font-size: 1rem; clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%); transition: all 0.3s var(--ease-spring); position: relative; }
-    .level2-avatar.filled { background: linear-gradient(135deg, rgba(245,158,11,0.2), rgba(252,211,77,0.15)); border-color: var(--gold); }
+    .level2-avatar.filled { background: linear-gradient(135deg, rgba(245,158,11,0.2), rgba(252,211,77,0.15)); border-color: var(--text-primary); }
     .level2-avatar.highlight { transform: scale(1.15); filter: drop-shadow(0 0 16px rgba(245,158,11,0.6)); }
     .level2-avatar.empty { border-style: dashed; opacity: 0.4; }
     .level2-label { margin-top: 6px; font-size: 0.82rem; color: var(--text-secondary); }
-    .level2-percent { font-size: 0.78rem; color: var(--gold); font-weight: 500; }
+    .level2-percent { font-size: 0.78rem; color: var(--text-primary); font-weight: 500; }
     .level2-line-wrap { display: flex; align-items: center; gap: 0; width: 100%; justify-content: center; margin-top: 8px; }
     .level2-line-seg { height: 2px; width: 40px; background: linear-gradient(90deg, rgba(245,158,11,0.5), rgba(252,211,77,0.3)); border-radius: 1px; }
     .level2-tag { text-align: center; font-size: 0.82rem; color: rgba(245,158,11,0.7); font-weight: 500; margin-top: 48px; }
 
     /* 计费规则折叠模块 */
-    .fee-rules-block { background: rgba(90,200,250,0.06); border: 1px solid rgba(90,200,250,0.15); border-radius: 12px; margin-bottom: 16px; overflow: hidden; }
-    .fee-rules-toggle { padding: 10px 16px; font-size: 0.85rem; font-weight: 600; color: var(--accent-blue); cursor: pointer; user-select: none; display: flex; align-items: center; gap: 8px; transition: background 0.2s; }
-    .fee-rules-toggle:hover { background: rgba(90,200,250,0.08); }
+    .fee-rules-block { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.12); border-radius: 12px; margin-bottom: 16px; overflow: hidden; }
+    .fee-rules-toggle { padding: 10px 16px; font-size: 0.85rem; font-weight: 600; color: var(--text-primary); cursor: pointer; user-select: none; display: flex; align-items: center; gap: 8px; transition: background 0.2s; }
+    .fee-rules-toggle:hover { background: rgba(255,255,255,0.06); }
     .fee-rules-toggle::before { content: '▶'; font-size: 0.6rem; transition: transform 0.3s; display: inline-block; }
     .fee-rules-toggle.open::before { transform: rotate(90deg); }
     .fee-rules-panel { display: none; }
     .fee-rules-panel.open { display: block; }
     .fee-rules-content { padding: 0 16px 14px; font-size: 0.8rem; color: var(--text-secondary); line-height: 1.7; }
     .fee-rules-content table { width: 100%; border-collapse: collapse; margin-top: 8px; }
-    .fee-rules-content th, .fee-rules-content td { padding: 5px 8px; text-align: left; border-bottom: 1px solid rgba(90,200,250,0.1); font-size: 0.78rem; }
-    .fee-rules-content th { color: var(--accent-blue); font-weight: 600; }
+    .fee-rules-content th, .fee-rules-content td { padding: 5px 8px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.08); font-size: 0.78rem; }
+    .fee-rules-content th { color: var(--text-primary); font-weight: 600; }
 
     /* 段位自测折叠 */
-    .段位-toggle { padding: 10px 16px; font-size: 1rem; font-weight: 600; color: var(--gold); cursor: pointer; user-select: none; display: flex; align-items: center; gap: 8px; background: rgba(245,158,11,0.08); border: 1px solid rgba(245,158,11,0.2); border-radius: 12px; margin-bottom: 12px; }
-    .段位-toggle:hover { background: rgba(245,158,11,0.12); }
+    .段位-toggle { padding: 10px 16px; font-size: 1rem; font-weight: 600; color: var(--text-primary); cursor: pointer; user-select: none; display: flex; align-items: center; gap: 8px; background: rgba(0,0,0,0.04); border: 1px solid rgba(0,0,0,0.1); border-radius: 12px; margin-bottom: 12px; }
+    .段位-toggle:hover { background: rgba(0,0,0,0.06); }
     .段位-panel { max-height: 0; overflow: hidden; transition: max-height 0.4s ease; }
     .段位-panel.open { max-height: 2000px; }
     /* 饼图：立体蛋糕浮在U链左上方 */
@@ -211,7 +234,7 @@
     /* 底部闭环状态 */
     .uchain-bottom { text-align: center; position: relative; z-index: 1; margin-top: 16px; min-height: 44px; }
     .chain-status { display: inline-flex; align-items: center; gap: 8px; padding: 10px 24px; border-radius: 30px; font-size: 0.9rem; font-weight: 600; transition: all 0.5s var(--ease-spring); }
-    .chain-status.open { background: rgba(90,200,250,0.1); border: 1px solid rgba(90,200,250,0.2); color: var(--accent-blue); }
+    .chain-status.open { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: var(--text-primary); }
     .chain-status.closed { background: rgba(52,199,89,0.15); border: 1px solid rgba(52,199,89,0.4); color: var(--success); animation: closedPulse 2s ease-in-out infinite; }
     @keyframes closedPulse { 0%,100% { box-shadow: 0 0 0 0 rgba(52,199,89,0); } 50% { box-shadow: 0 0 20px 4px rgba(52,199,89,0.2); } }
 
@@ -227,34 +250,34 @@
     .contract-section { margin-bottom: 32px; }
     .contract-cards { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
     .contract-card { background: var(--bg-card); border: 1px solid var(--border-card); border-radius: 16px; overflow: hidden; cursor: pointer; transition: all 0.3s var(--ease-spring); }
-    .contract-card:hover { border-color: var(--accent-blue); box-shadow: 0 0 20px rgba(90, 200, 250, 0.2); }
-    .contract-card.open { border-color: var(--accent-blue); }
+    .contract-card:hover { border-color: var(--text-primary); box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+    .contract-card.open { border-color: var(--text-primary); }
     .contract-card-header { display: flex; align-items: center; gap: 16px; padding: 20px; }
     .contract-card-icon { font-size: 2rem; }
     .contract-card-info { flex: 1; }
     .contract-card-title { font-size: 1.1rem; font-weight: 600; color: var(--text-primary); margin-bottom: 4px; }
-    .contract-card-sub { font-size: 0.85rem; color: var(--gold); }
+    .contract-card-sub { font-size: 0.85rem; color: var(--text-primary); }
     .contract-card-arrow { font-size: 1.5rem; color: var(--text-secondary); transition: transform 0.3s; }
     .contract-card.open .contract-card-arrow { transform: rotate(90deg); }
     .contract-card-body { display: none; padding: 0 20px 20px; border-top: 1px solid var(--border-card); }
     .contract-card.open .contract-card-body { display: block; }
     .contract-agreement { background: rgba(0,0,0,0.3); border-radius: 12px; padding: 20px; margin-bottom: 16px; max-height: 400px; overflow-y: auto; }
-    .contract-agreement h4 { color: var(--gold); margin-bottom: 16px; font-size: 1.1rem; }
-    .contract-agreement h5 { color: var(--accent-blue); margin: 16px 0 8px; font-size: 0.95rem; }
+    .contract-agreement h4 { color: var(--text-primary); margin-bottom: 16px; font-size: 1.1rem; }
+    .contract-agreement h5 { color: var(--text-primary); margin: 16px 0 8px; font-size: 0.95rem; }
     .contract-agreement p { color: var(--text-secondary); font-size: 0.85rem; line-height: 1.6; margin-bottom: 8px; }
     .contract-agreement hr { border: none; border-top: 1px solid var(--border-card); margin: 16px 0; }
     .contract-signature { margin-top: 24px; }
     .signature-line { display: flex; justify-content: space-between; color: var(--text-secondary); font-size: 0.85rem; }
     .contract-actions { display: flex; gap: 12px; }
     .contract-actions .btn { flex: 1; }
-    .contract-fee { color: var(--gold); font-size: 1.1rem; }
-    .contract-date { color: var(--accent-blue); }
+    .contract-fee { color: var(--text-primary); font-size: 1.1rem; }
+    .contract-date { color: var(--text-primary); }
     .contract-agreement::-webkit-scrollbar { width: 6px; }
     .contract-agreement::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); border-radius: 3px; }
-    .contract-agreement::-webkit-scrollbar-thumb { background: var(--accent-blue); border-radius: 3px; }
+    .contract-agreement::-webkit-scrollbar-thumb { background: var(--text-primary); border-radius: 3px; }
 
     /* 底部CTA */
-    .cta-section { text-align: center; padding: 32px; background: linear-gradient(135deg, rgba(245, 158, 11, 0.15) 0%, rgba(245, 158, 11, 0.05) 100%); border: 1px solid rgba(245, 158, 11, 0.3); border-radius: 24px; }
+    .cta-section { text-align: center; padding: 32px; background: linear-gradient(135deg, rgba(0,0,0,0.05) 0%, rgba(0,0,0,0.02) 100%); border: 1px solid rgba(0,0,0,0.12); border-radius: 24px; }
     .cta-title { font-size: 1.2rem; font-weight: 600; margin-bottom: 8px; }
     .cta-desc { font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 20px; }
     .cta-buttons { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
@@ -267,10 +290,10 @@
     .project-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
     .project-title { font-size: 1rem; font-weight: 600; }
     .project-status { padding: 4px 10px; border-radius: 10px; font-size: 0.75rem; }
-    .status-recruiting { background: rgba(90, 200, 250, 0.2); color: var(--accent-blue); }
+    .status-recruiting { background: rgba(0,0,0,0.05); color: var(--text-secondary); }
     .status-active { background: rgba(52, 199, 89, 0.2); color: var(--success); }
     .status-done { background: rgba(150, 180, 210, 0.2); color: var(--text-muted); }
-    .project-fee { font-size: 0.9rem; color: var(--gold); margin-bottom: 8px; }
+    .project-fee { font-size: 0.9rem; color: var(--text-primary); margin-bottom: 8px; }
     .project-meta { font-size: 0.8rem; color: var(--text-muted); }
 
     /* 弹窗 */
@@ -285,7 +308,7 @@
     .form-group { margin-bottom: 16px; }
     .form-label { display: block; font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 8px; }
     .form-input { width: 100%; padding: 12px 16px; border-radius: 12px; border: 1px solid var(--border-card); background: var(--bg-card); color: var(--text-primary); font-size: 0.9rem; }
-    .form-input:focus { outline: none; border-color: var(--accent-blue); }
+    .form-input:focus { outline: none; border-color: var(--text-primary); }
     .form-hint { font-size: 0.75rem; color: var(--text-muted); margin-top: 6px; }
     .form-actions { display: flex; gap: 12px; justify-content: flex-end; }
 
@@ -295,25 +318,25 @@
     .quiz-question { font-size: 1.1rem; font-weight: 600; margin-bottom: 20px; text-align: center; }
     .quiz-options { display: flex; flex-direction: column; gap: 12px; }
     .quiz-option { padding: 16px; background: var(--bg-card); border: 1px solid var(--border-card); border-radius: 12px; cursor: pointer; transition: all 0.2s; text-align: center; }
-    .quiz-option:hover { border-color: var(--accent-blue); background: var(--bg-card-hover); }
-    .quiz-option.selected { border-color: var(--accent-blue); background: rgba(90, 200, 250, 0.15); }
+    .quiz-option:hover { border-color: var(--text-primary); background: var(--bg-card-hover); }
+    .quiz-option.selected { border-color: var(--text-primary); background: rgba(0,0,0,0.04); }
     .quiz-hint { font-size: 0.8rem; color: var(--text-muted); margin-top: 4px; }
     .quiz-result { text-align: center; padding: 24px; background: var(--bg-card); border-radius: 16px; margin-top: 20px; }
     .quiz-result-icon { font-size: 2.5rem; margin-bottom: 12px; }
-    .quiz-result-title { font-size: 1.1rem; font-weight: 600; color: var(--gold); margin-bottom: 8px; }
+    .quiz-result-title { font-size: 1.1rem; font-weight: 600; color: var(--text-primary); margin-bottom: 8px; }
     .quiz-result-desc { font-size: 0.85rem; color: var(--text-secondary); }
     .quiz-progress { display: flex; justify-content: center; gap: 8px; margin-bottom: 24px; }
     .quiz-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--border-card); }
-    .quiz-dot.active { background: var(--accent-blue); }
+    .quiz-dot.active { background: var(--text-primary); }
 
     /* 提示语 */
-    .tip-box { background: rgba(90, 200, 250, 0.1); border: 1px solid rgba(90, 200, 250, 0.2); border-radius: 12px; padding: 12px 16px; margin-bottom: 20px; font-size: 0.85rem; color: var(--accent-blue); }
-    .tip-box.gold { background: rgba(245, 158, 11, 0.1); border-color: rgba(245, 158, 11, 0.2); color: var(--gold); }
+    .tip-box { background: rgba(0,0,0,0.03); border: 1px solid var(--border-card); border-radius: 12px; padding: 12px 16px; margin-bottom: 20px; font-size: 0.85rem; color: var(--text-secondary); }
+    .tip-box.gold { background: rgba(0,0,0,0.05); border-color: rgba(0,0,0,0.08); color: var(--text-primary); }
 
     /* 邀请码展示 */
-    .invite-code-box { background: var(--bg-card); border: 2px dashed var(--gold); border-radius: 12px; padding: 20px; text-align: center; margin: 20px 0; }
+    .invite-code-box { background: var(--bg-card); border: 2px dashed var(--text-primary); border-radius: 12px; padding: 20px; text-align: center; margin: 20px 0; }
     .invite-code-label { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 8px; }
-    .invite-code-value { font-size: 1.8rem; font-weight: 700; color: var(--gold); letter-spacing: 4px; }
+    .invite-code-value { font-size: 1.8rem; font-weight: 700; color: var(--text-primary); letter-spacing: 4px; }
     .invite-code-hint { font-size: 0.75rem; color: var(--text-muted); margin-top: 8px; }
 
     /* 成功提示 */
@@ -323,35 +346,72 @@
     .success-desc { font-size: 0.9rem; color: var(--text-secondary); }
 
     /* ===== 街长立规区 ===== */
-    .街长-section { background: linear-gradient(180deg, rgba(90,200,250,0.08) 0%, transparent 100%); border-bottom: 1px solid var(--border-card); margin-bottom: 32px; }
+    .街长-section { background: transparent; border-bottom: 1px solid var(--border-card); margin-bottom: 32px; }
 
     /* 标题区 */
     .街长-header { text-align: center; padding: 48px 20px 32px; position: relative; }
-    .街长-badge { display: inline-block; background: linear-gradient(135deg, var(--gold) 0%, var(--gold-light) 100%); color: #000; font-size: 0.75rem; font-weight: 700; padding: 6px 16px; border-radius: 20px; margin-bottom: 20px; letter-spacing: 1px; }
+    .街长-badge { display: inline-block; background: var(--bg-card-hover); color: var(--text-primary); font-size: 0.75rem; font-weight: 700; padding: 6px 16px; border-radius: 20px; margin-bottom: 20px; letter-spacing: 1px; border: 1px solid var(--border-card); }
     .街长-title { font-size: 2rem; font-weight: 700; color: var(--text-primary); margin-bottom: 16px; line-height: 1.3; }
-    .街长-subtitle { font-size: 1rem; color: var(--text-secondary); max-width: 700px; margin: 0 auto 24px; line-height: 1.7; }
+    .街长-subtitle { font-size: 1rem; color: var(--text-secondary); max-width: 700px; margin: 0 auto 16px; line-height: 1.7; }
     .街长-quotes { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-bottom: 16px; }
     .街长-quote { background: var(--bg-card); border: 1px solid var(--border-card); border-radius: 8px; padding: 10px 18px; font-size: 0.85rem; color: var(--text-secondary); transition: all 0.2s; }
-    .街长-quote:hover { border-color: var(--gold); color: var(--gold); }
+    .街长-quote:hover { border-color: var(--text-primary); color: var(--text-primary); }
     .街长-stat { display: flex; justify-content: center; gap: 40px; margin-top: 24px; flex-wrap: wrap; }
     .街长-stat-item { text-align: center; }
-    .街长-stat-num { font-size: 2rem; font-weight: 700; color: var(--danger); }
-    .街长-stat-label { font-size: 0.8rem; color: var(--text-muted); }
+    .街长-stat-num { font-size: 2.4rem; font-weight: 700; color: var(--text-primary); }
+    .街长-stat-label { font-size: 0.85rem; color: var(--text-muted); }
 
     /* 警示区 */
-    .街长-alert { background: linear-gradient(135deg, rgba(255,59,48,0.12) 0%, rgba(255,59,48,0.05) 100%); border: 1px solid rgba(255,59,48,0.3); border-radius: 16px; padding: 24px; margin: 0 20px 32px; }
-    .街长-alert-title { font-size: 1rem; font-weight: 600; color: var(--danger); margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+    .街长-alert { background: linear-gradient(135deg, rgba(0,0,0,0.04) 0%, rgba(0,0,0,0.02) 100%); border: 1px solid rgba(0,0,0,0.1); border-radius: 16px; padding: 24px; margin: 0 20px 32px; }
+    .街长-alert-title { font-size: 1rem; font-weight: 600; color: var(--text-primary); margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
     .街长-alert-list { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
     .街长-alert-item { display: flex; align-items: flex-start; gap: 10px; font-size: 0.85rem; color: var(--text-secondary); }
 
     /* 铁律区 */
     .街长-rules { padding: 0 20px 32px; }
-    .街长-rules-title { font-size: 1.1rem; font-weight: 600; color: var(--gold); text-align: center; margin-bottom: 24px; }
+    .街长-rules-title { font-size: 1.1rem; font-weight: 600; color: var(--text-primary); text-align: center; margin-bottom: 24px; }
     .街长-rules-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
     .街长-rule { background: var(--bg-card); border: 1px solid var(--border-card); border-radius: 12px; padding: 16px; text-align: center; transition: all 0.2s; }
-    .街长-rule:hover { border-color: var(--accent-blue); transform: translateY(-2px); }
-    .街长-rule-num { display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px; border-radius: 50%; background: var(--accent-blue); color: #000; font-size: 0.75rem; font-weight: 700; margin-bottom: 8px; }
+    .街长-rule:hover { border-color: var(--text-primary); transform: translateY(-2px); }
+    .街长-rule-num { display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px; border-radius: 50%; background: var(--bg-card-hover); color: var(--text-primary); font-size: 0.75rem; font-weight: 700; margin-bottom: 8px; }
     .街长-rule-text { font-size: 0.82rem; color: var(--text-secondary); line-height: 1.4; }
+
+    /* 重新定义居间 */
+    .重新定义-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; padding: 0 20px 32px; }
+    .定义-card { background: var(--bg-card); border: 1px solid var(--border-card); border-radius: 16px; padding: 20px 16px; }
+    .定义-card-tag { font-size: 0.75rem; color: var(--text-primary); font-weight: 600; margin-bottom: 8px; }
+    .定义-card h3 { font-size: 1rem; font-weight: 700; color: var(--text-primary); margin-bottom: 8px; }
+    .定义-card p { font-size: 0.82rem; color: var(--text-secondary); line-height: 1.5; }
+
+    /* 黄金法则 */
+    .黄金法则-section { padding: 0 20px 32px; }
+    .section-title { font-size: 1.1rem; font-weight: 600; color: var(--text-primary); text-align: center; margin-bottom: 20px; }
+    .黄金法则-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    .黄金法则-card { background: var(--bg-card); border: 1px solid var(--border-card); border-radius: 12px; padding: 16px; }
+    .黄金法则-card-title { font-size: 0.9rem; font-weight: 700; color: var(--text-primary); margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+    .黄金法则-card p { font-size: 0.8rem; color: var(--text-secondary); line-height: 1.5; }
+
+    /* 明牌规则 */
+    .明牌-section { padding: 0 20px 32px; }
+    .明牌-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    .明牌-card { background: var(--bg-card); border: 1px solid var(--border-card); border-radius: 12px; padding: 16px; }
+    .明牌-card-title { font-size: 0.88rem; font-weight: 700; color: var(--text-primary); margin-bottom: 8px; }
+    .明牌-card p { font-size: 0.8rem; color: var(--text-secondary); line-height: 1.5; }
+
+    /* 常见减分 */
+    .减分-section { padding: 0 20px 32px; }
+    .减分-section-title { font-size: 1rem; font-weight: 600; color: var(--text-primary); text-align: center; margin-bottom: 16px; }
+    .减分-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    .减分-card { background: var(--bg-card); border: 1px solid var(--border-card); border-radius: 12px; padding: 14px; }
+    .减分-card-title { font-size: 0.85rem; font-weight: 700; color: var(--text-primary); margin-bottom: 6px; }
+    .减分-card p { font-size: 0.82rem; color: var(--text-secondary); line-height: 1.5; }
+
+    /* 金牌居间 */
+    .金牌-section { padding: 0 20px 32px; }
+    .金牌-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    .金牌-card { background: var(--bg-card); border: 1px solid var(--border-card); border-radius: 12px; padding: 16px; }
+    .金牌-card-title { font-size: 0.88rem; font-weight: 700; color: var(--text-primary); margin-bottom: 8px; }
+    .金牌-card p { font-size: 0.8rem; color: var(--text-secondary); line-height: 1.5; }
 
     /* 段位自测 */
     .段位-section { padding: 32px 20px 48px; background: var(--bg-card); border-top: 1px solid var(--border-card); }
@@ -359,17 +419,17 @@
     .段位-title { font-size: 1.3rem; font-weight: 700; color: var(--text-primary); margin-bottom: 8px; }
     .段位-desc { font-size: 0.9rem; color: var(--text-muted); }
     .段位-quiz { max-width: 700px; margin: 0 auto; }
-    .段位-q { background: rgba(255,255,255,0.02); border: 1px solid var(--border-card); border-radius: 16px; padding: 20px; margin-bottom: 16px; }
+    .段位-q { background: var(--bg-card); border: 1px solid var(--border-card); border-radius: 16px; padding: 20px; margin-bottom: 16px; }
     .段位-q-title { font-size: 0.95rem; font-weight: 600; color: var(--text-primary); margin-bottom: 14px; display: flex; align-items: flex-start; gap: 10px; }
-    .段位-q-num { display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px; border-radius: 50%; background: var(--accent-blue); color: #000; font-size: 0.75rem; font-weight: 700; flex-shrink: 0; }
+    .段位-q-num { display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px; border-radius: 50%; background: var(--bg-card-hover); color: var(--text-primary); font-size: 0.75rem; font-weight: 700; flex-shrink: 0; }
     .段位-options { display: flex; flex-direction: column; gap: 8px; }
-    .段位-opt { display: flex; align-items: center; gap: 12px; padding: 12px 16px; background: rgba(255,255,255,0.02); border: 1px solid var(--border-card); border-radius: 10px; cursor: pointer; transition: all 0.2s; font-size: 0.88rem; color: var(--text-secondary); }
-    .段位-opt:hover { border-color: var(--accent-blue); background: rgba(90,200,250,0.05); }
-    .段位-opt.selected { border-color: var(--gold); background: rgba(245,158,11,0.1); color: var(--gold); }
-    .段位-opt .opt-letter { display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 50%; background: rgba(255,255,255,0.05); font-size: 0.75rem; font-weight: 600; flex-shrink: 0; }
-    .段位-opt.selected .opt-letter { background: var(--gold); color: #000; }
-    .段位-submit { width: 100%; padding: 16px; border-radius: 14px; border: none; background: linear-gradient(135deg, var(--gold) 0%, var(--gold-light) 100%); color: #000; font-size: 1rem; font-weight: 600; cursor: pointer; margin-top: 24px; transition: all 0.25s; }
-    .段位-submit:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(245,158,11,0.35); }
+    .段位-opt { display: flex; align-items: center; gap: 12px; padding: 12px 16px; background: var(--bg-card); border: 1px solid var(--border-card); border-radius: 10px; cursor: pointer; transition: all 0.2s; font-size: 0.88rem; color: var(--text-secondary); }
+    .段位-opt:hover { border-color: var(--text-primary); background: var(--bg-card-hover); }
+    .段位-opt.selected { border-color: var(--text-primary); background: rgba(0,0,0,0.05); color: var(--text-primary); }
+    .段位-opt .opt-letter { display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 50%; background: rgba(0,0,0,0.06); font-size: 0.75rem; font-weight: 600; flex-shrink: 0; }
+    .段位-opt.selected .opt-letter { background: var(--text-primary); color: #FFF; }
+    .段位-submit { width: 100%; padding: 16px; border-radius: 14px; border: 1px solid var(--border-card); background: var(--bg-card-hover); color: var(--text-primary); font-size: 1rem; font-weight: 600; cursor: pointer; margin-top: 24px; transition: all 0.25s; }
+    .段位-submit:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0,0.15); }
     .段位-submit:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
     .段位-result { display: none; text-align: center; padding: 32px 20px; }
     .段位-result.show { display: block; }
@@ -377,11 +437,11 @@
     .段位-result-title { font-size: 1.5rem; font-weight: 700; margin-bottom: 8px; }
     .段位-result-title.bronze { color: #cd7f32; }
     .段位-result-title.silver { color: #c0c0c0; }
-    .段位-result-title.gold { color: var(--gold); }
+    .段位-result-title.gold { color: var(--text-primary); }
     .段位-result-sub { font-size: 1rem; color: var(--text-secondary); margin-bottom: 16px; }
     .段位-result-desc { font-size: 0.88rem; color: var(--text-muted); line-height: 1.6; max-width: 500px; margin: 0 auto 24px; }
-    .段位-result-advice { background: rgba(245,158,11,0.1); border: 1px solid rgba(245,158,11,0.2); border-radius: 12px; padding: 16px; margin-bottom: 24px; font-size: 0.88rem; color: var(--gold); }
-    .段位-result-btn { padding: 14px 32px; border-radius: 12px; border: none; background: linear-gradient(135deg, var(--gold) 0%, var(--gold-light) 100%); color: #000; font-size: 0.95rem; font-weight: 600; cursor: pointer; }
+    .段位-result-advice { background: rgba(0,0,0,0.05); border: 1px solid rgba(0,0,0,0.1); border-radius: 12px; padding: 16px; margin-bottom: 24px; font-size: 0.88rem; color: var(--text-primary); }
+    .段位-result-btn { padding: 14px 32px; border-radius: 12px; border: none; background: linear-gradient(135deg, var(--text-primary) 0%, #000 100%); color: #000; font-size: 0.95rem; font-weight: 600; cursor: pointer; }
     .段位-reset { margin-top: 16px; font-size: 0.82rem; color: var(--text-muted); cursor: pointer; text-decoration: underline; }
 
     @media (max-width: 800px) {
@@ -429,14 +489,8 @@
       <!-- 标题区 -->
       <div class="街长-header">
         <div class="街长-badge">🏛️ 资源夜市一条街 · 街长立规</div>
-        <h1 class="街长-title">重新定义居间<br>合格居间人段位自评</h1>
-        <p class="街长-subtitle">居间不是传话，是专业风控<br>居间不是人脉变现，是信任变现</p>
-        <div class="街长-quotes">
-          <span class="街长-quote">居间不是跨界打劫</span>
-          <span class="街长-quote">是价值撮合</span>
-          <span class="街长-quote">不懂规则别做居间</span>
-          <span class="街长-quote">不然必踩牢狱坑</span>
-        </div>
+        <h1 class="街长-title">重新定义居间 · 价值撮合<br><span class="街长-subtitle" style="display:block;font-size:1.2rem;font-weight:400;margin-top:4px">信任即资产</span></h1>
+        <p class="街长-subtitle" style="margin-bottom:8px">合规即生存 · 无知即深渊</p>
         <div class="街长-stat">
           <div class="街长-stat-item">
             <div class="街长-stat-num">4500+</div>
@@ -449,16 +503,54 @@
         </div>
       </div>
 
+      <!-- 重新定义居间 -->
+      <div class="重新定义-grid">
+        <div class="定义-card">
+          <div class="定义-card-tag">居间不是传话</div>
+          <h3>是专业风控 · 深度背调 · 交易屏障</h3>
+          <p>居间不是高危，无知才是。专业做风控、深度做背调、诚信做居间。</p>
+        </div>
+        <div class="定义-card">
+          <div class="定义-card-tag">居间不是人脉变现</div>
+          <h3>是信任变现 · 用口碑换长久价值</h3>
+          <p>从古之牙人至现代居间，内核不变：信誉是唯一通行证。</p>
+        </div>
+        <div class="定义-card">
+          <div class="定义-card-tag">居间不是跨界打劫</div>
+          <h3>是价值撮合 · 为双方创造共赢节点</h3>
+          <p>懂规则、守规则、用规则，合规操作是唯一护城河。</p>
+        </div>
+      </div>
+
       <!-- 警示区 -->
       <div class="街长-alert">
-        <div class="街长-alert-title">⚠️ 街长重磅警示：居间不是高危，无知才是</div>
+        <div class="街长-alert-title" style="color:var(--text-primary)">⚠️ 街长重磅警示：居间不是高危，无知才是</div>
         <div class="街长-alert-list">
-          <div class="街长-alert-item">🚫 不核实项目，乱撮合变共犯</div>
-          <div class="街长-alert-item">🚫 不签合同，口头约定变纠纷</div>
-          <div class="街长-alert-item">🚫 私下收钱，不明收入变涉案</div>
-          <div class="街长-alert-item">🚫 承诺结果，夸大包装变诈骗</div>
-          <div class="街长-alert-item">🚫 触碰擦边，牵线搭桥变帮凶</div>
-          <div class="街长-alert-item">🚫 做一锤子买卖，无口碑无复购</div>
+          <div class="街长-alert-item" style="color:var(--text-secondary)">🚫 不核实项目，乱撮合变共犯</div>
+          <div class="街长-alert-item" style="color:var(--text-secondary)">🚫 不签合同，口头约定变纠纷</div>
+          <div class="街长-alert-item" style="color:var(--text-secondary)">🚫 私下收钱，不明收入变涉案</div>
+          <div class="街长-alert-item" style="color:var(--text-secondary)">🚫 承诺结果，夸大包装变诈骗</div>
+          <div class="街长-alert-item" style="color:var(--text-secondary)">🚫 触碰擦边，牵线搭桥变帮凶</div>
+          <div class="街长-alert-item" style="color:var(--text-secondary)">🚫 做一锤子买卖，无口碑无复购</div>
+        </div>
+      </div>
+
+      <!-- 居间应该怎么做 · 黄金法则 -->
+      <div class="黄金法则-section">
+        <div class="section-title">居间应该怎么做 · 黄金法则</div>
+        <div class="黄金法则-grid">
+          <div class="黄金法则-card">
+            <div class="黄金法则-card-title" style="color:var(--text-primary)">💪 积累资源</div>
+            <p>广建人脉网，掌握机构/产品/资金需求底层数据</p>
+          </div>
+          <div class="黄金法则-card">
+            <div class="黄金法则-card-title" style="color:var(--text-primary)">📋 专业服务</div>
+            <p>精通行业规则，熟悉市场动态，如艺术品鉴赏、金融风控模型</p>
+          </div>
+          <div class="黄金法则-card">
+            <div class="黄金法则-card-title" style="color:var(--text-primary)">🤝 诚信公正</div>
+            <p>如实报告双方信息，不隐瞒风险，不虚构利好，保持绝对中立</p>
+          </div>
         </div>
       </div>
 
@@ -497,6 +589,99 @@
           <div class="街长-rule">
             <div class="街长-rule-num">8</div>
             <div class="街长-rule-text">做长期口碑<br>不做一锤子买卖</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 明牌规则 -->
+      <div class="明牌-section">
+        <div class="section-title">明牌规则 · 红黑对弈</div>
+        <div class="明牌-grid">
+          <div class="明牌-card" style="background:var(--bg-card);border:1px solid var(--border-card)">
+            <div class="明牌-card-title" style="color:var(--success)">✅ 明牌</div>
+            <p>留痕 · 按规则分配 · 居间人 · 常见减分行为</p>
+          </div>
+          <div class="明牌-card" style="background:var(--bg-card);border:1px solid var(--border-card)">
+            <div class="明牌-card-title" style="color:var(--text-secondary)">💰 按规则分配</div>
+            <p>透明分润 · 一级二级引荐人事前确认比例，不偏不倚</p>
+          </div>
+          <div class="明牌-card" style="background:var(--bg-card);border:1px solid var(--border-card)">
+            <div class="明牌-card-title" style="color:var(--text-primary)">📝 留痕</div>
+            <p>全程留痕可追溯 · 沟通记录合同资金流水完整存档</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 常见减分行为 -->
+      <div class="减分-section">
+        <div class="减分-section-title">居间人 · 常见减分行为 · ❌ 禁止越线</div>
+        <div class="减分-grid">
+          <div class="减分-card">
+            <div class="减分-card-title">🚫 跳单 · 飞单</div>
+            <p>越过原居间人私下成交，窃取撮合成果，破坏行业信任</p>
+          </div>
+          <div class="减分-card">
+            <div class="减分-card-title">🚫 瞎传话 · 添油加醋</div>
+            <p>传递不准确信息、歪曲双方原意，引发误解甚至合同纠纷</p>
+          </div>
+          <div class="减分-card">
+            <div class="减分-card-title">🚫 泄露商业秘密/隐私</div>
+            <p>随意透露交易对手核心数据、个人隐私，涉嫌违法且永久失信</p>
+          </div>
+          <div class="减分-card">
+            <div class="减分-card-title">🚫 私下收钱 · 阴阳合同</div>
+            <p>不签正规居间协议，私账收款，资金不明，涉案风险极高</p>
+          </div>
+          <div class="减分-card">
+            <div class="减分-card-title">🚫 承诺结果 · 夸大包装</div>
+            <p>"100%过审""必拿批文"等虚假承诺，涉嫌诈骗罪</p>
+          </div>
+          <div class="减分-card">
+            <div class="减分-card-title">🚫 不做背调 · 盲目撮合</div>
+            <p>未核实项目真实性，拉皮条式撮合，变相成为共犯</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 金牌居间正确行为 -->
+      <div class="金牌-section">
+        <div class="section-title" style="color:var(--success)">🏆 金牌居间 · 正确行为</div>
+        <div class="金牌-grid">
+          <div class="金牌-card">
+            <div class="金牌-card-title">🏆 长期主义</div>
+            <p>明牌规则，契约先行。居间关系、分润比例、权利义务全部书面化，签约前明示各方。</p>
+          </div>
+          <div class="金牌-card">
+            <div class="金牌-card-title">💰 按规则分配</div>
+            <p>一级二级引荐人事前确认比例，不偏不倚，每笔分润清晰可查。</p>
+          </div>
+          <div class="金牌-card">
+            <div class="金牌-card-title">📝 留痕</div>
+            <p>沟通记录、合同、资金流水完整存档，关键节点书面确认，可公开可解释。</p>
+          </div>
+          <div class="金牌-card">
+            <div class="金牌-card-title">🔒 保密第一</div>
+            <p>签署保密协议，敏感信息脱敏，绝不泄露双方商业隐私。</p>
+          </div>
+          <div class="金牌-card">
+            <div class="金牌-card-title">🛡️ 严谨背调</div>
+            <p>严查项目真实性、资质、信用，不真实不接单，规避连带责任。</p>
+          </div>
+          <div class="金牌-card">
+            <div class="金牌-card-title">🤝 精准传话</div>
+            <p>如实转达双方诉求，书面纪要确认，不添油不加醋。</p>
+          </div>
+          <div class="金牌-card">
+            <div class="金牌-card-title">⚡ 价值连接</div>
+            <p>专注资源匹配与流程合规，不给虚假预期，用专业降低交易成本。</p>
+          </div>
+          <div class="金牌-card">
+            <div class="金牌-card-title">🚫 不承诺结果</div>
+            <p>绝不承诺结果，只做价值连接。</p>
+          </div>
+          <div class="金牌-card">
+            <div class="金牌-card-title">🌱 可传承信用</div>
+            <p>可持续副业，可积累口碑，可传承信用。</p>
           </div>
         </div>
       </div>
@@ -617,19 +802,19 @@
               <div class="fee-rules-content">
                 <p style="margin:0 0 8px;font-weight:600;color:var(--text-primary)">居间费计算规则（行规比例，可调整）：</p>
                 <div style="margin-bottom:6px;font-size:0.82rem">
-                  <div style="margin-bottom:4px"><span style="color:var(--gold)">①</span> 咨询费总额 = 项目总标的额(万元) × 咨询费比例%</div>
-                  <div style="margin-bottom:4px"><span style="color:var(--gold)">②</span> 总居间费 = 咨询费总额 × 20%（默认，可改）</div>
+                  <div style="margin-bottom:4px"><span style="color:var(--text-primary)">①</span> 咨询费总额 = 项目总标的额(万元) × 咨询费比例%</div>
+                  <div style="margin-bottom:4px"><span style="color:var(--text-primary)">②</span> 总居间费 = 咨询费总额 × 20%（默认，可改）</div>
                 </div>
                 <table style="width:100%;border-collapse:collapse;margin-bottom:8px">
-                  <tr><th style="text-align:left;padding:4px 6px;color:var(--accent-blue);font-size:0.8rem">居间人结构</th><th style="text-align:left;padding:4px 6px;color:var(--accent-blue);font-size:0.8rem">分配比例</th></tr>
-                  <tr><td style="padding:3px 6px;font-size:0.78rem;color:var(--text-secondary)">仅2个一级居间人</td><td style="padding:3px 6px;font-size:0.78rem;color:var(--gold)">每人 50%</td></tr>
-                  <tr><td style="padding:3px 6px;font-size:0.78rem;color:var(--text-secondary)">2个一级 + 1个二级</td><td style="padding:3px 6px;font-size:0.78rem;color:var(--accent-blue)">一级每人 33.5%，二级 33%</td></tr>
-                  <tr><td style="padding:3px 6px;font-size:0.78rem;color:var(--text-secondary)">2个一级 + n个二级</td><td style="padding:3px 6px;font-size:0.78rem;color:var(--accent-blue)">一级每人 30%，二级每人 40%÷n</td></tr>
+                  <tr><th style="text-align:left;padding:4px 6px;color:var(--text-primary);font-size:0.8rem">居间人结构</th><th style="text-align:left;padding:4px 6px;color:var(--text-primary);font-size:0.8rem">分配比例</th></tr>
+                  <tr><td style="padding:3px 6px;font-size:0.78rem;color:var(--text-secondary)">仅2个一级居间人</td><td style="padding:3px 6px;font-size:0.78rem;color:var(--text-primary)">每人 50%</td></tr>
+                  <tr><td style="padding:3px 6px;font-size:0.78rem;color:var(--text-secondary)">2个一级 + 1个二级</td><td style="padding:3px 6px;font-size:0.78rem;color:var(--text-primary)">一级每人 33.5%，二级 33%</td></tr>
+                  <tr><td style="padding:3px 6px;font-size:0.78rem;color:var(--text-secondary)">2个一级 + n个二级</td><td style="padding:3px 6px;font-size:0.78rem;color:var(--text-primary)">一级每人 30%，二级每人 40%÷n</td></tr>
                 </table>
                 <div style="font-size:0.78rem;color:var(--text-muted);line-height:1.6">
-                  <div>★ 诉求：<span style="color:var(--gold)">咨询</span>（默认咨询/服务）</div>
-                  <div>★ 决策机制：<span style="color:var(--accent-blue)">少数服从多数</span></div>
-                  <div style="margin-top:4px;color:var(--gold)">📱 手机端：点击"同意"确认参与</div>
+                  <div>★ 诉求：<span style="color:var(--text-primary)">咨询</span>（默认咨询/服务）</div>
+                  <div>★ 决策机制：<span style="color:var(--text-primary)">少数服从多数</span></div>
+                  <div style="margin-top:4px;color:var(--text-primary)">📱 手机端：点击"同意"确认参与</div>
                 </div>
               </div>
             </div>
@@ -641,13 +826,13 @@
             <svg class="uchain-svg" viewBox="0 0 820 460" preserveAspectRatio="xMidYMid meet">
               <defs>
                 <linearGradient id="chainGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                  <stop offset="0%" style="stop-color:#ff6b9d;stop-opacity:0.6"/>
-                  <stop offset="50%" style="stop-color:#c44dff;stop-opacity:0.4"/>
-                  <stop offset="100%" style="stop-color:#5ac8fa;stop-opacity:0.6"/>
+                  <stop offset="0%" style="stop-color:#FF1493;stop-opacity:1"/>
+                  <stop offset="50%" style="stop-color:#FF6600;stop-opacity:1"/>
+                  <stop offset="100%" style="stop-color:#00FF7F;stop-opacity:1"/>
                 </linearGradient>
                 <linearGradient id="closeGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                  <stop offset="0%" style="stop-color:#34C759"/>
-                  <stop offset="100%" style="stop-color:#30d158"/>
+                  <stop offset="0%" style="stop-color:#FFD700"/>
+                  <stop offset="100%" style="stop-color:#FF4500"/>
                 </linearGradient>
               </defs>
               <path class="uchain-path-bg" d="M 78,200 L 78,300 Q 78,450 230,470 L 410,480 Q 590,450 742,470 L 742,300 L 742,200"/>
@@ -729,7 +914,7 @@
               <div class="fee-row fee-row-lg"><span class="lbl">项目总标的额</span><span class="val val-gold-lg" id="fiProject">¥0 <span style="font-size:0.7rem;color:var(--text-muted)">万元</span></span></div>
               <div class="fee-row fee-row-lg"><span class="lbl">咨询费比例</span><span class="val val-blue-lg"><span id="fiConsultRate">5</span>% <span style="font-size:0.7rem;color:var(--text-muted)">(手动)</span></span></div>
               <div class="fee-row fee-row-lg"><span class="lbl">咨询费总额</span><span class="val val-gold-lg" id="fiConsult">¥0</span></div>
-              <div class="fee-row fee-row-lg"><span class="lbl">诉求</span><span class="val" style="color:var(--gold);font-size:0.78rem">咨询（默认）</span></div>
+              <div class="fee-row fee-row-lg"><span class="lbl">诉求</span><span class="val" style="color:var(--text-primary);font-size:0.78rem">咨询（默认）</span></div>
             </div>
 
             <hr class="fee-divider"/>
@@ -749,7 +934,7 @@
               <div class="fee-row fee-row-lg"><span class="lbl" style="font-size:0.72rem">甲/乙方一级</span><span class="val val-blue-lg" id="fiL1Each">每人 ¥0</span></div>
               <div class="fee-row fee-row-lg"><span class="lbl">二级引荐人</span><span class="val val-blue-lg" id="fiL2Each">每人 ¥0</span></div>
               <div class="fee-formula-hint fee-hint-lg">一级 <span id="fiL1Count">0</span>人 / 二级 <span id="fiL2Count">0</span>人</div>
-              <div class="fee-formula-hint fee-hint-lg" style="color:var(--accent-blue)" id="fiDistPct">一级每人 50%，二级 0%</div>
+              <div class="fee-formula-hint fee-hint-lg" style="color:var(--text-primary)" id="fiDistPct">一级每人 50%，二级 0%</div>
             </div>
 
             <hr class="fee-divider"/>
@@ -983,25 +1168,25 @@
         </div>
         <div class="form-group">
           <label class="form-label">你的身份角色 *</label>
-          <div class="tip-box" style="background:rgba(245,158,11,0.1);border-color:var(--gold);margin-bottom:10px;">⚠️ 诚信是你的唯一护城河，本着公开透明的原则选择真实角色</div>
+          <div class="tip-box" style="background:rgba(0,0,0,0.05);border-color:var(--text-primary);margin-bottom:10px;">⚠️ 诚信是你的唯一护城河，本着公开透明的原则选择真实角色</div>
           <div class="form-hint" style="margin-bottom:10px;">逐级选择你的身份</div>
           <div style="margin-top:8px;">
             <div style="margin-bottom:12px;">
               <div class="quiz-question" style="font-size:0.9rem;margin-bottom:6px;">你是总拍板人吗？</div>
               <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:0.85rem;color:var(--text-secondary);padding:6px 10px;border:1px solid var(--border-card);border-radius:8px;margin-right:10px;">
-                <input type="radio" name="isDecisionMaker" value="yes" style="accent-color:var(--accent-blue);"> 是，我是最终决策人
+                <input type="radio" name="isDecisionMaker" value="yes" style="accent-color:var(--text-primary);"> 是，我是最终决策人
               </label>
               <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:0.85rem;color:var(--text-secondary);padding:6px 10px;border:1px solid var(--border-card);border-radius:8px;">
-                <input type="radio" name="isDecisionMaker" value="no" style="accent-color:var(--accent-blue);"> 不是，我帮忙牵线
+                <input type="radio" name="isDecisionMaker" value="no" style="accent-color:var(--text-primary);"> 不是，我帮忙牵线
               </label>
             </div>
             <div id="secondQuestion" style="display:none;margin-bottom:12px;">
               <div class="quiz-question" style="font-size:0.9rem;margin-bottom:6px;">你能直接与拍板人沟通吗？</div>
               <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:0.85rem;color:var(--text-secondary);padding:6px 10px;border:1px solid var(--border-card);border-radius:8px;margin-right:10px;">
-                <input type="radio" name="directContact" value="yes" style="accent-color:var(--accent-blue);"> 可以，我直接跟拍板人对话（一级居间人）
+                <input type="radio" name="directContact" value="yes" style="accent-color:var(--text-primary);"> 可以，我直接跟拍板人对话（一级居间人）
               </label>
               <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:0.85rem;color:var(--text-secondary);padding:6px 10px;border:1px solid var(--border-card);border-radius:8px;">
-                <input type="radio" name="directContact" value="no" style="accent-color:var(--accent-blue);"> 不行，需要别人转达（二级居间人）
+                <input type="radio" name="directContact" value="no" style="accent-color:var(--text-primary);"> 不行，需要别人转达（二级居间人）
               </label>
             </div>
           </div>
@@ -1809,7 +1994,7 @@
           textStyle: { color: '#e4f0fc', fontSize: 13 },
           formatter: function(params) {
             return '<span style="color:' + params.color + ';font-weight:600">' + params.name + '</span><br/>' +
-                   '<span style="color:#F59E0B;font-weight:700;font-size:15px">' + fmtFull(params.value) + '</span>';
+                   '<span style="color:#ffffff;font-weight:700;font-size:15px">' + fmtFull(params.value) + '</span>';
           }
         },
         series: [{
@@ -1877,7 +2062,7 @@
               startAngle: 108,
               endAngle: 180,
               itemStyle: { color: '#f59e0b', borderColor: '#01060f', borderWidth: 2 },
-              emphasis: { itemStyle: { color: '#ffb703', shadowBlur: 20, shadowColor: 'rgba(245,158,11,0.6)' } }
+              emphasis: { itemStyle: { color: '#ffd60a', shadowBlur: 20, shadowColor: 'rgba(0,0,0,0.3)' } }
             }
           ]
         }]

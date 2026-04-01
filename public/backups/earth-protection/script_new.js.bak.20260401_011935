@@ -1,19 +1,7 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
-
-let cityData = []; // Will be loaded dynamically
-
-// Load cityData dynamically (JSON import not supported in all browsers)
-async function loadCityData() {
-  try {
-    const response = await fetch('./data/city-data.json?t=' + Date.now());
-    cityData = await response.json();
-    console.log('cityData loaded:', cityData.length);
-  } catch (e) {
-    console.error('Failed to load cityData:', e);
-  }
-}
+import cityData from './data/city-data.json' assert { type: 'json' };
 
 let scene, camera, renderer, controls, earth, clouds, atmosphere, labelRenderer;
 let cityMarkers = [];
@@ -22,8 +10,6 @@ let beijingStar = null;
 let markerGroup;
 let animationComplete = false;
 let lastAnimateTime = 0;
-const mouse = new THREE.Vector2();
-const raycaster = new THREE.Raycaster();
 
 // ============================================================
 // Intro 状态机：太空来客粒子动画
@@ -769,16 +755,16 @@ function init() {
   // 大气层
   createAtmosphere();
 
-  // 云层
-  const cloudMat = new THREE.MeshPhongMaterial({
-    map: loader.load('textures/earth-clouds.jpg'),
-    transparent: true,
-    opacity: 0.38,
-    blending: THREE.AdditiveBlending
-  });
-  clouds = new THREE.Mesh(new THREE.SphereGeometry(5.08, 64, 64), cloudMat);
-  clouds.rotation.y = CHINA_ROTATION_Y;
-  scene.add(clouds);
+  // 云层 (纹理URL失效，暂禁用)
+  // const cloudMat = new THREE.MeshPhongMaterial({
+  //   map: loader.load('textures/earth-clouds.png'),
+  //   transparent: true,
+  //   opacity: 0.38,
+  //   blending: THREE.AdditiveBlending
+  // });
+  // clouds = new THREE.Mesh(new THREE.SphereGeometry(5.08, 64, 64), cloudMat);
+  // clouds.rotation.y = CHINA_ROTATION_Y;
+  // scene.add(clouds);
 
   // 光源
   const sun = new THREE.DirectionalLight(0xffffff, 1.5);
@@ -864,145 +850,21 @@ function init() {
   });
 
   // 搜索功能
-  searchBtn.addEventListener('click', performSearch);
-  searchInput.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') {
-      performSearch();
-    }
-  });
-
-  // 执行搜索
-  async function performSearch() {
+  searchBtn.addEventListener('click', () => {
     const keyword = searchInput.value.trim();
     if (!keyword) return;
 
-    try {
-      const response = await fetch(`/api/public/search?keyword=${encodeURIComponent(keyword)}`);
-      const data = await response.json();
-
-      if (data.success && data.count > 0) {
-        showSearchResults(data.results, keyword);
-      } else {
-        showNoSearchResult(keyword);
-      }
-    } catch (err) {
-      console.error('搜索失败:', err);
-      // 搜索失败时也显示无结果
-      showNoSearchResult(keyword);
+    const target = cityData.find(c => c.name.includes(keyword));
+    if (target) {
+      showCityCard(target);
     }
-  }
+  });
 
-  // 显示搜索结果
-  function showSearchResults(results, keyword) {
-    const modal = document.getElementById('searchResultModal');
-    const resultList = document.getElementById('searchResultList');
-    const noResult = document.getElementById('searchNoResult');
-
-    resultList.innerHTML = '';
-    noResult.classList.add('hidden');
-    resultList.classList.remove('hidden');
-
-    // 只显示第一条最匹配的结果
-    const topResult = results[0];
-    const item = document.createElement('div');
-    item.className = 'search-result-item';
-    item.innerHTML = `
-      <div class="search-result-title">查到：${topResult.title}</div>
-      <div class="search-result-meta">
-        <span class="search-result-type">${topResult.type === 'enterprise' ? '企业资源' : '求助信息'}</span>
-        ${topResult.company_name ? '企业：' + topResult.company_name : ''}
-      </div>
-    `;
-    item.onclick = () => handleResultClick(topResult);
-    resultList.appendChild(item);
-
-    modal.classList.remove('hidden');
-  }
-
-  // 显示无搜索结果
-  function showNoSearchResult(keyword) {
-    const modal = document.getElementById('searchResultModal');
-    const resultList = document.getElementById('searchResultList');
-    const noResult = document.getElementById('searchNoResult');
-
-    resultList.classList.add('hidden');
-    noResult.classList.remove('hidden');
-
-    // 保存关键词到全局变量，供发布需求时使用
-    window.pendingSearchKeyword = keyword;
-
-    modal.classList.remove('hidden');
-  }
-
-  // 处理点击搜索结果
-  async function handleResultClick(result) {
-    closeSearchModal();
-
-    try {
-      const response = await fetch(`/api/public/resource/${result.type}/${result.id}`);
-      const data = await response.json();
-
-      if (data.success) {
-        if (data.isMember && data.contact_qrcode) {
-          showQrCode(data.contact_qrcode);
-        } else {
-          showMemberTip();
-        }
-      }
-    } catch (err) {
-      console.error('获取资源详情失败:', err);
-      showMemberTip();
+  searchInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+      searchBtn.click();
     }
-  }
-
-  // 显示二维码弹窗
-  function showQrCode(qrcodeUrl) {
-    const modal = document.getElementById('qrCodeModal');
-    const imageContainer = document.getElementById('qrCodeImage');
-
-    if (qrcodeUrl) {
-      imageContainer.innerHTML = `<img src="${qrcodeUrl}" alt="微信二维码" />`;
-    } else {
-      imageContainer.innerHTML = '<span style="color:#5ac8fa;font-size:0.9rem;">暂无二维码</span>';
-    }
-
-    modal.classList.remove('hidden');
-  }
-
-  // 显示会员提示弹窗
-  function showMemberTip() {
-    const modal = document.getElementById('memberTipModal');
-    modal.classList.remove('hidden');
-  }
-
-  // 关闭搜索结果弹窗
-  function closeSearchModal() {
-    document.getElementById('searchResultModal').classList.add('hidden');
-  }
-
-  // 关闭二维码弹窗
-  function closeQrModal() {
-    document.getElementById('qrCodeModal').classList.add('hidden');
-  }
-
-  // 关闭会员提示弹窗
-  function closeMemberTip() {
-    document.getElementById('memberTipModal').classList.add('hidden');
-  }
-
-  // 跳转发布需求页面
-  function goToPublishDemand() {
-    closeSearchModal();
-    const keyword = window.pendingSearchKeyword || '';
-    // 跳转到发布需求页，携带关键词参数
-    window.location.href = `publish-help.html?keyword=${encodeURIComponent(keyword)}`;
-  }
-
-  // 跳转注册页面
-  function goToRegister() {
-    closeMemberTip();
-    window.location.href = 'register.html';
-  }
+  });
 
   // 聚焦中国动画
   startIntroEffect();
@@ -1141,7 +1003,6 @@ function animate() {
   }
 
   controls.update();
-
   renderer.render(scene, camera);
   labelRenderer.render(scene, camera);
 }
@@ -1342,7 +1203,13 @@ function fixLabelCollisionForOne(label) {
 }
 
 // ========== 三级地址库 ==========
-const addressDB = {};
+const addressDB = {
+  "110000": { name: "北京市", cities: { "110100": { name: "市辖区", districts: { "110101": "东城区", "110102": "西城区", "110105": "朝阳区", "110106": "丰台区", "110107": "石景山区", "110108": "海淀区", "110109": "门头沟区", "110111": "房山区", "110112": "通州区", "110113": "顺义区", "110114": "昌平区", "110115": "大兴区", "110116": "怀柔区", "110117": "平谷区", "110118": "密云区", "110119": "延庆区" } } } },
+  "120000": { name: "天津市", cities: { "120100": { name: "市辖区", districts: { "120101": "和平区", "120102": "河东区", "120103": "河西区", "120104": "南开区", "120105": "河北区", "120106": "红桥区", "120110": "东丽区", "120111": "西青区", "120112": "津南区", "120113": "北辰区", "120114": "武清区", "120115": "宝坻区", "120116": "滨海新区", "120117": "宁河区", "120118": "静海区", "120119": "蓟州区" } } } },
+  "130000": { name: "河北省", cities: { "130100": { name: "石家庄市", districts: { "130102": "长安区", "130104": "桥西区", "130105": "新华区", "130107": "井陉矿区", "130108": "裕华区", "130109": "藁城区", "130110": "鹿泉区", "130111": "栾城区", "130121": "井陉县", "130123": "正定县", "130125": "行唐县", "130126": "灵寿县", "130127": "高邑县", "130128": "深泽县", "130129": "赞皇县", "130130": "无极县", "130131": "平山县", "130132": "元氏县", "130133": "赵县", "130181": "辛集市", "130183": "晋州市", "130184": "新乐市" } }, "130200": { name: "唐山市", districts: { "130202": "路南区", "130203": "路北区", "130204": "古冶区", "130205": "开平区", "130207": "丰南区", "130208": "丰润区", "130209": "曹妃甸区", "130224": "滦南县", "130225": "乐亭县", "130227": "迁西县", "130229": "玉田县", "130281": "遵化市", "130283": "迁安市", "130284": "滦州市" } }, "130300": { name: "秦皇岛市", districts: { "130302": "海港区", "130303": "山海关区", "130304": "北戴河区", "130306": "抚宁区", "130321": "青龙满族自治县", "130322": "昌黎县", "130324": "卢龙县" } }, "130400": { name: "邯郸市", districts: { "130402": "邯山区", "130403": "丛台区", "130404": "复兴区", "130406": "峰峰矿区", "130407": "肥乡区", "130408": "永年区", "130423": "临漳县", "130424": "成安县", "130425": "大名县", "130426": "涉县", "130427": "磁县", "130430": "邱县", "130431": "鸡泽县", "130432": "广平县", "130433": "馆陶县", "130434": "魏县", "130435": "曲周县", "130481": "武安市" } }, "130500": { name: "邢台市", districts: { "130502": "襄都区", "130503": "信都区", "130504": "任泽区", "130505": "南和区", "130522": "临城县", "130523": "内丘县", "130524": "柏乡县", "130525": "隆尧县", "130526": "宁晋县", "130527": "巨鹿县", "130528": "新河县", "130529": "广宗县", "130530": "平乡县", "130531": "威县", "130532": "清河县", "130533": "临西县", "130581": "南宫市", "130582": "沙河市" } }, "130600": { name: "保定市", districts: { "130602": "竞秀区", "130605": "莲池区", "130606": "满城区", "130607": "清苑区", "130608": "徐水区", "130609": "涞水县", "130610": "阜平县", "130611": "定兴县", "130612": "唐县", "130613": "高阳县", "130614": "容城县", "130615": "涞源县", "130616": "望都县", "130617": "安新县", "130618": "易县", "130619": "曲阳县", "130620": "蠡县", "130621": "顺平县", "130622": "博野县", "130623": "雄县", "130681": "涿州市", "130682": "定州市", "130683": "安国市", "130684": "高碑店市" } }, "130700": { name: "张家口市", districts: { "130702": "桥东区", "130703": "桥西区", "130705": "宣化区", "130706": "下花园区", "130708": "万全区", "130709": "崇礼区", "130722": "张北县", "130723": "康保县", "130724": "沽源县", "130725": "尚义县", "130726": "蔚县", "130727": "阳原县", "130728": "怀安县", "130730": "怀来县", "130731": "涿鹿县", "130732": "赤城县" } }, "130800": { name: "承德市", districts: { "130802": "双桥区", "130803": "双滦区", "130804": "鹰手营子矿区", "130822": "承德县", "130824": "兴隆县", "130825": "滦平县", "130826": "隆化县", "130827": "丰宁满族自治县", "130828": "宽城满族自治县", "130829": "围场满族蒙古族自治县", "130881": "平泉市" } }, "130900": { name: "沧州市", districts: { "130902": "新华区", "130903": "运河区", "130921": "沧县", "130922": "青县", "130923": "东光县", "130924": "海兴县", "130925": "盐山县", "130926": "肃宁县", "130927": "南皮县", "130928": "吴桥县", "130929": "献县", "130930": "孟村回族自治县", "130981": "泊头市", "130982": "任丘市", "130983": "黄骅市", "130984": "河间市" } }, "131000": { name: "廊坊市", districts: { "131002": "安次区", "131003": "广阳区", "131022": "固安县", "131023": "永清县", "131024": "香河县", "131025": "大城县", "131026": "文安县", "131028": "大厂回族自治县", "131081": "霸州市", "131082": "三河市" } }, "131100": { name: "衡水市", districts: { "131102": "桃城区", "131103": "冀州区", "131121": "枣强县", "131122": "武邑县", "131123": "武强县", "131124": "饶阳县", "131125": "安平县", "131126": "故城县", "131127": "景县", "131128": "阜城县", "131182": "深州市" } } } },
+  "140000": { name: "山西省", cities: { "140100": { name: "太原市", districts: { "140105": "小店区", "140106": "迎泽区", "140107": "杏花岭区", "140108": "尖草坪区", "140109": "万柏林区", "140110": "晋源区", "140121": "清徐县", "140122": "阳曲县", "140123": "娄烦县", "140181": "古交市" } }, "140200": { name: "大同市", districts: { "140212": "新荣区", "140213": "平城区", "140214": "云冈区", "140215": "云州区", "140221": "阳高县", "140222": "天镇县", "140223": "广灵县", "140224": "灵丘县", "140225": "浑源县", "140226": "左云县" } }, "140300": { name: "阳泉市", districts: { "140302": "城区", "140303": "矿区", "140311": "郊区", "140321": "平定县", "140322": "盂县" } }, "140400": { name: "长治市", districts: { "140403": "潞州区", "140404": "上党区", "140405": "屯留区", "140406": "潞城区", "140407": "襄垣县", "140408": "平顺县", "140409": "黎城县", "140410": "壶关县", "140411": "长子县", "140412": "武乡县", "140413": "沁县", "140414": "沁源县" } }, "140500": { name: "晋城市", districts: { "140502": "城区", "140521": "沁水县", "140522": "阳城县", "140524": "陵川县", "140525": "泽州县", "140581": "高平市" } }, "140600": { name: "朔州市", districts: { "140602": "朔城区", "140603": "平鲁区", "140621": "山阴县", "140622": "应县", "140623": "右玉县", "140681": "怀仁市" } }, "140700": { name: "晋中市", districts: { "140702": "榆次区", "140703": "太谷区", "140721": "榆社县", "140722": "左权县", "140723": "和顺县", "140724": "昔阳县", "140725": "寿阳县", "140727": "祁县", "140728": "平遥县", "140729": "灵石县", "140781": "介休市" } }, "140800": { name: "运城市", districts: { "140802": "盐湖区", "140821": "临猗县", "140822": "万荣县", "140823": "闻喜县", "140824": "稷山县", "140825": "新绛县", "140826": "绛县", "140827": "垣曲县", "140828": "夏县", "140829": "平陆县", "140830": "芮城县", "140881": "永济市", "140882": "河津市" } }, "140900": { name: "忻州市", districts: { "140902": "忻府区", "140921": "定襄县", "140922": "五台县", "140923": "代县", "140924": "繁峙县", "140925": "宁武县", "140926": "静乐县", "140927": "神池县", "140928": "五寨县", "140929": "岢岚县", "140930": "河曲县", "140931": "保德县", "140932": "偏关县", "140981": "原平市" } }, "141000": { name: "临汾市", districts: { "141002": "尧都区", "141021": "曲沃县", "141022": "翼城县", "141023": "襄汾县", "141024": "洪洞县", "141025": "古县", "141026": "安泽县", "141027": "浮山县", "141028": "吉县", "141029": "乡宁县", "141030": "大宁县", "141031": "隰县", "141032": "永和县", "141033": "蒲县", "141034": "汾西县", "141081": "侯马市", "141082": "霍州市" } }, "141100": { name: "吕梁市", districts: { "141102": "离石区", "141121": "文水县", "141122": "交城县", "141123": "兴县", "141124": "临县", "141125": "柳林县", "141126": "石楼县", "141127": "岚县", "141128": "方山县", "141129": "中阳县", "141130": "交口县", "141181": "孝义市", "141182": "汾阳市" } } } },
+  "150000": { name: "内蒙古自治区", cities: { "150100": { name: "呼和浩特市", districts: { "150102": "新城区", "150103": "回民区", "150104": "玉泉区", "150105": "赛罕区", "150121": "土默特左旗", "150122": "托克托县", "150123": "和林格尔县", "150124": "清水河县", "150125": "武川县" } }, "150200": { name: "包头市", districts: { "150202": "东河区", "150203": "昆都仑区", "150204": "青山区", "150205": "石拐区", "150206": "白云鄂博矿区", "150207": "九原区", "150221": "土默特右旗", "150222": "固阳县", "150223": "达尔罕茂明安联合旗" } }, "150300": { name: "乌海市", districts: { "150302": "海勃湾区", "150303": "海南区", "150304": "乌达区" } }, "150400": { name: "赤峰市", districts: { "150402": "红山区", "150403": "元宝山区", "150404": "松山区", "150421": "阿鲁科尔沁旗", "150422": "巴林左旗", "150423": "巴林右旗", "150
+
 // 【调试】← → 微调（动画完成后可用）
 window.addEventListener('keydown', (e) => {
   if (e.key === 'ArrowLeft') {
@@ -1356,26 +1223,9 @@ window.addEventListener('keydown', (e) => {
   }
 });
 
-// 全局错误处理
-window.addEventListener('error', (e) => {
-  window.__jsErr = e.message + ' at ' + e.filename + ':' + e.lineno;
-});
+// 启动地球
+init();
 
-window.__scriptLoaded = true;
-
-// 加载数据后启动地球
-loadCityData().then(() => {
-  window.__initStart = true;
-  try {
-    init();
-    window.__initOK = true;
-  } catch(e) {
-    window.__initErr = e.message;
-  }
-  
-  // 修复：确保所有HTML内联onclick事件正确绑定
-  document.getElementById('menuBtn').addEventListener('click', toggleMenu);
-  document.querySelectorAll('.menu-nav a').forEach(a => a.addEventListener('click', toggleMenu));
-}).catch(e => {
-  window.__loadErr = e.message;
-});
+// 修复：确保所有HTML内联onclick事件正确绑定
+document.getElementById('menuBtn').addEventListener('click', toggleMenu);
+document.querySelectorAll('.menu-nav a').forEach(a => a.addEventListener('click', toggleMenu));
