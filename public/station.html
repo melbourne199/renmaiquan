@@ -162,7 +162,7 @@
     <div class="card">
       <div class="card-title">入驻费用</div>
       <div class="fee-badge">
-        <div class="fee-price">299<span>元 · 一次性</span></div>
+        <div class="fee-price">299<span>元 · 联系管理员付款</span></div>
         <div class="fee-note">不足五杯咖啡的投入，换一个长期运营的平台系统</div>
         <div class="fee-includes">
           <div class="fee-item">
@@ -267,7 +267,7 @@
         </div>
         <div class="apply-step">
           <div class="step-num">3</div>
-          <div class="step-text">支付299元入驻费用</div>
+          <div class="step-text">联系管理员微信付款299元（转账后手动开通）</div>
         </div>
         <div class="apply-step">
           <div class="step-num">4</div>
@@ -313,7 +313,7 @@
               <textarea id="background" placeholder="简单介绍您的资源或业务方向（可选）"></textarea>
             </div>
           </div>
-          <button type="submit" class="btn-submit">提交申请 · 等待管理员审核</button>
+          <button type="submit" class="btn-submit" id="stationSubmitBtn">提交申请 · 联系管理员付款</button>
           <p style="text-align:center; font-size:0.8rem; color:var(--text-muted); margin-top:12px;">提交后请主动联系管理员微信完成资质确认</p>
         </form>
       </div>
@@ -354,7 +354,7 @@
         });
         const data = await res.json();
         if (res.ok) {
-          alert(`✅ 申请已提交！${name} 您好！\n\n请添加管理员微信：ziyuanyeshi（备注"站长申请"），工作人员将尽快与您确认。`);
+          alert(`✅ 申请已提交！${name} 您好！\n\n📋 入驻费用：299元（终生）\n💬 请联系管理员微信：ziyuanyeshi\n（备注"站长申请"，转账后管理员将手动开通权限）\n\n⏳ 支付接口正在申请中，开通后可直接在线付款，感谢您的耐心等待！`);
           form.reset();
         } else {
           alert('提交失败：' + (data.error || '请重试'));
