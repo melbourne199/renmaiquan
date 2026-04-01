@@ -204,3 +204,36 @@ router.get('/resource/:type/:id', async (req, res) => {
 });
 
 module.exports = router;
+
+// 获取迁移的资源数据(yigehui) - 兼容enterprise-list格式
+router.get('/resources', async (req, res) => {
+  try {
+    const { sequelize } = require('../models');
+    
+    try {
+      const [results] = await sequelize.query(
+        "SELECT * FROM resources WHERE source = 'yigehui' LIMIT 100"
+      );
+      // 转换为前端期望的格式
+      const formatted = (results || []).map(r => ({
+        id: r.id,
+        company_name: r.company || r.title || '未命名',
+        department: r.department || '',
+        industry: r.industry || '',
+        position: r.position || '',
+        region: r.region || '',
+        description: r.description || '',
+        reward: r.reward || '',
+        familiarity: r.relation_type === 'cooperation' ? '合作过，随时约' : r.relation_type === 'friend_referral' ? '通过朋友约' : '间接关系',
+        contact_person: r.contact_person || '',
+        phone: r.phone || '',
+        created_at: r.created_at
+      }));
+      res.json(formatted);
+    } catch (e) {
+      res.json([]);
+    }
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});

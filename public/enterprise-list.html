@@ -104,9 +104,27 @@
 
     async function loadResources() {
       try {
-        const res = await fetch('/api/enterprise-likes');
-        if (!res.ok) throw new Error('加载失败');
-        resources = await res.json();
+        // 加载原生数据
+        const [likesRes, resourcesRes] = await Promise.all([
+          fetch('/api/enterprise-likes').catch(() => ({ ok: false })),
+          fetch('/api/resources').catch(() => ({ ok: false }))
+        ]);
+        
+        let all = [];
+        if (likesRes.ok) {
+          const likes = await likesRes.json();
+          all = [...all, ...likes];
+        }
+        if (resourcesRes.ok) {
+          const res = await resourcesRes.json();
+          all = [...all, ...res];
+        }
+        
+        if (all.length === 0) {
+          document.getElementById('cardsGrid').innerHTML = '<div class="empty-state">暂无数据</div>';
+          return;
+        }
+        resources = all;
         renderCards();
       } catch (e) {
         document.getElementById('cardsGrid').innerHTML = '<div class="empty-state">暂无数据</div>';
