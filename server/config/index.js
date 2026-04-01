@@ -19,8 +19,8 @@ module.exports = {
     port: process.env.PORT || 3002
   },
   ai: {
-    apiKey: 'sk-d4951e01685745f48f13e0648ad98866',
-    baseUrl: 'https://api.deepseek.com',
-    model: 'deepseek-chat'
+    apiKey: 'sk-fe268a78dfbf8bdf48afd078ab271ca455f605387f6ba6496b002acc2fff2879',
+    baseUrl: 'https://sub2api.bgstudio.top/v1',
+    model: 'custom-sub2api-bgstudio-top/MiniMax-M2.7'
   }
 };

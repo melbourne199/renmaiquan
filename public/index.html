@@ -278,7 +278,9 @@
     function addMsg(name, dept, q, a) {
       const qEl = document.createElement('div');
       qEl.style.cssText = 'display:flex;gap:8px;animation:msgSlideIn2 .3s ease';
-      qEl.innerHTML = '<div style="width:28px;height:28px;border-radius:50%;background:rgba(90,200,250,0.2);color:#5ac8fa;display:flex;align-items:center;justify-content:center;font-size:0.78rem;flex-shrink:0;">' + name[0] + '</div><div style="flex:1;background:rgba(90,200,250,0.05);border:1px solid rgba(90,200,250,0.1);border-radius:12px 12px 12px 4px;padding:8px 12px;font-size:0.85rem;color:rgba(200,220,240,0.9);line-height:1.5;"><span style="font-size:0.7rem;color:#5ac8fa;font-weight:600;display:block;margin-bottom:2px;">💬 ' + name + '（' + dept + '）</span>' + q + '</div>';
+      const avatar = name ? '<div style="width:28px;height:28px;border-radius:50%;background:rgba(90,200,250,0.2);color:#5ac8fa;display:flex;align-items:center;justify-content:center;font-size:0.78rem;flex-shrink:0;">' + name[0] + '</div>' : '<div style="width:28px;height:28px;border-radius:50%;background:rgba(90,200,250,0.2);color:#5ac8fa;display:flex;align-items:center;justify-content:center;font-size:0.78rem;flex-shrink:0;">👤</div>';
+      const tag = (name && dept) ? '<span style="font-size:0.7rem;color:#5ac8fa;font-weight:600;display:block;margin-bottom:2px;">💬 匿名</span>' : '';
+      qEl.innerHTML = avatar + '<div style="flex:1;background:rgba(90,200,250,0.05);border:1px solid rgba(90,200,250,0.1);border-radius:12px 12px 12px 4px;padding:8px 12px;font-size:0.85rem;color:rgba(200,220,240,0.9);line-height:1.5;">' + tag + q + '</div>';
       msgsEl.appendChild(qEl);
 
       setTimeout(() => {
@@ -293,16 +295,16 @@
 
     // 预加载历史
     const history = [
-      {q:'县级农业农村局的职能是什么？',a:REPLIES[0],name:'李总',dept:'农业局'},
-      {q:'如何查询某个政府部门的职能介绍？',a:REPLIES[1],name:'王总',dept:'发改委'},
-      {q:'生态环境局的投诉电话是多少？',a:REPLIES[8],name:'张总',dept:'企业'},
-      {q:'住建局负责哪些审批事项？',a:REPLIES[6],name:'赵总',dept:'企业'},
-      {q:'人社局可以办理哪些证件？',a:REPLIES[4],name:'刘总',dept:'民企'},
-      {q:'民政局的社会救助包括哪些？',a:REPLIES[5],name:'陈总',dept:'公益'},
-      {q:'应急管理局是做什么的？',a:REPLIES[3],name:'周总',dept:'企业'},
-      {q:'乡村振兴局最新政策在哪查？',a:REPLIES[7],name:'吴总',dept:'农业'},
-      {q:'市场准入负面清单在哪查？',a:REPLIES[2],name:'黄总',dept:'商务'},
-      {q:'发改委和商务部有什么区别？',a:REPLIES[1],name:'杨总',dept:'企业'},
+      {q:'现在申请营业执照需要多久？手续复杂吗？',a:REPLIES[0]},
+      {q:'出口退税最新政策是怎样的？',a:REPLIES[1]},
+      {q:'个体户怎么交社保？多少钱一个月？',a:REPLIES[2]},
+      {q:'公司不经营了，不注销有什么后果？',a:REPLIES[3]},
+      {q:'农村宅基地可以继承给城里子女吗？',a:REPLIES[4]},
+      {q:'灵活就业人员怎么交医保？',a:REPLIES[5]},
+      {q:'小规模纳税人季度免税额度是多少？',a:REPLIES[6]},
+      {q:'新生儿医保怎么办理？在哪里办？',a:REPLIES[9]},
+      {q:'创业补贴怎么申请？需要什么条件？',a:REPLIES[10]},
+      {q:'劳动仲裁需要准备什么材料？',a:REPLIES[11]},
     ];
     history.forEach(h => addMsg(h.name, h.dept, h.q, h.a));
 
@@ -310,18 +312,16 @@
     setInterval(() => {
       if (isBotTyping) return;
       if (Math.random() < 0.3) {
-        const ni = Math.floor(Math.random() * NAMES.length);
-        const di = Math.floor(Math.random() * DEPTS.length);
-        const name = NAMES[ni], dept = DEPTS[di];
-        const q = dept + '相关的问题在哪里咨询？';
+        const qi = Math.floor(Math.random() * PEOPLE_QUESTIONS.length);
+        const q = PEOPLE_QUESTIONS[qi];
         isBotTyping = true;
         typingWrap.style.display = 'flex';
         msgsEl.scrollTop = msgsEl.scrollHeight;
         setTimeout(() => {
           typingWrap.style.display = 'none';
-          addMsg(name, dept, q, REPLIES[di % REPLIES.length]);
+          addMsg(null, null, q, REPLIES[qi % REPLIES.length]);
           isBotTyping = false;
-        }, 1800 + Math.random() * 1000);
+        }, 2000 + Math.random() * 1500);
       }
     }, 5000);
 
@@ -335,7 +335,7 @@
       msgsEl.scrollTop = msgsEl.scrollHeight;
       const qEl = document.createElement('div');
       qEl.style.cssText = 'display:flex;gap:8px;animation:msgSlideIn2 .3s ease';
-      qEl.innerHTML = '<div style="width:28px;height:28px;border-radius:50%;background:rgba(90,200,250,0.2);color:#5ac8fa;display:flex;align-items:center;justify-content:center;font-size:0.78rem;flex-shrink:0;">' + name[0] + '</div><div style="flex:1;background:rgba(90,200,250,0.05);border:1px solid rgba(90,200,250,0.1);border-radius:12px 12px 12px 4px;padding:8px 12px;font-size:0.85rem;color:rgba(200,220,240,0.9);line-height:1.5;"><span style="font-size:0.7rem;color:#5ac8fa;font-weight:600;display:block;margin-bottom:2px;">💬 ' + name + '</span>' + q + '</div>';
+      qEl.innerHTML = '<div style="width:28px;height:28px;border-radius:50%;background:rgba(90,200,250,0.2);color:#5ac8fa;display:flex;align-items:center;justify-content:center;font-size:0.78rem;flex-shrink:0;">👤</div><div style="flex:1;background:rgba(90,200,250,0.05);border:1px solid rgba(90,200,250,0.1);border-radius:12px 12px 12px 4px;padding:8px 12px;font-size:0.85rem;color:rgba(200,220,240,0.9);line-height:1.5;"><span style="font-size:0.7rem;color:#5ac8fa;font-weight:600;display:block;margin-bottom:2px;">💬 匿名</span>' + q + '</div>';
       msgsEl.appendChild(qEl);
       msgsEl.scrollTop = msgsEl.scrollHeight;
       try {
