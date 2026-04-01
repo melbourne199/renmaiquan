@@ -190,6 +190,41 @@
     <div class="footer-meta">
       <div class="record-placeholder">© 2026 资源夜市 · All Rights Reserved.　<a href="https://beian.miit.gov.cn/" target="_blank" style="color:inherit;text-decoration:underline;">粤ICP备2026032295号</a>　・　内容及观点仅代表发布者本人，用于资源展示与居间合作，不涉及公共议题讨论</div>
     </div>
+
+    <!-- 实时留言板 - 右下角悬浮 -->
+    <div id="indexChatBoard" style="position:fixed; bottom:20px; right:20px; width:320px; z-index:200; font-family:'PingFang SC','Microsoft YaHei',sans-serif;">
+      <div style="background:rgba(1,6,15,0.92); border:1px solid rgba(90,200,250,0.2); border-radius:20px; overflow:hidden; backdrop-filter:blur(20px); box-shadow: 0 12px 40px rgba(0,0,0,0.5), 0 0 30px rgba(90,200,250,0.1);">
+        <!-- 标题栏 -->
+        <div style="display:flex; align-items:center; gap:8px; padding:12px 16px; border-bottom:1px solid rgba(90,200,250,0.1); background:rgba(90,200,250,0.05);">
+          <span style="width:10px;height:10px;border-radius:50%;background:#ff4757;animation:livePulse2 1.5s ease infinite;"></span>
+          <span style="font-size:0.9rem; font-weight:600; color:rgba(200,220,240,0.92);">现场留言板</span>
+          <span style="font-size:0.72rem; color:rgba(160,185,210,0.6); margin-left:auto;">匿名提问 · AI解答</span>
+          <button onclick="toggleIndexChat()" style="background:none;border:none;color:rgba(160,185,210,0.6);cursor:pointer;font-size:1.1rem;padding:0 2px;line-height:1;">−</button>
+        </div>
+        <!-- 消息区 -->
+        <div id="idxChatMsgs" class="idx-chat-body" style="height:260px; overflow-y:auto; padding:12px 14px; display:flex; flex-direction:column; gap:8px;"></div>
+        <div id="idxTypingWrap" class="idx-chat-body" style="display:none; padding:6px 14px;">
+          <div style="display:flex;gap:3px;">
+            <span style="width:6px;height:6px;border-radius:50%;background:rgba(160,185,210,0.5);animation:typingBounce2 1.2s ease infinite;"></span>
+            <span style="width:6px;height:6px;border-radius:50%;background:rgba(160,185,210,0.5);animation:typingBounce2 1.2s ease infinite 0.15s;"></span>
+            <span style="width:6px;height:6px;border-radius:50%;background:rgba(160,185,210,0.5);animation:typingBounce2 1.2s ease infinite 0.3s;"></span>
+          </div>
+          <span style="font-size:0.75rem; color:rgba(160,185,210,0.5);">政企顾问正在回复...</span>
+        </div>
+        <!-- 输入区 -->
+        <div class="idx-chat-body" style="display:flex; gap:8px; padding:10px 14px; border-top:1px solid rgba(90,200,250,0.1); background:rgba(90,200,250,0.03);">
+          <input id="idxChatInput" style="flex:1; background:rgba(90,200,250,0.07); border:1px solid rgba(90,200,250,0.15); border-radius:20px; padding:8px 14px; color:rgba(200,220,240,0.92); font-size:0.85rem; outline:none;" placeholder="输入政企问题..." maxlength="200" />
+          <button id="idxChatSend" style="padding:8px 16px; border-radius:20px; background:#5ac8fa; color:#000; font-size:0.85rem; font-weight:600; border:none; cursor:pointer; white-space:nowrap;">发送</button>
+        </div>
+      </div>
+    </div>
+
+    <style>
+    @keyframes livePulse2 { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(0.8)} }
+    @keyframes typingBounce2 { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-5px)} }
+    @keyframes msgSlideIn2 { from{opacity:0;transform:translateY(10px) scale(0.97)} to{opacity:1;transform:translateY(0) scale(1)} }
+    #indexChatBoard.minimized .idx-chat-body { display:none; }
+    </style>
   </div>
 
   <script>
@@ -201,6 +236,134 @@
     panel.classList.toggle('open');
     overlay.classList.toggle('open');
   }
+  function toggleIndexChat() {
+    const board = document.getElementById('indexChatBoard');
+    board.classList.toggle('minimized');
+  }
+  </script>
+  <script>
+  // ===== 首页留言板逻辑 =====
+  (function(){
+    const NAMES = ['王总','李总','张总','刘总','陈总','赵总','周总','吴总','黄总','杨总','何总','林总','孙总','马总','徐总'];
+    const DEPTS = ['发改委','教育局','民政局','财政局','人社局','自然资源局','生态环境局','住建局','交通局','水利局','农业农村局','商务局','文旅局','卫健委','应急局','审计局','市场监管局','税务局','公安局','司法局'];
+    const REPLIES = [
+      '您可以在本平台点击「政企资源」页面查看详细介绍，或访问中国机构编制网（www.scopsr.gov.cn）查询各部门「三定方案」。',
+      '发改委主要负责宏观经济调控、发展规划制定、投资项目管理、价格改革等；商务部主要负责国内外贸易、对外经济合作。简单说：发改委规划未来，商务部促进流通。',
+      '市场准入负面清单可在中国政府网（www.gov.cn）或国家发改委官网查询，2024版已同步上线。',
+      '应急管理局主要负责：安全生产综合监督管理、应急救援体系建设、自然灾害防治、消防救援队伍协调等。',
+      '人社局可办理：社保卡、就业创业证、失业登记、劳动合同备案、职业技能等级证书、退休审批、职称评审等。',
+      '民政局社会救助包括：城乡低保、特困人员供养、临时救助、医疗救助、教育救助、住房救助等。',
+      '住建局主要负责：建筑工程施工许可审批、房地产市场监管、建设工程质量安全监督、物业管理、住房保障等。',
+      '乡村振兴局最新政策可在农业农村部官网（www.moa.gov.cn）查询，重点支持乡村产业发展、脱贫成果巩固等。',
+      '生态环境投诉热线：12369（环保举报）或12345（政务服务热线），也可通过全国生态环境投诉举报平台在线提交。',
+      '卫健委投诉渠道：12320（全国卫生热线）、12345，或到卫健委信访部门反映，亦可通过官网投诉平台提交。',
+      '财政局专项资金申请：①查省/市财政局官网「专项资金申报指南」；②符合条件向县级财政部门提交申报材料；③财政审核后报上级审批。',
+      '文化广电旅游局负责非物质文化遗产申报与管理。流程：个人/团体向县级文旅局提交申请→县级审核→市级复审→省级评审→国家级审批。',
+      '交通类项目招标信息可在「全国公共资源交易平台」（www.ggzy.gov.cn）或各省交通运输厅官网查询。',
+      '水资源费已改为水资源税，由税务部门征收。具体标准按省份和用水类型不同，居民用水有优惠政策。',
+      '校外培训机构监管归口教育体育局。2021年「双减」政策后，学科类培训机构已全面压减，艺术体育类需取得办学许可证。',
+      '审计局审计报告通常在审计完成后向社会公告，可登录当地政府官网「政务公开」栏目或审计局官网「审计结果公告」专栏查询。',
+      '商务局主要负责：国内外贸易、对外经济合作、市场秩序、外商投资促进、博览会/展会组织等。',
+      '公安局主要负责：维护社会治安、打击违法犯罪、户籍管理、出入境管理、消防安全、网络安全管理等。',
+      '司法局主要负责：司法行政、人民调解、法律援助、普法宣传、社区矫正、司法鉴定管理、律师管理、公证等。',
+      '市场监管局主要负责：市场秩序维护、营业执照登记、产品质量监督、食品安全监管、药品医疗器械监管、特种设备安全、广告监管、知识产权保护、反不正当竞争执法等。'
+    ];
+
+    const msgsEl = document.getElementById('idxChatMsgs');
+    const inputEl = document.getElementById('idxChatInput');
+    const sendBtn = document.getElementById('idxChatSend');
+    const typingWrap = document.getElementById('idxTypingWrap');
+    let isBotTyping = false;
+
+    function addMsg(name, dept, q, a) {
+      const qEl = document.createElement('div');
+      qEl.style.cssText = 'display:flex;gap:8px;animation:msgSlideIn2 .3s ease';
+      qEl.innerHTML = '<div style="width:28px;height:28px;border-radius:50%;background:rgba(90,200,250,0.2);color:#5ac8fa;display:flex;align-items:center;justify-content:center;font-size:0.78rem;flex-shrink:0;">' + name[0] + '</div><div style="flex:1;background:rgba(90,200,250,0.05);border:1px solid rgba(90,200,250,0.1);border-radius:12px 12px 12px 4px;padding:8px 12px;font-size:0.85rem;color:rgba(200,220,240,0.9);line-height:1.5;"><span style="font-size:0.7rem;color:#5ac8fa;font-weight:600;display:block;margin-bottom:2px;">💬 ' + name + '（' + dept + '）</span>' + q + '</div>';
+      msgsEl.appendChild(qEl);
+
+      setTimeout(() => {
+        const aEl = document.createElement('div');
+        aEl.style.cssText = 'display:flex;gap:8px;animation:msgSlideIn2 .3s ease';
+        aEl.innerHTML = '<div style="width:28px;height:28px;border-radius:50%;background:rgba(52,199,89,0.2);color:#34C759;display:flex;align-items:center;justify-content:center;font-size:0.78rem;flex-shrink:0;">🤖</div><div style="flex:1;background:rgba(52,199,89,0.06);border:1px solid rgba(52,199,89,0.15);border-radius:12px 12px 4px 12px;padding:8px 12px;font-size:0.85rem;color:rgba(200,220,240,0.9);line-height:1.5;"><span style="font-size:0.7rem;color:#34C759;font-weight:600;display:block;margin-bottom:2px;">✅ 政企顾问</span>' + a + '</div>';
+        msgsEl.appendChild(aEl);
+        msgsEl.scrollTop = msgsEl.scrollHeight;
+      }, 100);
+      msgsEl.scrollTop = msgsEl.scrollHeight;
+    }
+
+    // 预加载历史
+    const history = [
+      {q:'县级农业农村局的职能是什么？',a:REPLIES[0],name:'李总',dept:'农业局'},
+      {q:'如何查询某个政府部门的职能介绍？',a:REPLIES[1],name:'王总',dept:'发改委'},
+      {q:'生态环境局的投诉电话是多少？',a:REPLIES[8],name:'张总',dept:'企业'},
+      {q:'住建局负责哪些审批事项？',a:REPLIES[6],name:'赵总',dept:'企业'},
+      {q:'人社局可以办理哪些证件？',a:REPLIES[4],name:'刘总',dept:'民企'},
+      {q:'民政局的社会救助包括哪些？',a:REPLIES[5],name:'陈总',dept:'公益'},
+      {q:'应急管理局是做什么的？',a:REPLIES[3],name:'周总',dept:'企业'},
+      {q:'乡村振兴局最新政策在哪查？',a:REPLIES[7],name:'吴总',dept:'农业'},
+      {q:'市场准入负面清单在哪查？',a:REPLIES[2],name:'黄总',dept:'商务'},
+      {q:'发改委和商务部有什么区别？',a:REPLIES[1],name:'杨总',dept:'企业'},
+    ];
+    history.forEach(h => addMsg(h.name, h.dept, h.q, h.a));
+
+    // 自动推新消息
+    setInterval(() => {
+      if (isBotTyping) return;
+      if (Math.random() < 0.3) {
+        const ni = Math.floor(Math.random() * NAMES.length);
+        const di = Math.floor(Math.random() * DEPTS.length);
+        const name = NAMES[ni], dept = DEPTS[di];
+        const q = dept + '相关的问题在哪里咨询？';
+        isBotTyping = true;
+        typingWrap.style.display = 'flex';
+        msgsEl.scrollTop = msgsEl.scrollHeight;
+        setTimeout(() => {
+          typingWrap.style.display = 'none';
+          addMsg(name, dept, q, REPLIES[di % REPLIES.length]);
+          isBotTyping = false;
+        }, 1800 + Math.random() * 1000);
+      }
+    }, 5000);
+
+    function sendMsg() {
+      const q = inputEl.value.trim();
+      if (!q || isBotTyping) return;
+      const name = '我', dept = '访客';
+      inputEl.value = '';
+      isBotTyping = true;
+      typingWrap.style.display = 'flex';
+      msgsEl.scrollTop = msgsEl.scrollHeight;
+      const qEl = document.createElement('div');
+      qEl.style.cssText = 'display:flex;gap:8px;animation:msgSlideIn2 .3s ease';
+      qEl.innerHTML = '<div style="width:28px;height:28px;border-radius:50%;background:rgba(90,200,250,0.2);color:#5ac8fa;display:flex;align-items:center;justify-content:center;font-size:0.78rem;flex-shrink:0;">' + name[0] + '</div><div style="flex:1;background:rgba(90,200,250,0.05);border:1px solid rgba(90,200,250,0.1);border-radius:12px 12px 12px 4px;padding:8px 12px;font-size:0.85rem;color:rgba(200,220,240,0.9);line-height:1.5;"><span style="font-size:0.7rem;color:#5ac8fa;font-weight:600;display:block;margin-bottom:2px;">💬 ' + name + '</span>' + q + '</div>';
+      msgsEl.appendChild(qEl);
+      msgsEl.scrollTop = msgsEl.scrollHeight;
+      setTimeout(() => {
+        typingWrap.style.display = 'none';
+        const ql = q.toLowerCase();
+        let reply = '感谢提问！关于政企职能的更多问题，您可以在本平台点击「政企资源」页面进行学习，或联系一街之长获取专业咨询。';
+        if (ql.includes('农业')||ql.includes('农村')) reply = REPLIES[0];
+        else if (ql.includes('发改')||ql.includes('商务')) reply = REPLIES[1];
+        else if (ql.includes('负面清单')||ql.includes('市场准入')) reply = REPLIES[2];
+        else if (ql.includes('应急')||ql.includes('救援')) reply = REPLIES[3];
+        else if (ql.includes('人社')||ql.includes('社保')||ql.includes('就业')) reply = REPLIES[4];
+        else if (ql.includes('民政')||ql.includes('救助')) reply = REPLIES[5];
+        else if (ql.includes('住建')||ql.includes('住房')) reply = REPLIES[6];
+        else if (ql.includes('乡村')||ql.includes('振兴')) reply = REPLIES[7];
+        else if (ql.includes('生态')||ql.includes('环境')||ql.includes('投诉')) reply = REPLIES[8];
+        else if (ql.includes('卫健')||ql.includes('医疗')||ql.includes('健康')) reply = REPLIES[9];
+        const aEl = document.createElement('div');
+        aEl.style.cssText = 'display:flex;gap:8px;animation:msgSlideIn2 .3s ease';
+        aEl.innerHTML = '<div style="width:28px;height:28px;border-radius:50%;background:rgba(52,199,89,0.2);color:#34C759;display:flex;align-items:center;justify-content:center;font-size:0.78rem;flex-shrink:0;">🤖</div><div style="flex:1;background:rgba(52,199,89,0.06);border:1px solid rgba(52,199,89,0.15);border-radius:12px 12px 4px 12px;padding:8px 12px;font-size:0.85rem;color:rgba(200,220,240,0.9);line-height:1.5;"><span style="font-size:0.7rem;color:#34C759;font-weight:600;display:block;margin-bottom:2px;">✅ 政企顾问</span>' + reply + '</div>';
+        msgsEl.appendChild(aEl);
+        msgsEl.scrollTop = msgsEl.scrollHeight;
+        isBotTyping = false;
+      }, 1200 + Math.random() * 800);
+    }
+
+    sendBtn.addEventListener('click', sendMsg);
+    inputEl.addEventListener('keydown', e => { if (e.key === 'Enter') sendMsg(); });
+  })();
   </script>
   <script type="importmap">
   {
