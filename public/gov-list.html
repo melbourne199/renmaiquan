@@ -317,7 +317,7 @@
   <button class="publish-fab" onclick="location.href='publish-gov.html'" title="发布资源">+</button>
 
 <script>
-// ===== 编制科普小游戏 - SVG连线 =====
+// ===== 编制科普小游戏 - SVG连线 + 鼠标追踪 =====
 const nationalData = [
   {name:"外交部",func:"外交事务与国际关系、领事保护"},
   {name:"国防部",func:"国防建设与军事力量管理"},
@@ -593,6 +593,8 @@ const townshipData = [
 const levelDataMap = { national: nationalData, provincial: provincialData, city: cityData, county: countyData, township: townshipData };
 const pageSize = 8;
 
+
+// ===== 游戏状态 =====
 let currentLevel = 'national';
 let currentData = nationalData;
 let currentPage = 0;
@@ -600,6 +602,8 @@ let matchedFlags = [];
 let selectedLeftIdx = null;
 let rightOrderIndices = [];
 let wrongAnimTimer = null;
+let mouseTraceLine = null;   // 鼠标追踪线
+let selectedLeftEl = null;   // 当前选中左侧卡片的DOM元素
 
 const leftListDiv = document.getElementById('leftList');
 const rightListDiv = document.getElementById('rightList');
@@ -610,7 +614,9 @@ const medalArea = document.getElementById('medalArea');
 const prevBtn = document.getElementById('prevPageBtn');
 const nextBtn = document.getElementById('nextPageBtn');
 const resetBtn = document.getElementById('resetGameBtn');
+const gameBoard = document.getElementById('gameBoard');
 
+// ===== 工具函数 =====
 function updatePageInfo() {
   pageInfoSpan.textContent = `第${currentPage+1}/${Math.ceil(currentData.length / pageSize)}页`;
 }
@@ -638,6 +644,169 @@ function generateRightOrder(pageIndices) {
   return [...shuffle(unmatched), ...matched];
 }
 
+// ===== SVG画布设置（关键修复：等布局渲染完再画）=====
+let svgEl = null;
+
+function ensureSvg() {
+  if (!svgEl || svgEl.parentNode !== lineCanvas) {
+    svgEl = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svgEl.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;overflow:visible;';
+    svgEl.id = 'mainSvg';
+    lineCanvas.appendChild(svgEl);
+  }
+  return svgEl;
+}
+
+function getBoardRect() {
+  return gameBoard.getBoundingClientRect();
+}
+
+// ===== 画已配对的定型连线 =====
+function drawMatchedLines() {
+  ensureSvg();
+  // 清除旧的定型连线
+  const existing = svgEl.querySelectorAll('.match-line,.match-glow');
+  existing.forEach(el => el.remove());
+
+  const boardRect = getBoardRect();
+  const leftCards = leftListDiv.querySelectorAll('.game-item');
+  const rightCards = rightListDiv.querySelectorAll('.game-item');
+  const leftMap = new Map();
+  leftCards.forEach(card => {
+    const idx = parseInt(card.dataset.idx);
+    if (!isNaN(idx)) leftMap.set(idx, card);
+  });
+
+  rightCards.forEach((card, pos) => {
+    const globalIdx = rightOrderIndices[pos];
+    if (globalIdx === undefined || !matchedFlags[globalIdx]) return;
+    const leftCard = leftMap.get(globalIdx);
+    if (!leftCard) return;
+
+    const lRect = leftCard.getBoundingClientRect();
+    const rRect = card.getBoundingClientRect();
+
+    const startX = lRect.right - boardRect.left;
+    const startY = (lRect.top + lRect.bottom) / 2 - boardRect.top;
+    const endX = rRect.left - boardRect.left;
+    const endY = (rRect.top + rRect.bottom) / 2 - boardRect.top;
+
+    // 外发光
+    const glow = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    glow.setAttribute('x1', startX); glow.setAttribute('y1', startY);
+    glow.setAttribute('x2', endX);   glow.setAttribute('y2', endY);
+    glow.setAttribute('stroke', '#34C759');
+    glow.setAttribute('stroke-width', '14');
+    glow.setAttribute('stroke-opacity', '0.12');
+    glow.setAttribute('stroke-linecap', 'round');
+    glow.classList.add('match-glow');
+    svgEl.appendChild(glow);
+
+    // 主虚线
+    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    line.setAttribute('x1', startX); line.setAttribute('y1', startY);
+    line.setAttribute('x2', endX);   line.setAttribute('y2', endY);
+    line.setAttribute('stroke', '#34C759');
+    line.setAttribute('stroke-width', '2.5');
+    line.setAttribute('stroke-dasharray', '10 5');
+    line.setAttribute('stroke-linecap', 'round');
+    line.classList.add('match-line');
+    svgEl.appendChild(line);
+
+    // 电流光点动画
+    const dx = endX - startX, dy = endY - startY;
+    const colors = ['#72d2ff', '#ffffff', '#34C759'];
+    colors.forEach((color, i) => {
+      const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      circle.setAttribute('r', i === 1 ? '3' : '4');
+      circle.setAttribute('fill', color);
+      circle.style.filter = `drop-shadow(0 0 6px ${color})`;
+      circle.classList.add('match-line');
+      svgEl.appendChild(circle);
+      let prog = i * 0.33;
+      (function(c, spd) {
+        function anim() {
+          prog = (prog + spd) % 1;
+          c.setAttribute('cx', startX + dx * prog);
+          c.setAttribute('cy', startY + dy * prog);
+          requestAnimationFrame(anim);
+        }
+        anim();
+      })(circle, 0.012 + i * 0.007);
+    });
+  });
+}
+
+// ===== 鼠标追踪线：从左侧卡片 → 鼠标位置 =====
+// 改用CSS线条+JS位置更新，性能更好
+let traceLineEl = null;
+let traceGlowEl = null;
+let traceAnimFrame = null;
+let isTracing = false;
+
+function createTraceLine() {
+  ensureSvg();
+  traceGlowEl = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+  traceGlowEl.setAttribute('stroke', '#5ac8fa');
+  traceGlowEl.setAttribute('stroke-width', '10');
+  traceGlowEl.setAttribute('stroke-opacity', '0.2');
+  traceGlowEl.setAttribute('stroke-linecap', 'round');
+  svgEl.appendChild(traceGlowEl);
+
+  traceLineEl = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+  traceLineEl.setAttribute('stroke', '#5ac8fa');
+  traceLineEl.setAttribute('stroke-width', '2');
+  traceLineEl.setAttribute('stroke-dasharray', '8 4');
+  traceLineEl.setAttribute('stroke-linecap', 'round');
+  svgEl.appendChild(traceLineEl);
+}
+
+function removeTraceLine() {
+  if (traceLineEl) { traceLineEl.remove(); traceLineEl = null; }
+  if (traceGlowEl) { traceGlowEl.remove(); traceGlowEl = null; }
+  isTracing = false;
+}
+
+function updateTraceLine(mouseX, mouseY) {
+  if (!isTracing || !selectedLeftEl || !traceLineEl) return;
+  const boardRect = getBoardRect();
+  const lRect = selectedLeftEl.getBoundingClientRect();
+  const startX = lRect.right - boardRect.left;
+  const startY = (lRect.top + lRect.bottom) / 2 - boardRect.top;
+  const endX = mouseX - boardRect.left;
+  const endY = mouseY - boardRect.top;
+  traceLineEl.setAttribute('x1', startX); traceLineEl.setAttribute('y1', startY);
+  traceLineEl.setAttribute('x2', endX);   traceLineEl.setAttribute('y2', endY);
+  traceGlowEl.setAttribute('x1', startX); traceGlowEl.setAttribute('y1', startY);
+  traceGlowEl.setAttribute('x2', endX);   traceGlowEl.setAttribute('y2', endY);
+}
+
+// ===== 鼠标事件监听 =====
+gameBoard.addEventListener('mousemove', e => {
+  updateTraceLine(e.clientX, e.clientY);
+});
+
+gameBoard.addEventListener('mouseleave', () => {
+  if (isTracing) removeTraceLine();
+});
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && isTracing) {
+    deselectLeft();
+  }
+});
+
+function deselectLeft() {
+  if (selectedLeftEl) {
+    selectedLeftEl.classList.remove('selected');
+    selectedLeftEl = null;
+  }
+  selectedLeftIdx = null;
+  removeTraceLine();
+  isTracing = false;
+}
+
+// ===== 渲染当前页 =====
 function renderPage() {
   const pageIndices = getCurrentPageIndices();
   rightOrderIndices = generateRightOrder(pageIndices);
@@ -652,17 +821,27 @@ function renderPage() {
     el.innerHTML = `<span class="item-name">${dept.name}</span>`;
     if (!isMatched) {
       el.addEventListener('click', () => {
-        document.querySelectorAll('#leftList .game-item').forEach(x => x.classList.remove('selected'));
+        // 取消之前的选中
+        if (selectedLeftEl) selectedLeftEl.classList.remove('selected');
+        if (selectedLeftIdx === globalIdx) {
+          // 点同一张 → 取消选中
+          deselectLeft();
+          feedbackMsg.textContent = '👆 取消选择，请重新点击左侧机构';
+          return;
+        }
         el.classList.add('selected');
+        selectedLeftEl = el;
         selectedLeftIdx = globalIdx;
-        feedbackMsg.textContent = `👉 已选中：${dept.name}，请点击右侧对应职能`;
+        isTracing = true;
+        createTraceLine();
+        feedbackMsg.textContent = `👉 已选中：${dept.name}，线跟鼠标走，点击右侧对应职能`;
       });
     }
     leftListDiv.appendChild(el);
   });
 
   rightListDiv.innerHTML = '';
-  rightOrderIndices.forEach((globalIdx) => {
+  rightOrderIndices.forEach((globalIdx, pos) => {
     const dept = currentData[globalIdx];
     const isMatched = matchedFlags[globalIdx];
     const el = document.createElement('div');
@@ -676,175 +855,52 @@ function renderPage() {
           return;
         }
         const leftIdx = selectedLeftIdx;
+        removeTraceLine(); // 配对瞬间删追踪线
         if (leftIdx === globalIdx) {
+          // 正确配对
           matchedFlags[leftIdx] = true;
-          selectedLeftIdx = null;
+          deselectLeft();
           renderPage();
-          drawLines();
-          const done = matchedFlags.filter(Boolean).length;
-          feedbackMsg.textContent = `✅ 正确！${dept.name} → ${currentData[leftIdx].func}`;
+          // 等DOM渲染完再画线
+          requestAnimationFrame(() => {
+            setTimeout(() => {
+              drawMatchedLines();
+            }, 50);
+          });
+          feedbackMsg.textContent = `✅ 正确！${dept.name} → ${dept.func}`;
           showLike();
           checkAllDone();
         } else {
+          // 错误
           el.classList.add('wrong');
           feedbackMsg.textContent = `❌ 不对！${currentData[leftIdx].name} 的职能不是这个，再试试！`;
           if (wrongAnimTimer) clearTimeout(wrongAnimTimer);
           wrongAnimTimer = setTimeout(() => {
             el.classList.remove('wrong');
-            document.querySelectorAll('.game-item.selected').forEach(x => x.classList.remove('selected'));
-            selectedLeftIdx = null;
-          }, 600);
+            deselectLeft();
+          }, 700);
         }
       });
     }
     rightListDiv.appendChild(el);
   });
 
-  drawLines();
+  // 等布局稳定后画线
+  requestAnimationFrame(() => {
+    setTimeout(drawMatchedLines, 100);
+  });
   updatePageInfo();
-}
-
-// ===== SVG连线绘制（核心） =====
-function drawLines() {
-  lineCanvas.innerHTML = '';
-
-  const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-  svg.style.width = '100%';
-  svg.style.height = '100%';
-  svg.style.position = 'absolute';
-  svg.style.top = '0';
-  svg.style.left = '0';
-
-  const boardRect = document.getElementById('gameBoard').getBoundingClientRect();
-  const leftCards = leftListDiv.querySelectorAll('.game-item');
-  const rightCards = rightListDiv.querySelectorAll('.game-item');
-
-  const leftMap = new Map();
-  leftCards.forEach(card => {
-    const idx = parseInt(card.dataset.idx);
-    if (!isNaN(idx)) leftMap.set(idx, card);
-  });
-
-  rightCards.forEach((card, pos) => {
-    const globalIdx = rightOrderIndices[pos];
-    if (globalIdx === undefined || !matchedFlags[globalIdx]) return;
-
-    const leftCard = leftMap.get(globalIdx);
-    if (!leftCard) return;
-
-    const lRect = leftCard.getBoundingClientRect();
-    const rRect = card.getBoundingClientRect();
-
-    const startX = lRect.right - boardRect.left;
-    const startY = (lRect.top + lRect.bottom) / 2 - boardRect.top;
-    const endX = rRect.left - boardRect.left;
-    const endY = (rRect.top + rRect.bottom) / 2 - boardRect.top;
-
-    const dx = endX - startX;
-    const dy = endY - startY;
-    const len = Math.hypot(dx, dy);
-
-    // === 多层电流效果 ===
-
-    // 1. 外发光层（最宽，最淡）
-    const glowLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-    glowLine.setAttribute('x1', startX);
-    glowLine.setAttribute('y1', startY);
-    glowLine.setAttribute('x2', endX);
-    glowLine.setAttribute('y2', endY);
-    glowLine.setAttribute('stroke', '#34C759');
-    glowLine.setAttribute('stroke-width', '12');
-    glowLine.setAttribute('stroke-opacity', '0.15');
-    glowLine.setAttribute('stroke-linecap', 'round');
-    svg.appendChild(glowLine);
-
-    // 2. 中层发光
-    const midGlow = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-    midGlow.setAttribute('x1', startX);
-    midGlow.setAttribute('y1', startY);
-    midGlow.setAttribute('x2', endX);
-    midGlow.setAttribute('y2', endY);
-    midGlow.setAttribute('stroke', '#34C759');
-    midGlow.setAttribute('stroke-width', '6');
-    midGlow.setAttribute('stroke-opacity', '0.3');
-    midGlow.setAttribute('stroke-linecap', 'round');
-    svg.appendChild(midGlow);
-
-    // 3. 主线 - 绿色虚线（不动）
-    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-    line.setAttribute('x1', startX);
-    line.setAttribute('y1', startY);
-    line.setAttribute('x2', endX);
-    line.setAttribute('y2', endY);
-    line.setAttribute('stroke', '#34C759');
-    line.setAttribute('stroke-width', '3');
-    line.setAttribute('stroke-dasharray', '10 6');
-    line.setAttribute('stroke-linecap', 'round');
-    line.setAttribute('id', 'mainLine_' + globalIdx);
-    svg.appendChild(line);
-
-    // 4. 流动层 - stroke-dashoffset 动画（让虚线看起来在流动）
-    const flowLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-    flowLine.setAttribute('x1', startX);
-    flowLine.setAttribute('y1', startY);
-    flowLine.setAttribute('x2', endX);
-    flowLine.setAttribute('y2', endY);
-    flowLine.setAttribute('stroke', '#72d2ff');
-    flowLine.setAttribute('stroke-width', '2');
-    flowLine.setAttribute('stroke-dasharray', '6 12');
-    flowLine.setAttribute('stroke-linecap', 'round');
-    svg.appendChild(flowLine);
-
-    // 流动动画 - stroke-dashoffset
-    let dashOffset = 0;
-    function animateDash() {
-      dashOffset -= 0.5;
-      flowLine.setAttribute('stroke-dashoffset', dashOffset);
-      requestAnimationFrame(animateDash);
-    }
-    animateDash();
-
-    // 5. 多色电流光点（3个在不同位置同时移动）
-    const pulseColors = [
-      { color: '#72d2ff', r: 5, glow: '#72d2ff', speed: 0.018 },
-      { color: '#ffffff', r: 3, glow: '#ffffff', speed: 0.012 },
-      { color: '#34C759', r: 4, glow: '#34C759', speed: 0.025 }
-    ];
-
-    pulseColors.forEach((pulseConfig, pi) => {
-      const pulse = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-      pulse.setAttribute('r', pulseConfig.r);
-      pulse.setAttribute('fill', pulseConfig.color);
-      pulse.setAttribute('filter', `drop-shadow(0 0 ${pulseConfig.r * 2}px ${pulseConfig.glow})`);
-      pulse.style.filter = `drop-shadow(0 0 ${pulseConfig.r * 3}px ${pulseConfig.glow})`;
-      svg.appendChild(pulse);
-
-      let progress = pi * 0.33; // 三个光点错开位置
-      function animatePulse() {
-        progress += pulseConfig.speed;
-        if (progress > 1) progress = 0;
-        const cx = startX + dx * progress;
-        const cy = startY + dy * progress;
-        pulse.setAttribute('cx', cx);
-        pulse.setAttribute('cy', cy);
-        requestAnimationFrame(animatePulse);
-      }
-      animatePulse();
-    });
-  });
-
-  lineCanvas.appendChild(svg);
 }
 
 // 飘赞
 function showLike() {
-  document.querySelectorAll('.game-item.selected, #rightList .game-item').forEach(el => {
-    if (el.classList.contains('matched')) {
-      const like = document.createElement('span');
-      like.className = 'like-icon';
-      like.textContent = '👍';
-      like.style.animation = 'likeFloat 1.2s ease forwards';
-      el.style.position = 'relative';
+  document.querySelectorAll('.game-item.matched').forEach(el => {
+    const like = document.createElement('span');
+    like.className = 'like-icon';
+    like.textContent = '👍';
+    like.style.animation = 'likeFloat 1.2s ease forwards';
+    el.style.position = 'relative';
+    if (!el.querySelector('.like-icon')) {
       el.appendChild(like);
       setTimeout(() => { if (like.parentNode) like.remove(); }, 1300);
     }
@@ -860,7 +916,7 @@ function checkAllDone() {
 
 function resetGame() {
   matchedFlags.fill(false);
-  selectedLeftIdx = null;
+  deselectLeft();
   currentPage = 0;
   medalArea.innerHTML = '';
   feedbackMsg.textContent = '🔄 已重置！重新开始配对学习吧！';
@@ -871,7 +927,7 @@ function switchLevel(level) {
   currentLevel = level;
   currentData = levelDataMap[level];
   matchedFlags = new Array(currentData.length).fill(false);
-  selectedLeftIdx = null;
+  deselectLeft();
   currentPage = 0;
   medalArea.innerHTML = '';
   const tabText = document.querySelector('.level-tab[data-level="'+level+'"]').textContent;
@@ -879,8 +935,8 @@ function switchLevel(level) {
   renderPage();
 }
 
-prevBtn.addEventListener('click', () => { if (currentPage > 0) { currentPage--; selectedLeftIdx = null; renderPage(); } else { feedbackMsg.textContent = '已是第一页！'; } });
-nextBtn.addEventListener('click', () => { if (currentPage + 1 < Math.ceil(currentData.length / pageSize)) { currentPage++; selectedLeftIdx = null; renderPage(); } else { feedbackMsg.textContent = '已是最后一页！'; } });
+prevBtn.addEventListener('click', () => { if (currentPage > 0) { currentPage--; deselectLeft(); renderPage(); } else { feedbackMsg.textContent = '已是第一页！'; } });
+nextBtn.addEventListener('click', () => { if (currentPage + 1 < Math.ceil(currentData.length / pageSize)) { currentPage++; deselectLeft(); renderPage(); } else { feedbackMsg.textContent = '已是最后一页！'; } });
 resetBtn.addEventListener('click', resetGame);
 
 document.querySelectorAll('.level-tab').forEach(tab => {
@@ -916,14 +972,23 @@ document.querySelectorAll('.level-header').forEach(header => {
 });
 
 matchedFlags = new Array(currentData.length).fill(false);
-renderPage();
 
-// 显示各级别部门数量
-document.getElementById('count-national').textContent = '(' + nationalData.length + ')';
-document.getElementById('count-provincial').textContent = '(' + provincialData.length + ')';
-document.getElementById('count-city').textContent = '(' + cityData.length + ')';
-document.getElementById('count-county').textContent = '(' + countyData.length + ')';
-document.getElementById('count-township').textContent = '(' + townshipData.length + ')';
+// 等DOM完全就绪再初始化
+requestAnimationFrame(() => {
+  setTimeout(() => {
+    renderPage();
+    // 显示各级别数量
+    document.getElementById('count-national').textContent = '(' + nationalData.length + ')';
+    document.getElementById('count-provincial').textContent = '(' + provincialData.length + ')';
+    document.getElementById('count-city').textContent = '(' + cityData.length + ')';
+    document.getElementById('count-county').textContent = '(' + countyData.length + ')';
+    document.getElementById('count-township').textContent = '(' + townshipData.length + ')';
+    // 初始化留言板
+    initChat();
+  }, 200);
+});
+
+// ===== 实时留言板 =====
 
 // ===== 原有政企列表 =====
 let govList = [];
@@ -1166,8 +1231,6 @@ async function sendChat() {
 
 chatSend.addEventListener('click', sendChat);
 chatInput.addEventListener('keydown', e => { if (e.key === 'Enter') sendChat(); });
-
-initChat();
 </script>
 </body>
 </html>
