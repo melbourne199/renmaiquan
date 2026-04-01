@@ -138,3 +138,11 @@ module.exports = {
   EscortProject,
   EscortParticipant
 };
+
+// ===== 系统配置表（KV存储，含支付配置）=====
+const SystemConfig = sequelize.define('SystemConfig', {
+  cfg_key: { type: DataTypes.STRING, primaryKey: true, allowNull: false },
+  cfg_value: { type: DataTypes.TEXT },
+  description: { type: DataTypes.STRING },
+  updated_at: { type: DataTypes.DATE, defaultValue: DataTypes.NOW }
+}, { tableName: 'system_configs', timestamps: false, createdAt: false });

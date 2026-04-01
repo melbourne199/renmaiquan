@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>支付接口配置 - 资源夜市管理后台</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif; background: #01060f; color: rgba(200,220,240,0.92); min-height: 100vh; }
+    .admin-wrap { max-width: 760px; margin: 0 auto; padding: 40px 20px; }
+    .admin-header { display: flex; align-items: center; gap: 16px; margin-bottom: 32px; padding-bottom: 20px; border-bottom: 1px solid rgba(90,200,250,0.15); }
+    .admin-header h1 { font-size: 1.3rem; color: #5ac8fa; }
+    .back-link { color: rgba(90,200,250,0.7); text-decoration: none; font-size: 0.88rem; }
+    .back-link:hover { color: #5ac8fa; }
+
+    .cfg-card { background: rgba(15,30,50,0.85); border: 1px solid rgba(90,200,250,0.15); border-radius: 20px; padding: 28px 30px; margin-bottom: 20px; backdrop-filter: blur(20px); }
+    .cfg-card h2 { font-size: 1rem; color: #F59E0B; margin-bottom: 6px; }
+    .cfg-card p { font-size: 0.82rem; color: rgba(160,185,210,0.7); line-height: 1.6; margin-bottom: 20px; }
+
+    .cfg-row { margin-bottom: 18px; }
+    .cfg-label { display: block; font-size: 0.85rem; color: rgba(160,185,210,0.85); margin-bottom: 6px; font-weight: 600; }
+    .cfg-label span { font-weight: 400; color: rgba(130,155,185,0.6); font-size: 0.75rem; margin-left: 6px; }
+    .cfg-input { width: 100%; background: rgba(90,200,250,0.06); border: 1px solid rgba(90,200,250,0.18); border-radius: 12px; padding: 10px 14px; color: rgba(200,220,240,0.92); font-size: 0.88rem; outline: none; transition: border-color 0.2s; }
+    .cfg-input:focus { border-color: rgba(90,200,250,0.45); background: rgba(90,200,250,0.1); }
+    .cfg-input::placeholder { color: rgba(130,155,185,0.5); }
+    .cfg-input.full { border-color: rgba(52,199,89,0.4); background: rgba(52,199,89,0.05); }
+    .cfg-hint { font-size: 0.75rem; color: rgba(130,155,185,0.6); margin-top: 5px; line-height: 1.5; }
+
+    .cfg-toggle { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; padding: 14px 16px; background: rgba(90,200,250,0.05); border: 1px solid rgba(90,200,250,0.1); border-radius: 14px; cursor: pointer; }
+    .cfg-toggle input[type="checkbox"] { display: none; }
+    .toggle-track { width: 44px; height: 24px; border-radius: 12px; background: rgba(90,200,250,0.15); position: relative; transition: background 0.2s; flex-shrink: 0; }
+    .toggle-track::after { content: ''; position: absolute; top: 3px; left: 3px; width: 18px; height: 18px; border-radius: 50%; background: #fff; transition: transform 0.2s; }
+    .cfg-toggle input:checked + .toggle-track { background: rgba(52,199,89,0.4); }
+    .cfg-toggle input:checked + .toggle-track::after { transform: translateX(20px); }
+    .toggle-text { font-size: 0.88rem; color: rgba(200,220,240,0.9); }
+
+    .btn-row { display: flex; gap: 12px; margin-top: 24px; }
+    .btn { padding: 10px 24px; border-radius: 40px; font-size: 0.88rem; cursor: pointer; transition: all 0.2s; border: none; font-weight: 600; }
+    .btn-save { background: #5ac8fa; color: #000; }
+    .btn-save:hover { background: #72d2ff; transform: scale(1.02); }
+    .btn-test { background: rgba(245,158,11,0.15); color: #F59E0B; border: 1px solid rgba(245,158,11,0.3); }
+    .btn-test:hover { background: rgba(245,158,11,0.25); }
+    .btn:disabled { opacity: 0.5; cursor: default; transform: none; }
+
+    .msg-box { border-radius: 12px; padding: 12px 16px; font-size: 0.85rem; margin-bottom: 20px; display: none; }
+    .msg-box.ok { display: block; background: rgba(52,199,89,0.12); border: 1px solid rgba(52,199,89,0.3); color: #34C759; }
+    .msg-box.err { display: block; background: rgba(255,71,87,0.1); border: 1px solid rgba(255,71,87,0.3); color: #ff4757; }
+    .msg-box.info { display: block; background: rgba(90,200,250,0.08); border: 1px solid rgba(90,200,250,0.2); color: #5ac8fa; }
+
+    .doc-section { background: rgba(245,158,11,0.05); border: 1px dashed rgba(245,158,11,0.25); border-radius: 16px; padding: 18px 20px; margin-bottom: 20px; }
+    .doc-section h3 { font-size: 0.9rem; color: #F59E0B; margin-bottom: 12px; }
+    .doc-section ol { padding-left: 20px; }
+    .doc-section li { font-size: 0.82rem; color: rgba(160,185,210,0.8); line-height: 1.8; }
+    .doc-section li strong { color: #F59E0B; }
+
+    .status-badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
+    .status-on { background: rgba(52,199,89,0.15); color: #34C759; border: 1px solid rgba(52,199,89,0.3); }
+    .status-off { background: rgba(90,200,250,0.1); color: rgba(90,200,250,0.6); border: 1px solid rgba(90,200,250,0.2); }
+
+    .test-result { margin-top: 16px; padding: 14px 16px; border-radius: 12px; font-size: 0.85rem; display: none; }
+    .test-result.show { display: block; }
+    .test-result.ok { background: rgba(52,199,89,0.1); border: 1px solid rgba(52,199,89,0.3); color: #34C759; }
+    .test-result.fail { background: rgba(255,71,87,0.1); border: 1px solid rgba(255,71,87,0.3); color: #ff4757; }
+  </style>
+</head>
+<body>
+<div class="admin-wrap">
+  <div class="admin-header">
+    <a href="login.html" class="back-link">← 返回后台</a>
+    <h1>💰 支付接口配置</h1>
+    <span id="statusBadge" class="status-badge status-off">未启用</span>
+  </div>
+
+  <!-- 申请步骤说明 -->
+  <div class="doc-section">
+    <h3>📋 微信支付企业版 · 申请步骤</h3>
+    <ol>
+      <li><strong>注册商户号：</strong>登录 <a href="https://pay.weixin.qq.com" target="_blank" style="color:#5ac8fa;">pay.weixin.qq.com</a> → 注册企业商户号</li>
+      <li><strong>获取AppID：</strong>在微信公众平台获取公众号或小程序的AppID</li>
+      <li><strong>设置API密钥：</strong>商户平台 → 账户设置 → API安全 → 设置密钥（32位字符）</li>
+      <li><strong>安装证书：</strong>下载API证书，服务器上妥善保管证书路径填入下方</li>
+      <li><strong>配置回调地址：</strong>将下方"回调URL"填入微信商户平台的支付回调配置中</li>
+    </ol>
+  </div>
+
+  <!-- 启用开关 -->
+  <div class="cfg-card">
+    <div class="cfg-toggle" onclick="toggleEnable()">
+      <input type="checkbox" id="payEnabled">
+      <div class="toggle-track"></div>
+      <div class="toggle-text">启用微信支付（启用后用户可使用微信支付购买会员/服务）</div>
+    </div>
+  </div>
+
+  <!-- 配置表单 -->
+  <div class="cfg-card">
+    <h2>🧾 基础配置</h2>
+    <p>以下信息来自微信支付商户平台（pay.weixin.qq.com）</p>
+
+    <div class="cfg-row">
+      <label class="cfg-label">商户号（MchId）<span>必填 · 15位数字</span></label>
+      <input class="cfg-input" id="mchId" placeholder="例：1234567890" maxlength="15">
+    </div>
+
+    <div class="cfg-row">
+      <label class="cfg-label">公众号/小程序 AppID<span>必填 · 以wx开头</span></label>
+      <input class="cfg-input" id="appId" placeholder="例：wx1234567890abcdef" maxlength="32">
+    </div>
+
+    <div class="cfg-row">
+      <label class="cfg-label">API密钥（ApiKey）<span>必填 · 32位密钥</span></label>
+      <input class="cfg-input" id="apiKey" type="password" placeholder="微信支付商户平台设置的API密钥（32位）" maxlength="64">
+      <div class="cfg-hint">⚠️ API密钥是支付安全的核心，请勿泄露。配置后如显示"******"表示已设置过，无需重复填写。</div>
+    </div>
+
+    <div class="cfg-row">
+      <label class="cfg-label">API证书路径（CertPath）<span>服务器上的证书路径</span></label>
+      <input class="cfg-input" id="certPath" placeholder="例：/etc/ssl/wechat/apiclient_cert.pem" maxlength="256">
+      <div class="cfg-hint">服务器上存放apiclient_cert.pem的路径（pem格式）。退款等高级功能需要此证书。</div>
+    </div>
+  </div>
+
+  <div class="cfg-card">
+    <h2>🔗 回调地址配置</h2>
+    <p>将以下地址填写到微信商户平台的"支付回调URL"中</p>
+
+    <div class="cfg-row">
+      <label class="cfg-label">支付回调地址（NotifyUrl）</label>
+      <input class="cfg-input full" id="notifyUrl" placeholder="系统自动生成，复制到微信商户平台" readonly>
+      <div class="cfg-hint">复制此地址 → 登录微信支付商户平台 → 支付回调配置 → 粘贴保存</div>
+    </div>
+
+    <div class="cfg-row">
+      <label class="cfg-label">支付成功跳转页面</label>
+      <input class="cfg-input" id="callbackUrl" placeholder="例：/member.html 或 /index.html" maxlength="128">
+      <div class="cfg-hint">用户支付成功后自动跳转到的页面路径，留空则停留在当前页</div>
+    </div>
+  </div>
+
+  <div class="cfg-card">
+    <h2>🧪 沙箱测试</h2>
+    <p>保存配置后，点击"测试支付接口"验证参数是否正确（不会真正扣款）</p>
+    <div class="btn-row">
+      <button class="btn btn-save" id="saveBtn" onclick="saveConfig()">💾 保存配置</button>
+      <button class="btn btn-test" id="testBtn" onclick="testPayment()">🧪 测试支付接口</button>
+    </div>
+    <div id="msgBox" class="msg-box"></div>
+    <div id="testResult" class="test-result"></div>
+  </div>
+
+  <div class="cfg-card" style="border-color: rgba(90,200,250,0.08); background: rgba(1,6,15,0.7);">
+    <h2 style="color:rgba(90,200,250,0.6);font-size:0.9rem;">📌 配置说明</h2>
+    <ul style="padding-left:18px; font-size:0.8rem; color:rgba(130,155,185,0.7); line-height:2;">
+      <li>本配置<strong style="color:rgba(200,220,240,0.8);">不动现有任何功能</strong>，仅在用户触发支付时激活</li>
+      <li>支付功能独立，不影响网站现有所有页面和API</li>
+      <li>API密钥请在微信支付商户平台（pay.weixin.qq.com）→账户设置→API安全中获取</li>
+      <li>回调URL必须公网可访问，微信服务器需要能调用到</li>
+      <li>生产环境建议使用HTTPS，确保数据传输安全</li>
+      <li>配置保存后重启服务即可生效</li>
+    </ul>
+  </div>
+</div>
+
+<script>
+const BASE_URL = '/api/admin';
+let currentConfig = {};
+
+// 自动生成回调地址
+async function loadBaseUrl() {
+  try {
+    const res = await fetch('/api/health');
+    if (res.ok) {
+      const data = await res.json();
+      if (data.baseUrl) {
+        document.getElementById('notifyUrl').value = data.baseUrl + '/api/payment/wechat/notify';
+        return;
+      }
+    }
+  } catch(e) {}
+  // fallback
+  document.getElementById('notifyUrl').value = window.location.origin + '/api/payment/wechat/notify';
+}
+loadBaseUrl();
+
+// 加载现有配置
+async function loadConfig() {
+  try {
+    const res = await fetch(BASE_URL + '/payment-config');
+    if (!res.ok) throw new Error();
+    const data = await res.json();
+    currentConfig = data.config || {};
+    document.getElementById('payEnabled').checked = data.enabled;
+    document.getElementById('mchId').value = currentConfig.wechat_pay_mch_id || '';
+    document.getElementById('appId').value = currentConfig.wechat_pay_app_id || '';
+    document.getElementById('apiKey').value = currentConfig.wechat_pay_api_key || '';
+    document.getElementById('certPath').value = currentConfig.wechat_pay_cert_path || '';
+    document.getElementById('notifyUrl').value = currentConfig.wechat_pay_notify_url || document.getElementById('notifyUrl').value;
+    document.getElementById('callbackUrl').value = currentConfig.wechat_pay_callback_url || '';
+    updateStatus(data.enabled);
+  } catch(e) {
+    showMsg('加载配置失败：' + e.message, 'err');
+  }
+}
+
+function updateStatus(enabled) {
+  const badge = document.getElementById('statusBadge');
+  if (enabled) {
+    badge.className = 'status-badge status-on';
+    badge.textContent = '已启用';
+  } else {
+    badge.className = 'status-badge status-off';
+    badge.textContent = '未启用';
+  }
+}
+
+function toggleEnable() {
+  const cb = document.getElementById('payEnabled');
+  cb.checked = !cb.checked;
+  updateStatus(cb.checked);
+}
+
+async function saveConfig() {
+  const btn = document.getElementById('saveBtn');
+  btn.disabled = true;
+  btn.textContent = '保存中...';
+  const config = {
+    wechat_pay_enabled: document.getElementById('payEnabled').checked ? 'true' : 'false',
+    wechat_pay_mch_id: document.getElementById('mchId').value.trim(),
+    wechat_pay_app_id: document.getElementById('appId').value.trim(),
+    wechat_pay_api_key: document.getElementById('apiKey').value.trim(),
+    wechat_pay_cert_path: document.getElementById('certPath').value.trim(),
+    wechat_pay_notify_url: document.getElementById('notifyUrl').value.trim(),
+    wechat_pay_callback_url: document.getElementById('callbackUrl').value.trim(),
+  };
+  try {
+    const res = await fetch(BASE_URL + '/payment-config', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ config })
+    });
+    const data = await res.json();
+    if (data.success) {
+      showMsg('✅ 配置保存成功！', 'ok');
+      updateStatus(document.getElementById('payEnabled').checked);
+    } else {
+      showMsg('保存失败：' + (data.error || '未知错误'), 'err');
+    }
+  } catch(e) {
+    showMsg('保存失败：' + e.message, 'err');
+  }
+  btn.disabled = false;
+  btn.textContent = '💾 保存配置';
+}
+
+async function testPayment() {
+  const btn = document.getElementById('testBtn');
+  const result = document.getElementById('testResult');
+  btn.disabled = true;
+  btn.textContent = '测试中...';
+  result.className = 'test-result';
+  result.style.display = 'none';
+  try {
+    const res = await fetch(BASE_URL + '/payment-test', { method: 'POST' });
+    const data = await res.json();
+    if (data.ok) {
+      result.className = 'test-result show ok';
+      result.innerHTML = '✅ ' + data.msg + '<br>商户号：' + data.mch_id + '<br>AppID：' + data.app_id;
+    } else {
+      result.className = 'test-result show fail';
+      result.innerHTML = '❌ ' + data.msg;
+    }
+  } catch(e) {
+    result.className = 'test-result show fail';
+    result.innerHTML = '❌ 测试失败：' + e.message;
+  }
+  btn.disabled = false;
+  btn.textContent = '🧪 测试支付接口';
+}
+
+function showMsg(text, type) {
+  const box = document.getElementById('msgBox');
+  box.className = 'msg-box ' + type;
+  box.textContent = text;
+  if (type !== 'info') {
+    setTimeout(() => { box.style.display = 'none'; }, 5000);
+  }
+}
+
+loadConfig();
+</script>
+</body>
+</html>

@@ -13,6 +13,7 @@ const contentRoutes = require('./routes/content');
 const escortRoutes = require('./routes/escort');
 const aiRoutes = require('./routes/ai');
 const stationRoutes = require('./routes/station');
+const paymentRoutes = require('./routes/payment');
 
 const app = express();
 
@@ -25,7 +26,7 @@ app.use('/admin', express.static(path.join(__dirname, '../admin')));
 
 // 健康检查
 app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok', message: '资源夜市 API 运行正常' });
+  res.json({ status: 'ok', message: '资源夜市 API 运行正常', baseUrl: req.protocol + '://' + req.get('host') });
 });
 
 // 路由挂载
@@ -36,6 +37,7 @@ app.use('/api/admin', adminRoutes);       // 后台管理
 app.use('/api/ai', aiRoutes);             // AI解析（Groq）
 app.use('/api/escort', escortRoutes);    // 居间护航
 app.use('/api/station', stationRoutes);   // 站长申请
+app.use('/api/payment', paymentRoutes);   // 微信支付
 
 // 404 处理
 app.get('*', (req, res) => {

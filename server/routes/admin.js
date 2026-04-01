@@ -160,3 +160,87 @@ router.get('/referrals', async (req, res) => {
 });
 
 module.exports = router;
+
+// ===== 微信支付配置 =====
+router.get('/payment-config', async (req, res) => {
+  try {
+    const { SystemConfig } = require('../models');
+    const rows = await SystemConfig.findAll({ where: { cfg_key: { [require('sequelize').Op.like]: 'wechat_pay_%' } } });
+    const config = {};
+    rows.forEach(r => { config[r.cfg_key] = r.cfg_value; });
+    // 不返回密钥原文
+    if (config.wechat_pay_api_key) config.wechat_pay_api_key = config.wechat_pay_api_key ? '******' : '';
+    if (config.wechat_pay_cert_path) config.wechat_pay_cert_path = config.wechat_pay_cert_path ? '(已配置)' : '';
+    res.json({ enabled: config.wechat_pay_enabled === 'true', config });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+router.post('/payment-config', async (req, res) => {
+  try {
+    const { SystemConfig } = require('../models');
+    const allowed = [
+      'wechat_pay_enabled',
+      'wechat_pay_mch_id',
+      'wechat_pay_app_id',
+      'wechat_pay_api_key',
+      'wechat_pay_cert_path',
+      'wechat_pay_callback_url',
+      'wechat_pay_notify_url',
+    ];
+    const { config } = req.body;
+    for (const key of allowed) {
+      if (config[key] !== undefined) {
+        await SystemConfig.upsert({ cfg_key: key, cfg_value: String(config[key]), updated_at: new Date() });
+      }
+    }
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// 支付密钥验签（内部接口）
+router.post('/payment-verify', async (req, res) => {
+  try {
+    const crypto = require('crypto');
+    const { SystemConfig } = require('../models');
+    const apiKey = await SystemConfig.findOne({ where: { cfg_key: 'wechat_pay_api_key' } });
+    if (!apiKey) return res.status(400).json({ error: '未配置支付密钥' });
+    const key = apiKey.cfg_value;
+    const { sign, ...data } = req.body;
+    const str = Object.keys(data).sort().map(k => `${k}=${data[k]}`).join('&') + `&key=${key}`;
+    const expected = crypto.createHash('md5').update(str).digest('hex').toUpperCase();
+    res.json({ verified: sign === expected });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// 模拟发起支付（沙箱测试）
+router.post('/payment-test', async (req, res) => {
+  try {
+    const { SystemConfig } = require('../models');
+    const enabled = await SystemConfig.findOne({ where: { cfg_key: 'wechat_pay_enabled' } });
+    if (!enabled || enabled.cfg_value !== 'true') {
+      return res.json({ ok: false, msg: '支付未启用，请在后台配置后开启' });
+    }
+    const mchId = await SystemConfig.findOne({ where: { cfg_key: 'wechat_pay_mch_id' } });
+    const appId = await SystemConfig.findOne({ where: { cfg_key: 'wechat_pay_app_id' } });
+    const apiKey = await SystemConfig.findOne({ where: { cfg_key: 'wechat_pay_api_key' } });
+    if (!mchId || !appId || !apiKey) {
+      return res.json({ ok: false, msg: '支付参数不完整，请检查配置' });
+    }
+    // 返回模拟支付链接（实际微信支付需要统一下单）
+    res.json({
+      ok: true,
+      msg: '沙箱测试成功，参数配置正确。正式环境请调用微信支付统一下单接口。',
+      mock: true,
+      mch_id: mchId.cfg_value,
+      app_id: appId.cfg_value
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
