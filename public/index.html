@@ -325,7 +325,7 @@
       }
     }, 5000);
 
-    function sendMsg() {
+    async function sendMsg() {
       const q = inputEl.value.trim();
       if (!q || isBotTyping) return;
       const name = '我', dept = '访客';
@@ -338,27 +338,30 @@
       qEl.innerHTML = '<div style="width:28px;height:28px;border-radius:50%;background:rgba(90,200,250,0.2);color:#5ac8fa;display:flex;align-items:center;justify-content:center;font-size:0.78rem;flex-shrink:0;">' + name[0] + '</div><div style="flex:1;background:rgba(90,200,250,0.05);border:1px solid rgba(90,200,250,0.1);border-radius:12px 12px 12px 4px;padding:8px 12px;font-size:0.85rem;color:rgba(200,220,240,0.9);line-height:1.5;"><span style="font-size:0.7rem;color:#5ac8fa;font-weight:600;display:block;margin-bottom:2px;">💬 ' + name + '</span>' + q + '</div>';
       msgsEl.appendChild(qEl);
       msgsEl.scrollTop = msgsEl.scrollHeight;
-      setTimeout(() => {
+      try {
+        const res = await fetch('/api/ai/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ question: q })
+        });
+        const data = await res.json();
         typingWrap.style.display = 'none';
-        const ql = q.toLowerCase();
-        let reply = '感谢提问！关于政企职能的更多问题，您可以在本平台点击「政企资源」页面进行学习，或联系一街之长获取专业咨询。';
-        if (ql.includes('农业')||ql.includes('农村')) reply = REPLIES[0];
-        else if (ql.includes('发改')||ql.includes('商务')) reply = REPLIES[1];
-        else if (ql.includes('负面清单')||ql.includes('市场准入')) reply = REPLIES[2];
-        else if (ql.includes('应急')||ql.includes('救援')) reply = REPLIES[3];
-        else if (ql.includes('人社')||ql.includes('社保')||ql.includes('就业')) reply = REPLIES[4];
-        else if (ql.includes('民政')||ql.includes('救助')) reply = REPLIES[5];
-        else if (ql.includes('住建')||ql.includes('住房')) reply = REPLIES[6];
-        else if (ql.includes('乡村')||ql.includes('振兴')) reply = REPLIES[7];
-        else if (ql.includes('生态')||ql.includes('环境')||ql.includes('投诉')) reply = REPLIES[8];
-        else if (ql.includes('卫健')||ql.includes('医疗')||ql.includes('健康')) reply = REPLIES[9];
+        const reply = data.answer || '感谢提问！关于政企职能的更多问题，您可以在本平台点击「政企资源」页面进行学习，或联系一街之长获取专业咨询。';
         const aEl = document.createElement('div');
         aEl.style.cssText = 'display:flex;gap:8px;animation:msgSlideIn2 .3s ease';
         aEl.innerHTML = '<div style="width:28px;height:28px;border-radius:50%;background:rgba(52,199,89,0.2);color:#34C759;display:flex;align-items:center;justify-content:center;font-size:0.78rem;flex-shrink:0;">🤖</div><div style="flex:1;background:rgba(52,199,89,0.06);border:1px solid rgba(52,199,89,0.15);border-radius:12px 12px 4px 12px;padding:8px 12px;font-size:0.85rem;color:rgba(200,220,240,0.9);line-height:1.5;"><span style="font-size:0.7rem;color:#34C759;font-weight:600;display:block;margin-bottom:2px;">✅ 政企顾问</span>' + reply + '</div>';
         msgsEl.appendChild(aEl);
         msgsEl.scrollTop = msgsEl.scrollHeight;
-        isBotTyping = false;
-      }, 1200 + Math.random() * 800);
+      } catch(e) {
+        typingWrap.style.display = 'none';
+        const reply = '抱歉，网络连接出现问题，请稍后重试或联系一街之长。';
+        const aEl = document.createElement('div');
+        aEl.style.cssText = 'display:flex;gap:8px;animation:msgSlideIn2 .3s ease';
+        aEl.innerHTML = '<div style="width:28px;height:28px;border-radius:50%;background:rgba(52,199,89,0.2);color:#34C759;display:flex;align-items:center;justify-content:center;font-size:0.78rem;flex-shrink:0;">🤖</div><div style="flex:1;background:rgba(52,199,89,0.06);border:1px solid rgba(52,199,89,0.15);border-radius:12px 12px 4px 12px;padding:8px 12px;font-size:0.85rem;color:rgba(200,220,240,0.9);line-height:1.5;"><span style="font-size:0.7rem;color:#34C759;font-weight:600;display:block;margin-bottom:2px;">✅ 政企顾问</span>' + reply + '</div>';
+        msgsEl.appendChild(aEl);
+        msgsEl.scrollTop = msgsEl.scrollHeight;
+      }
+      isBotTyping = false;
     }
 
     sendBtn.addEventListener('click', sendMsg);

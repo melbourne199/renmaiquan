@@ -17,5 +17,10 @@ module.exports = {
   },
   server: {
     port: process.env.PORT || 3002
+  },
+  ai: {
+    apiKey: 'sk-d4951e01685745f48f13e0648ad98866',
+    baseUrl: 'https://api.deepseek.com',
+    model: 'deepseek-chat'
   }
 };

@@ -141,3 +141,49 @@ ${JSON.stringify(data, null, 2)}
 });
 
 module.exports = router;
+
+// POST /api/ai/chat - 留言板智能问答
+router.post('/chat', async (req, res) => {
+  try {
+    const { question } = req.body;
+    if (!question) {
+      return res.status(400).json({ error: '缺少问题内容' });
+    }
+
+    const config = require('../config');
+    const response = await fetch(config.ai.baseUrl + '/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + config.ai.apiKey
+      },
+      body: JSON.stringify({
+        model: config.ai.model || 'deepseek-chat',
+        messages: [
+          {
+            role: 'system',
+            content: '你是资源夜市的AI政务顾问，专门回答关于政府机关职能、政策、资源对接的问题。回答要简洁、专业、易懂，用中文回复。如果不知道答案，就说"这个问题我需要进一步了解，您可以联系一街之长获取专业咨询"。'
+          },
+          {
+            role: 'user',
+            content: question
+          }
+        ],
+        max_tokens: 500,
+        temperature: 0.7
+      })
+    });
+
+    if (!response.ok) {
+      throw new Error('AI接口调用失败');
+    }
+
+    const data = await response.json();
+    const answer = data.choices?.[0]?.message?.content || '抱歉，我暂时无法回答这个问题，请联系一街之长。';
+
+    res.json({ success: true, answer });
+  } catch (err) {
+    console.error('AI聊天接口错误:', err.message);
+    res.status(500).json({ error: 'AI服务暂时不可用，请稍后重试' });
+  }
+});
